@@ -55,14 +55,21 @@ wire [`DataBusSrc__NBits-1:0]data_bus_source;
 wire [7:0]data_bus_inputs[`DataBusSrc__NumOptions-1:0];
 
 assign data_bus = data_bus_inputs[data_bus_source];
+reg [7:0]data_in_latched;
+
+wire [15:0]address_bus;
+wire [`AddrBusSrc__NBits-1:0]address_bus_source;
+wire [15:0]address_bus_inputs[`AddrBusSrc__NumOptions-1:0];
+
+assign address_bus = address_bus_inputs[address_bus_source];
 
 wire [`CtlSig__NumSignals-1:0] control_signals;
 
-assign data_bus_inputs[`DataBusSrc_Mem] = data_in;
+assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
 
 register register_y(
     .data_in(data_bus),
-    .data_out(data_bus_source[`DataBusSrc_RegY]),
+    .data_out(data_bus_inputs[`DataBusSrc_RegY]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegYWrite]),
     .bReset(1)
@@ -70,7 +77,7 @@ register register_y(
 
 register register_x(
     .data_in(data_bus),
-    .data_out(data_bus_source[`DataBusSrc_RegX]),
+    .data_out(data_bus_inputs[`DataBusSrc_RegX]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegXWrite]),
     .bReset(1)
@@ -78,7 +85,7 @@ register register_x(
 
 register register_s(
     .data_in(data_bus),
-    .data_out(data_bus_source[`DataBusSrc_RegS]),
+    .data_out(data_bus_inputs[`DataBusSrc_RegS]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegSWrite]),
     .bReset(1)
@@ -86,15 +93,41 @@ register register_s(
 
 register register_accumulator(
     .data_in(data_bus),
-    .data_out(data_bus_source[`DataBusSrc_RegAcc]),
+    .data_out(data_bus_inputs[`DataBusSrc_RegAcc]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegAccWrite]),
     .bReset(1)
 );
 
+program_counter pc(
+    .addr_in(address_bus),
+    .addr_out(address_bus_inputs[`AddrBusSrc_Pc]),
+    .advance(control_signals[`CtlSig_PcAdvance]),
+    .jump(control_signals[`CtlSig_Jump]),
+    .clock(phi2),
+    .RESET(RES)
+);
+assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
+assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
+
+
+instruction_decode decoder(
+    .data_in(data_in_latched),
+    .clock(phi2),
+    .RESET(RES),
+    .control_signals(control_signals),
+    .data_bus_source(data_bus_source),
+    .address_bus_source(address_bus_source)
+);
+
 always@(posedge phi2) begin
     rW <= control_signals[`CtlSig_rW];
     data_out <= control_signals[`CtlSig_rW] ? 8'h0 : data_bus;
+    address <= address_bus;
+end
+
+always@(negedge phi2) begin
+    data_in_latched <= data_in;
 end
 
 endmodule
