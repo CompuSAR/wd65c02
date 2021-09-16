@@ -1,0 +1,7 @@
+.*.swp
+
+/*.cache
+/*.runs
+/*.ip_user_files
+/*.sim
+/*.hw
