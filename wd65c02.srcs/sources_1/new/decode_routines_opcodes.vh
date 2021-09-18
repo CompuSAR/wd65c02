@@ -104,4 +104,5 @@
 
 task do_opcode_nop();
     // Do... nothing
+    timing_counter <= 0;
 endtask

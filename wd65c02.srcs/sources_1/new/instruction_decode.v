@@ -87,6 +87,7 @@ begin
     control_signals[`CtlSig_PcAdvance] <= 1;
     
     case( data_in )
+    /*
     8'h00: begin
         setup_addr_s();
         active_op <= `Op_brk;
@@ -935,6 +936,7 @@ begin
         setup_addr_r();
         active_op <= `Op_bbs7;
     end
+    */
     default: begin
         setup_addr_i();
         do_opcode_nop(); // Unknown commands are NOP

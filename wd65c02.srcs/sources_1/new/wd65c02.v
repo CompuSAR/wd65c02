@@ -45,8 +45,8 @@ module wd65c02(
     output reg rW,
     input rdy,
     input RES,
-    input sync,
-    input VP,
+    output sync,
+    output VP,
     output reg waitP
     );
 
