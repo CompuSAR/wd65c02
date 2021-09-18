@@ -35,11 +35,11 @@ wd65c02 cpu(
     .address(address_bus),
     .data_out(data_bus_out),
     .data_in(memory[address_bus]),
-    .IRQ(1),
-    .NMI(1),
+    .IRQ(1'b1),
+    .NMI(1'b1),
     .phi2(clock),
     .rW(data_bus_rW),
-    .rdy(1),
+    .rdy(1'b1),
     .RES(RESET)
 );
 

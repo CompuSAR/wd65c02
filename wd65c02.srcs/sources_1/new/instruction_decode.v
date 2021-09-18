@@ -70,22 +70,21 @@ task clear_signals();
 begin
     control_signals <= {`CtlSig__NumSignals{1'b0}};
     data_bus_source <= {`DataBusSrc__NumOptions{1'b0}};
-    address_bus_source <= {`AddrBusSrc__NumOptions{1'b0}};
+    address_bus_source = {`AddrBusSrc__NumOptions{1'b0}};
 end
 endtask
 
 task do_opcode_fetch();
 begin
-    address_bus_source <= `AddrBusSrc_Pc;
+    address_bus_source = `AddrBusSrc_Pc;
     control_signals[`CtlSig_sync] <= 1;
     active_op <= `Op__invalid;
+    control_signals[`CtlSig_PcAdvance] <= 1;
 end
 endtask
 
 task do_opcode_decode();
 begin
-    control_signals[`CtlSig_PcAdvance] <= 1;
-    
     case( data_in )
     /*
     8'h00: begin

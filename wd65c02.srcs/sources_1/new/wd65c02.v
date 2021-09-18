@@ -42,12 +42,12 @@ module wd65c02(
     output reg ML,
     input NMI,
     input phi2,
-    output reg rW,
+    output rW,
     input rdy,
     input RES,
     output sync,
     output VP,
-    output reg waitP
+    output waitP
     );
 
 wire [7:0]data_bus;
@@ -64,6 +64,10 @@ wire [15:0]address_bus_inputs[`AddrBusSrc__NumOptions-1:0];
 assign address_bus = address_bus_inputs[address_bus_source];
 
 wire [`CtlSig__NumSignals-1:0] control_signals;
+
+assign sync = control_signals[`CtlSig_sync];
+assign waitP = control_signals[`CtlSig_halted];
+assign rW = control_signals[`CtlSig_rW];
 
 assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
 
@@ -121,12 +125,11 @@ instruction_decode decoder(
 );
 
 always@(posedge phi2) begin
-    rW <= control_signals[`CtlSig_rW];
     data_out <= control_signals[`CtlSig_rW] ? 8'h0 : data_bus;
-    address <= address_bus;
 end
 
 always@(negedge phi2) begin
+    address <= address_bus;
     data_in_latched <= data_in;
 end
 
