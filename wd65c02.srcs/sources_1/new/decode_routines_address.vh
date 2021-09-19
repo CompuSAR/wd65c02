@@ -22,6 +22,7 @@
 task fetch_operand();
 begin
     case(active_address_resolution)
+    `Addr_abs: do_addr_abs();
     `Addr_zp: do_addr_zp();
     default: begin end
     endcase
@@ -29,8 +30,27 @@ end
 endtask
 
 task setup_addr_abs();
+begin
     // Absolute address: a
-    // TODO implement
+    active_address_resolution <= `Addr_abs;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source = `AddrBusSrc_Pc;
+    data_latch_control = `DataLatch_LoadLowHiZero;
+end
+endtask
+
+task do_addr_abs();
+begin
+    if( timing_counter==1 ) begin
+        control_signals[`CtlSig_PcAdvance] <= 1;
+        address_bus_source = `AddrBusSrc_Pc;
+        data_latch_control = `DataLatch_LoadHi;
+    end else begin
+        address_bus_source = `AddrBusSrc_Dl;
+
+        active_address_resolution <= `Addr_invalid; // Last address cycle
+    end
+end
 endtask
 
 task setup_addr_abs_x_ind();

@@ -46,16 +46,21 @@ wd65c02 cpu(
 reg [7:0]memory[65535:0];
 
 initial begin
-    memory[0] = 8'hea; // NOP
-    memory[1] = 8'ha9; // LDA #$75
-    memory[2] = 8'h75;
-    memory[3] = 8'ha9; // LDA #$2a
-    memory[4] = 8'h2a;
-    memory[5] = 8'ha5; // LDA $a9
-    memory[6] = 8'ha9;
-    memory[7] = 8'hea;
+    memory[16'h0000] = 8'hea; // NOP
+    memory[16'h0001] = 8'ha9; // LDA #$75
+    memory[16'h0002] = 8'h75;
+    memory[16'h0003] = 8'ha9; // LDA #$2a
+    memory[16'h0004] = 8'h2a;
+    memory[16'h0005] = 8'ha5; // LDA $a9
+    memory[16'h0006] = 8'ha9;
+    memory[16'h0007] = 8'hea; // NOP
+    memory[16'h0008] = 8'had; // LDA $8623
+    memory[16'h0009] = 8'h23;
+    memory[16'h000a] = 8'h86;
+    memory[16'h000b] = 8'hea; // NOP
 
-    memory[8'ha9] = 8'h17; // Command at adderss 5 should load this value
+    memory[16'h00a9] = 8'h17; // Command at adderss 5 should load this value
+    memory[16'h8623] = 8'hf2; // Command at address 8 should load this value
     
     clock = 0;
     
@@ -66,7 +71,7 @@ end
 initial begin
     RESET = 0;
     
-    #4000 RESET = 1;
+    #4004 RESET = 1;
 end
 
 endmodule

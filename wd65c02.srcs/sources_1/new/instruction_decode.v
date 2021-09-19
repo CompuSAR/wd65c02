@@ -659,10 +659,12 @@ begin
         setup_addr_abs();
         active_op <= `Op_ldy;
     end
+    */
     8'had: begin
-        setup_addr_abs();
         active_op <= `Op_lda;
+        setup_addr_abs();
     end
+    /*
     8'hae: begin
         setup_addr_abs();
         active_op <= `Op_ldx;
