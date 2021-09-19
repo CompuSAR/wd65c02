@@ -51,8 +51,11 @@ initial begin
     memory[2] = 8'h75;
     memory[3] = 8'ha9; // LDA #$2a
     memory[4] = 8'h2a;
-    memory[5] = 8'hea; // NOP
-    memory[6] = 8'hea; // NOP
+    memory[5] = 8'ha5; // LDA $a9
+    memory[6] = 8'ha9;
+    memory[7] = 8'hea;
+
+    memory[8'ha9] = 8'h17; // Command at adderss 5 should load this value
     
     clock = 0;
     

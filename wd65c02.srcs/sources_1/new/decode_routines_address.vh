@@ -22,6 +22,7 @@
 task fetch_operand();
 begin
     case(active_address_resolution)
+    `Addr_zp: do_addr_zp();
     default: begin end
     endcase
 end
@@ -60,7 +61,7 @@ endtask
 task setup_addr_imm();
 begin
     // Immediate: #
-    active_address_resolution <= `Addr_invalid;
+    active_address_resolution <= `Addr_invalid; // Only need this cycle
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source = `AddrBusSrc_Pc;
 end
@@ -83,8 +84,21 @@ task setup_addr_stack();
 endtask
 
 task setup_addr_zp();
+begin
     // Zero page: zp
-    // TODO implement
+    active_address_resolution <= `Addr_zp;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source = `AddrBusSrc_Pc;
+    data_latch_control = `DataLatch_LoadLowHiZero;
+end
+endtask
+
+task do_addr_zp();
+begin
+    address_bus_source = `AddrBusSrc_Dl;
+
+    active_address_resolution <= `Addr_invalid; // We're done
+end
 endtask
 
 task setup_addr_zp_x_ind();

@@ -27,6 +27,7 @@ module instruction_decode(
         input clock,
         input RESET,
         output reg [`CtlSig__NumSignals-1:0]control_signals,
+        output reg [`DataLatch__NBits-1:0]data_latch_control,
         output reg [`DataBusSrc__NBits-1:0]data_bus_source,
         output reg [`AddrBusSrc__NBits-1:0]address_bus_source
     );
@@ -74,6 +75,7 @@ begin
     control_signals <= {`CtlSig__NumSignals{1'b0}};
     data_bus_source = {`DataBusSrc__NumOptions{1'b0}};
     address_bus_source = {`AddrBusSrc__NumOptions{1'b0}};
+    data_latch_control = `DataLatch_Nop;
 end
 endtask
 
@@ -625,10 +627,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_ldy;
     end
+    */
     8'ha5: begin
-        setup_addr_zp();
         active_op <= `Op_lda;
+        setup_addr_zp();
     end
+    /*
     8'ha6: begin
         setup_addr_zp();
         active_op <= `Op_ldx;

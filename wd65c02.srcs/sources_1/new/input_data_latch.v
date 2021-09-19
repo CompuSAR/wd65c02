@@ -31,8 +31,7 @@ module input_data_latch(
 always@(posedge clock) begin
     case(control)
     `DataLatch_Nop: ;
-    `DataLatch_LoadHiAndPush: begin
-        data_out[7:0] <= data_out[15:8];
+    `DataLatch_LoadHi: begin
         data_out[15:8] <= data_in;
     end
     `DataLatch_LoadLowHiZero:

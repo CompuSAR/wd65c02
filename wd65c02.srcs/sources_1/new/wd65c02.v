@@ -35,7 +35,7 @@
 `include "control_signals.vh"
 
 module wd65c02(
-    output reg [15:0]address,
+    output [15:0]address,
     output reg [7:0]data_out,
     input [7:0] data_in,
     input IRQ,
@@ -62,6 +62,7 @@ wire [`AddrBusSrc__NBits-1:0]address_bus_source;
 wire [15:0]address_bus_inputs[`AddrBusSrc__NumOptions-1:0];
 
 assign address_bus = address_bus_inputs[address_bus_source];
+assign address = address_bus;
 
 wire [`CtlSig__NumSignals-1:0] control_signals;
 
@@ -103,23 +104,33 @@ register register_accumulator(
     .bReset(1)
 );
 
+wire [15:0]pc_value;
 program_counter pc(
     .addr_in(address_bus),
-    .addr_out(address_bus_inputs[`AddrBusSrc_Pc]),
+    .addr_out(pc_value),
     .advance(control_signals[`CtlSig_PcAdvance]),
     .jump(control_signals[`CtlSig_Jump]),
     .clock(phi2),
     .RESET(RES)
 );
+latch#(.NBits(16)) pc_latch(.in(pc_value), .out(address_bus_inputs[`AddrBusSrc_Pc]), .clock(~phi2));
 assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
 assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
 
+wire [`DataLatch__NBits-1:0]data_latch_control;
+input_data_latch data_latch(
+    .data_in( data_in ),
+    .data_out( address_bus_inputs[`AddrBusSrc_Dl] ),
+    .clock(~phi2),
+    .control( data_latch_control )
+);
 
 instruction_decode decoder(
     .data_in(data_in),
     .clock(phi2),
     .RESET(RES),
     .control_signals(control_signals),
+    .data_latch_control(data_latch_control),
     .data_bus_source(data_bus_source),
     .address_bus_source(address_bus_source)
 );
@@ -129,7 +140,6 @@ always@(posedge phi2) begin
 end
 
 always@(negedge phi2) begin
-    address <= address_bus;
     data_in_latched <= data_in;
 end
 
