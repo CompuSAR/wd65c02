@@ -34,7 +34,7 @@ assign addr_out = address;
 
 always@(posedge clock) begin
     if( ! RESET ) begin
-        address <= 16'hfffc;
+        address <= 16'h0;
     end else if( advance ) begin
         address <= address + 1;
     end else if( jump ) begin

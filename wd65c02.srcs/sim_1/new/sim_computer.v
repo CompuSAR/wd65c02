@@ -46,8 +46,13 @@ wd65c02 cpu(
 reg [7:0]memory[65535:0];
 
 initial begin
-    memory[0] = 8'ha9; // LDA #$7a
-    memory[1] = 8'h7a;
+    memory[0] = 8'hea; // NOP
+    memory[1] = 8'ha9; // LDA #$75
+    memory[2] = 8'h75;
+    memory[3] = 8'ha9; // LDA #$2a
+    memory[4] = 8'h2a;
+    memory[5] = 8'hea; // NOP
+    memory[6] = 8'hea; // NOP
     
     clock = 0;
     

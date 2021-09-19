@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="34.400001 us"></ZoomEndTime>
-      <Cursor1Time time="20.000000 us"></Cursor1Time>
+      <ZoomEndTime time="6.880001 us"></ZoomEndTime>
+      <Cursor1Time time="4.000000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="243"></NameColumnWidth>
       <ValueColumnWidth column_width="68"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="15" />
    <wvobject type="logic" fp_name="/sim_computer/clock">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -59,10 +59,41 @@
    <wvobject type="array" fp_name="/sim_computer/cpu/data_bus_inputs">
       <obj_property name="ElementShortName">data_bus_inputs[8:0][7:0]</obj_property>
       <obj_property name="ObjectShortName">data_bus_inputs[8:0][7:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/sim_computer/cpu/decoder/timing_counter">
       <obj_property name="ElementShortName">timing_counter[3:0]</obj_property>
       <obj_property name="ObjectShortName">timing_counter[3:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFFFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/pc/address">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">address[15:0]</obj_property>
+      <obj_property name="ObjectShortName">address[15:0]</obj_property>
+      <obj_property name="label">PC</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/register_accumulator/data">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data[7:0]</obj_property>
+      <obj_property name="label">Reg A</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/register_x/data">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data[7:0]</obj_property>
+      <obj_property name="label">Reg X</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/register_y/data">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data[7:0]</obj_property>
+      <obj_property name="label">Reg Y</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/register_s/data">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data[7:0]</obj_property>
+      <obj_property name="label">Reg S</obj_property>
    </wvobject>
 </wave_config>

@@ -51,35 +51,29 @@ always@(negedge clock) begin
     if( ! RESET )
         do_reset();
     else begin
-        if( timing_counter==0 ) begin
-            do_opcode_fetch();
-        end else if( timing_counter==1 ) begin
+        if( timing_counter==0 )
             do_opcode_decode();
-        end
+        else if( active_address_resolution!=`Addr_invalid )
+            fetch_operand();
+        else
+            perform_instruction();
     end
 end
 
 task do_reset();
 begin
-    timing_counter <= 0;
     clear_signals();
+    next_instruction();
+    active_address_resolution <= `Addr_invalid;
+    active_op <= `Op__invalid;
 end
 endtask
 
 task clear_signals();
 begin
     control_signals <= {`CtlSig__NumSignals{1'b0}};
-    data_bus_source <= {`DataBusSrc__NumOptions{1'b0}};
+    data_bus_source = {`DataBusSrc__NumOptions{1'b0}};
     address_bus_source = {`AddrBusSrc__NumOptions{1'b0}};
-end
-endtask
-
-task do_opcode_fetch();
-begin
-    address_bus_source = `AddrBusSrc_Pc;
-    control_signals[`CtlSig_sync] <= 1;
-    active_op <= `Op__invalid;
-    control_signals[`CtlSig_PcAdvance] <= 1;
 end
 endtask
 
@@ -647,10 +641,12 @@ begin
         setup_addr_i();
         do_opcode_tay();
     end
+    */
     8'ha9: begin
-        setup_addr_imm();
         active_op <= `Op_lda;
+        setup_addr_imm();
     end
+    /*
     8'haa: begin
         setup_addr_i();
         do_opcode_tax();
@@ -867,10 +863,12 @@ begin
         setup_addr_imm();
         active_op <= `Op_sbc;
     end
+    */
     8'hea: begin
+        active_op <= `Op_nop;
         setup_addr_i();
-        do_opcode_nop();
     end
+    /*
     8'hec: begin
         setup_addr_abs();
         active_op <= `Op_cpx;
@@ -937,8 +935,8 @@ begin
     end
     */
     default: begin
+        active_op <= `Op_nop; // Unknown commands are NOP
         setup_addr_i();
-        do_opcode_nop(); // Unknown commands are NOP
     end
     endcase
 end

@@ -67,7 +67,7 @@ wire [`CtlSig__NumSignals-1:0] control_signals;
 
 assign sync = control_signals[`CtlSig_sync];
 assign waitP = control_signals[`CtlSig_halted];
-assign rW = control_signals[`CtlSig_rW];
+assign rW = ~control_signals[`CtlSig_write];
 
 assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
 
@@ -116,7 +116,7 @@ assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:
 
 
 instruction_decode decoder(
-    .data_in(data_in_latched),
+    .data_in(data_in),
     .clock(phi2),
     .RESET(RES),
     .control_signals(control_signals),
@@ -125,7 +125,7 @@ instruction_decode decoder(
 );
 
 always@(posedge phi2) begin
-    data_out <= control_signals[`CtlSig_rW] ? 8'h0 : data_bus;
+    data_out <= control_signals[`CtlSig_write] ? data_bus : 8'b0;
 end
 
 always@(negedge phi2) begin

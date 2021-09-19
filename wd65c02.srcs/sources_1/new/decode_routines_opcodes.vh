@@ -104,5 +104,34 @@
 
 task do_opcode_nop();
     // Do... nothing
+    next_instruction();
+endtask
+
+task perform_instruction();
+begin
+    case(active_op)
+    `Op_lda: do_opcode_lda();
+    `Op_nop: do_opcode_nop();
+    endcase
+end
+endtask
+
+task next_instruction();
+begin
     timing_counter <= 0;
+    address_bus_source = `AddrBusSrc_Pc;
+    active_op <= `Op__invalid;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+
+    control_signals[`CtlSig_sync] <= 1;
+    control_signals[`CtlSig_write] <= 0;
+end
+endtask
+
+task do_opcode_lda();
+begin
+    control_signals[`CtlSig_RegAccWrite] <= 1;
+    data_bus_source = `DataBusSrc_Mem;
+    next_instruction();
+end
 endtask

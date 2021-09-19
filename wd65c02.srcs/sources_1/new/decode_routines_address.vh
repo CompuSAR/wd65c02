@@ -1,7 +1,31 @@
-`define Addr_implied 0
+`define Addr_invalid    0
+`define Addr_abs        1
+`define Addr_abs_x_ind  2
+`define Addr_abs_x      3
+`define Addr_abs_y      4
+`define Addr_abs_ind    5
+`define Addr_acc        6
+`define Addr_immediate  7
+`define Addr_implied    8
+`define Addr_pc_rel     9
+`define Addr_stack      10
+`define Addr_zp         11
+`define Addr_zp_x_ind   12
+`define Addr_zp_x       13
+`define Addr_zp_y       14
+`define Addr_zp_ind     15
+`define Addr_zp_ind_y   16
 
-`define Addr__Count 1
-`define Addr__NBits $clog2(`Addr__Count)
+`define Addr__Count     17
+`define Addr__NBits     $clog2(`Addr__Count)
+
+task fetch_operand();
+begin
+    case(active_address_resolution)
+    default: begin end
+    endcase
+end
+endtask
 
 task setup_addr_abs();
     // Absolute address: a
@@ -34,13 +58,17 @@ task setup_addr_acc();
 endtask
 
 task setup_addr_imm();
+begin
     // Immediate: #
-    // TODO implement
+    active_address_resolution <= `Addr_invalid;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source = `AddrBusSrc_Pc;
+end
 endtask
 
 task setup_addr_i();
     // Implied: i
-    // TODO implement
+    active_address_resolution <= `Addr_invalid;
 endtask
 
 task setup_addr_pc_rel();
