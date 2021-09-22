@@ -111,6 +111,7 @@ task perform_instruction();
 begin
     case(active_op)
     `Op_lda: do_opcode_lda();
+    `Op_ldx: do_opcode_ldx();
     `Op_nop: do_opcode_nop();
     endcase
 end
@@ -131,6 +132,14 @@ endtask
 task do_opcode_lda();
 begin
     control_signals[`CtlSig_RegAccWrite] <= 1;
+    data_bus_source = `DataBusSrc_Mem;
+    next_instruction();
+end
+endtask
+
+task do_opcode_ldx();
+begin
+    control_signals[`CtlSig_RegXWrite] <= 1;
     data_bus_source = `DataBusSrc_Mem;
     next_instruction();
 end

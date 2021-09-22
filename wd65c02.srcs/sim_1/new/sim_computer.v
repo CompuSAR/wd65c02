@@ -58,6 +58,8 @@ initial begin
     memory[16'h0009] = 8'h23;
     memory[16'h000a] = 8'h86;
     memory[16'h000b] = 8'hea; // NOP
+    memory[16'h000c] = 8'ha2; // LDX #$4
+    memory[16'h000d] = 8'h04;
 
     memory[16'h00a9] = 8'h17; // Command at adderss 5 should load this value
     memory[16'h8623] = 8'hf2; // Command at address 8 should load this value

@@ -621,10 +621,12 @@ begin
         setup_addr_zpxi();
         active_op <= `Op_lda;
     end
+    */
     8'ha2: begin
         setup_addr_imm();
         active_op <= `Op_ldx;
     end
+    /*
     8'ha4: begin
         setup_addr_zp();
         active_op <= `Op_ldy;
