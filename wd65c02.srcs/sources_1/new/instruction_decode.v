@@ -26,6 +26,8 @@ module instruction_decode(
         input [7:0]data_in,
         input clock,
         input RESET,
+        input [7:0]status_register,
+        input alu_carry,
         output reg [`CtlSig__NumSignals-1:0]control_signals,
         output reg [`DataLatch__NBits-1:0]data_latch_control,
         output reg [`DataBusSrc__NBits-1:0]data_bus_source,

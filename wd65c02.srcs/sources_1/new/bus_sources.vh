@@ -19,3 +19,15 @@
 
 `define AddrBusSrc__NumOptions 3
 `define AddrBusSrc__NBits $clog2( `AddrBusSrc__NumOptions )
+
+`define AluBusSrc_Acc       0
+`define AluBusSrc_RegX      1
+`define AluBusSrc_RegY      2
+`define AluBusSrc_RegS      3
+`define AluBusSrc_DlLow     4
+`define AluBusSrc_DlHigh    5
+`define AluBusSrc_PcLow     6
+`define AluBusSrc_PcHigh    7
+
+`define AluBusSrc__NumOptions 8
+`define AluBusSrc__NBits $clog2( `AluBusSrc__NumOptions )

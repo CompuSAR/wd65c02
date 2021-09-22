@@ -64,6 +64,12 @@ wire [15:0]address_bus_inputs[`AddrBusSrc__NumOptions-1:0];
 assign address_bus = address_bus_inputs[address_bus_source];
 assign address = address_bus;
 
+wire [7:0]alu_bus;
+wire [`AluBusSrc__NBits-1:0]alu_bus_source;
+wire [7:0]alu_bus_inputs[`AluBusSrc__NumOptions-1:0];
+
+assign alu_bus = alu_bus_inputs[alu_bus_source];
+
 wire [`CtlSig__NumSignals-1:0] control_signals;
 
 assign sync = control_signals[`CtlSig_sync];
@@ -123,6 +129,13 @@ input_data_latch data_latch(
     .data_out( address_bus_inputs[`AddrBusSrc_Dl] ),
     .clock(~phi2),
     .control( data_latch_control )
+);
+
+alu alu(
+    .a(alu_bus),
+    .b(control_signals[`CtlSig_AluInverse] ? ~data_bus : data_bus),
+    .result(data_bus_inputs[`DataBusSrc_ALU]),
+    .control()
 );
 
 instruction_decode decoder(
