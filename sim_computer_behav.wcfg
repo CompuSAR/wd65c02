@@ -11,18 +11,22 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="2.682500 us"></ZoomStartTime>
-      <ZoomEndTime time="16.442501 us"></ZoomEndTime>
-      <Cursor1Time time="25.000000 us"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="19.043842 us"></ZoomEndTime>
+      <Cursor1Time time="5.000000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="243"></NameColumnWidth>
-      <ValueColumnWidth column_width="68"></ValueColumnWidth>
+      <NameColumnWidth column_width="241"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="20" />
+   <WVObjectSize size="21" />
    <wvobject type="logic" fp_name="/sim_computer/clock">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_in">
+      <obj_property name="ElementShortName">data_in[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[7:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/sim_computer/address_bus">
       <obj_property name="ElementShortName">address_bus[15:0]</obj_property>
@@ -32,57 +36,17 @@
       <obj_property name="ElementShortName">address_bus_source[1:0]</obj_property>
       <obj_property name="ObjectShortName">address_bus_source[1:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/sim_computer/cpu/sync">
-      <obj_property name="ElementShortName">sync</obj_property>
-      <obj_property name="ObjectShortName">sync</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_in">
-      <obj_property name="ElementShortName">data_in[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_in[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus_source">
-      <obj_property name="ElementShortName">data_bus_source[3:0]</obj_property>
-      <obj_property name="ObjectShortName">data_bus_source[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_in_latched">
-      <obj_property name="ElementShortName">data_in_latched[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_in_latched[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_out">
-      <obj_property name="ElementShortName">data_out[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/sim_computer/data_bus_rW">
-      <obj_property name="ElementShortName">data_bus_rW</obj_property>
-      <obj_property name="ObjectShortName">data_bus_rW</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/sim_computer/RESET">
-      <obj_property name="ElementShortName">RESET</obj_property>
-      <obj_property name="ObjectShortName">RESET</obj_property>
-      <obj_property name="CustomSignalColor">#A52A2A</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus">
-      <obj_property name="ElementShortName">data_bus[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_bus[7:0]</obj_property>
-      <obj_property name="CustomSignalColor">#0000FF</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus_inputs">
-      <obj_property name="ElementShortName">data_bus_inputs[8:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_bus_inputs[8:0][7:0]</obj_property>
+   <wvobject type="array" fp_name="/sim_computer/cpu/pc/address">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">address[15:0]</obj_property>
+      <obj_property name="ObjectShortName">address[15:0]</obj_property>
+      <obj_property name="label">PC</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/sim_computer/cpu/decoder/timing_counter">
       <obj_property name="ElementShortName">timing_counter[3:0]</obj_property>
       <obj_property name="ObjectShortName">timing_counter[3:0]</obj_property>
       <obj_property name="CustomSignalColor">#FFFFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/pc/address">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">address[15:0]</obj_property>
-      <obj_property name="ObjectShortName">address[15:0]</obj_property>
-      <obj_property name="label">PC</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/sim_computer/cpu/register_accumulator/data">
       <obj_property name="DisplayName">label</obj_property>
@@ -108,14 +72,54 @@
       <obj_property name="ObjectShortName">data[7:0]</obj_property>
       <obj_property name="label">Reg S</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus">
+      <obj_property name="ElementShortName">data_bus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_bus[7:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus_inputs">
+      <obj_property name="ElementShortName">data_bus_inputs[8:0][7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_bus_inputs[8:0][7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus_source">
+      <obj_property name="ElementShortName">data_bus_source[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_bus_source[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_in_latched">
+      <obj_property name="ElementShortName">data_in_latched[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in_latched[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_out">
+      <obj_property name="ElementShortName">data_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/sim_computer/data_bus_rW">
+      <obj_property name="ElementShortName">data_bus_rW</obj_property>
+      <obj_property name="ObjectShortName">data_bus_rW</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/sim_computer/cpu/data_latch/data_out">
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">data_out[15:0]</obj_property>
       <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
       <obj_property name="label">Data Latch</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/decoder/data_latch_control">
-      <obj_property name="ElementShortName">data_latch_control[1:0]</obj_property>
-      <obj_property name="ObjectShortName">data_latch_control[1:0]</obj_property>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_latch_low_source">
+      <obj_property name="ElementShortName">data_latch_low_source[1:0]</obj_property>
+      <obj_property name="ObjectShortName">data_latch_low_source[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_latch_high_source">
+      <obj_property name="ElementShortName">data_latch_high_source[2:0]</obj_property>
+      <obj_property name="ObjectShortName">data_latch_high_source[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/sim_computer/cpu/sync">
+      <obj_property name="ElementShortName">sync</obj_property>
+      <obj_property name="ObjectShortName">sync</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/sim_computer/RESET">
+      <obj_property name="ElementShortName">RESET</obj_property>
+      <obj_property name="ObjectShortName">RESET</obj_property>
+      <obj_property name="CustomSignalColor">#A52A2A</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
 </wave_config>

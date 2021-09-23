@@ -32,8 +32,10 @@ module alu(
 
 always@(*)
 begin
+    status_out = 0;
+
     case(control)
-        `AluOp_pass:    do_pass();
+        `AluOp_pass:    result = a;
         `AluOp_add:     do_plus();
         `AluOp_and:     result = a & b;
         `AluOp_or:      result = a | b;
@@ -41,17 +43,10 @@ begin
         default:
             result = 8'bX;
     endcase
-end
 
-task do_pass();
-begin
-    result = a;
-    
-    status_out = 0;
     status_out[`Flags_Zero] = result==0;
     status_out[`Flags_Neg] = result[7];
 end
-endtask
 
 reg [8:0]intermediate_result;
 
@@ -60,15 +55,12 @@ begin
     intermediate_result = a+b+carry_in;
     result = intermediate_result[7:0];
     
-    status_out = 0;
     status_out[`Flags_Carry] = intermediate_result[8];
-    status_out[`Flags_Zero] = result==0;
     
     if( a[7]==b[7] && a[7]!=result[7] )
         // Adding same sign integer resulted in opposite sign integer: must be an overflow
         status_out[`Flags_oVerflow] = 1;
 
-    status_out[`Flags_Neg] = result[7];
 end
 endtask
 

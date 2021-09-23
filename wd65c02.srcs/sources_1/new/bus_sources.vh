@@ -10,8 +10,28 @@
 `define DataBusSrc_Mem      8
 
 `define DataBusSrc__NumOptions 9
-
 `define DataBusSrc__NBits $clog2( `DataBusSrc__NumOptions )
+
+
+// Data latch low sources
+`define DllSrc_None         0
+`define DllSrc_DataIn       1
+`define DllSrc_AluRes       2
+
+`define DllSrc__NumOptions  3
+`define DllSrc__NBits $clog2( `DllSrc__NumOptions )
+
+
+// Data latch high sources
+`define DlhSrc_None         0
+`define DlhSrc_Zero         1
+`define DlhSrc_One          2
+`define DlhSrc_DataIn       3
+`define DlhSrc_AluRes       4
+
+`define DlhSrc__NumOptions  5
+`define DlhSrc__NBits $clog2( `DlhSrc__NumOptions )
+
 
 `define AddrBusSrc_Pc       0
 `define AddrBusSrc_Dl       1
@@ -20,14 +40,22 @@
 `define AddrBusSrc__NumOptions 3
 `define AddrBusSrc__NBits $clog2( `AddrBusSrc__NumOptions )
 
-`define AluBusSrc_Acc       0
-`define AluBusSrc_RegX      1
-`define AluBusSrc_RegY      2
-`define AluBusSrc_RegS      3
-`define AluBusSrc_DlLow     4
-`define AluBusSrc_DlHigh    5
-`define AluBusSrc_PcLow     6
-`define AluBusSrc_PcHigh    7
 
-`define AluBusSrc__NumOptions 8
-`define AluBusSrc__NBits $clog2( `AluBusSrc__NumOptions )
+`define AluInSrc_Acc       0
+`define AluInSrc_RegX      1
+`define AluInSrc_RegY      2
+//`define AluInSrc_RegS      3
+`define AluInSrc_DlLow     3
+`define AluInSrc_DlHigh    4
+`define AluInSrc_PcLow     5
+`define AluInSrc_PcHigh    6
+
+`define AluInSrc__NumOptions 7
+`define AluInSrc__NBits $clog2( `AluInSrc__NumOptions )
+
+
+`define AluCarryIn_Zero         0
+`define AluCarryIn_One          1
+
+`define AluCarryIn__NumOptions  2
+`define AluCarryIn__NBits $clog2( `AluCarryIn__NumOptions )

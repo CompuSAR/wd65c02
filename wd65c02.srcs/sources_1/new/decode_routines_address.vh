@@ -23,6 +23,7 @@ task fetch_operand();
 begin
     case(active_address_resolution)
     `Addr_abs: do_addr_abs();
+    `Addr_abs_x: do_addr_abs_x();
     `Addr_zp: do_addr_zp();
     default: begin end
     endcase
@@ -35,7 +36,7 @@ begin
     active_address_resolution <= `Addr_abs;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source = `AddrBusSrc_Pc;
-    data_latch_control = `DataLatch_LoadLowHiZero;
+    data_latch_ctl_low = `DllSrc_DataIn;
 end
 endtask
 
@@ -44,7 +45,7 @@ begin
     if( timing_counter==1 ) begin
         control_signals[`CtlSig_PcAdvance] <= 1;
         address_bus_source = `AddrBusSrc_Pc;
-        data_latch_control = `DataLatch_LoadHi;
+        data_latch_ctl_high = `DlhSrc_DataIn;
     end else begin
         address_bus_source = `AddrBusSrc_Dl;
 
@@ -59,8 +60,36 @@ task setup_addr_abs_x_ind();
 endtask
 
 task setup_addr_abs_x();
+begin
     // Absolute + X: a,x
-    // TODO implement
+    active_address_resolution <= `Addr_abs_x;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source = `AddrBusSrc_Pc;
+    data_bus_source = `DataBusSrc_Mem;
+    data_latch_ctl_low = `DllSrc_DataIn;
+end
+endtask
+
+task do_addr_abs_x();
+begin
+    if( timing_counter==1 ) begin
+        // Load address MSB
+        control_signals[`CtlSig_PcAdvance] <= 1;
+        address_bus_source = `AddrBusSrc_Pc;
+        data_latch_ctl_high = `DlhSrc_DataIn;
+        
+        // Add X to LSB
+        data_bus_source = `DataBusSrc_RegX;
+        alu_in_bus_src = `AluInSrc_Acc;
+        alu_op = `AluOp_add; // XXX Should this be blocking or non?
+        alu_carry_src = `AluCarryIn_Zero;
+        data_latch_ctl_low = `DllSrc_AluRes;
+    end else begin
+        address_bus_source = `AddrBusSrc_Dl;
+
+        active_address_resolution <= `Addr_invalid; // Last address cycle
+    end
+end
 endtask
 
 task setup_addr_abs_y();
@@ -109,7 +138,8 @@ begin
     active_address_resolution <= `Addr_zp;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source = `AddrBusSrc_Pc;
-    data_latch_control = `DataLatch_LoadLowHiZero;
+    data_latch_ctl_high = `DlhSrc_Zero;
+    data_latch_ctl_low = `DllSrc_DataIn;
 end
 endtask
 

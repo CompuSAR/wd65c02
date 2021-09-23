@@ -19,26 +19,20 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "control_signals.vh"
-
 module input_data_latch(
-    input [7:0] data_in,
-    output reg [15:0] data_out,
+    input [7:0] data_in_low,
+    input data_in_low_enable,
+    input [7:0] data_in_high,
+    input data_in_high_enable,
     input clock,
-    input [`DataLatch__NBits-1:0] control
+    output reg [15:0] data_out
     );
 
 always@(posedge clock) begin
-    case(control)
-    `DataLatch_Nop: ;
-    `DataLatch_LoadHi: begin
-        data_out[15:8] <= data_in;
-    end
-    `DataLatch_LoadLowHiZero:
-        data_out <= {8'b0, data_in};
-    `DataLatch_LoadLowHiOne:
-        data_out <= {7'b0, 1'b1, data_in};
-    endcase
+    if( data_in_low_enable )
+        data_out[7:0] = data_in_low;
+    if( data_in_high_enable )
+        data_out[15:8] = data_in_high;
 end
 
 endmodule

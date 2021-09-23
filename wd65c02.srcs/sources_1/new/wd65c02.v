@@ -65,8 +65,8 @@ assign address_bus = address_bus_inputs[address_bus_source];
 assign address = address_bus;
 
 wire [7:0]alu_bus;
-wire [`AluBusSrc__NBits-1:0]alu_bus_source;
-wire [7:0]alu_bus_inputs[`AluBusSrc__NumOptions-1:0];
+wire [`AluInSrc__NBits-1:0]alu_bus_source;
+wire [7:0]alu_bus_inputs[`AluInSrc__NumOptions-1:0];
 
 assign alu_bus = alu_bus_inputs[alu_bus_source];
 
@@ -123,29 +123,70 @@ latch#(.NBits(16)) pc_latch(.in(pc_value), .out(address_bus_inputs[`AddrBusSrc_P
 assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
 assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
 
-wire [`DataLatch__NBits-1:0]data_latch_control;
+wire [7:0]data_latch_low_inputs[`DllSrc__NumOptions-1:0];
+wire [`DllSrc__NBits-1:0]data_latch_low_source;
+wire [7:0]data_latch_high_inputs[`DlhSrc__NumOptions-1:0];
+wire [`DlhSrc__NBits-1:0]data_latch_high_source;
 input_data_latch data_latch(
-    .data_in( data_in ),
-    .data_out( address_bus_inputs[`AddrBusSrc_Dl] ),
-    .clock(~phi2),
-    .control( data_latch_control )
+    .data_in_low( data_latch_low_inputs[data_latch_low_source] ),
+    .data_in_low_enable( data_latch_low_source!=`DllSrc_None ),
+    .data_in_high( data_latch_high_inputs[data_latch_high_source] ),
+    .data_in_high_enable( data_latch_high_source!=`DlhSrc_None ),
+    .clock(phi2),
+    .data_out( address_bus_inputs[`AddrBusSrc_Dl] )
 );
 
+wire [7:0]alu_result;
+
+assign data_latch_low_inputs[`DllSrc_None] = 8'bX;
+assign data_latch_low_inputs[`DllSrc_DataIn] = data_in;
+assign data_latch_low_inputs[`DllSrc_AluRes] = alu_result;
+
+assign data_latch_high_inputs[`DlhSrc_None] = 8'bX;
+assign data_latch_high_inputs[`DlhSrc_Zero] = 8'd0;
+assign data_latch_high_inputs[`DlhSrc_One] = 8'd1;
+assign data_latch_high_inputs[`DlhSrc_DataIn] = data_in;
+assign data_latch_high_inputs[`DlhSrc_AluRes] = alu_result;
+
+wire alu_carry_inputs[`AluCarryIn__NumOptions-1:0];
+wire [`AluCarryIn__NBits-1:0]alu_carry_source;
+wire [`AluOp__NBits-1:0]alu_control;
+wire [7:0]alu_status;
 alu alu(
     .a(alu_bus),
     .b(control_signals[`CtlSig_AluInverse] ? ~data_bus : data_bus),
-    .result(data_bus_inputs[`DataBusSrc_ALU]),
-    .control()
+    .result(alu_result),
+    .carry_in(alu_carry_inputs[alu_carry_source]),
+    .control(alu_control),
+    .status_out(alu_status)
 );
+assign data_bus_inputs[`DataBusSrc_ALU] = alu_result;
+
+assign alu_bus_inputs[`AluInSrc_Acc] = data_bus_inputs[`DataBusSrc_RegAcc];
+assign alu_bus_inputs[`AluInSrc_RegX] = data_bus_inputs[`DataBusSrc_RegX];
+assign alu_bus_inputs[`AluInSrc_RegY] = data_bus_inputs[`DataBusSrc_RegY];
+assign alu_bus_inputs[`AluInSrc_DlLow] = address_bus_inputs[`AddrBusSrc_Dl][7:0];
+assign alu_bus_inputs[`AluInSrc_DlHigh] = address_bus_inputs[`AddrBusSrc_Dl][15:8];
+assign alu_bus_inputs[`AluInSrc_PcLow] = pc_value[7:0];
+assign alu_bus_inputs[`AluInSrc_PcHigh] = pc_value[15:8];
+
+assign alu_carry_inputs[`AluCarryIn_Zero] = 1'b0;
+assign alu_carry_inputs[`AluCarryIn_One] = 1'b1;
 
 instruction_decode decoder(
     .data_in(data_in),
     .clock(phi2),
     .RESET(RES),
+//        input [7:0]status_register,
+    .alu_carry(alu_status[`Flags_Carry]),
     .control_signals(control_signals),
-    .data_latch_control(data_latch_control),
+    .data_latch_ctl_low(data_latch_low_source),
+    .data_latch_ctl_high(data_latch_high_source),
     .data_bus_source(data_bus_source),
-    .address_bus_source(address_bus_source)
+    .address_bus_source(address_bus_source),
+    .alu_in_bus_src(alu_bus_source),
+    .alu_op(alu_control),
+    .alu_carry_src(alu_carry_source)
 );
 
 always@(posedge phi2) begin

@@ -29,9 +29,13 @@ module instruction_decode(
         input [7:0]status_register,
         input alu_carry,
         output reg [`CtlSig__NumSignals-1:0]control_signals,
-        output reg [`DataLatch__NBits-1:0]data_latch_control,
+        output reg [`DlhSrc__NBits-1:0]data_latch_ctl_high,
+        output reg [`DllSrc__NBits-1:0]data_latch_ctl_low,
         output reg [`DataBusSrc__NBits-1:0]data_bus_source,
-        output reg [`AddrBusSrc__NBits-1:0]address_bus_source
+        output reg [`AddrBusSrc__NBits-1:0]address_bus_source,
+        output reg [`AluInSrc__NBits-1:0]alu_in_bus_src,
+        output reg [`AluOp__NBits-1:0]alu_op,
+        output reg [`AluCarryIn__NBits-1:0]alu_carry_src
     );
 
 `include "decode_routines_address.vh"
@@ -75,9 +79,14 @@ endtask
 task clear_signals();
 begin
     control_signals <= {`CtlSig__NumSignals{1'b0}};
-    data_bus_source = {`DataBusSrc__NumOptions{1'b0}};
-    address_bus_source = {`AddrBusSrc__NumOptions{1'b0}};
-    data_latch_control = `DataLatch_Nop;
+    data_latch_ctl_high <= `DlhSrc_None;
+    data_latch_ctl_low <= `DllSrc_None;
+
+    data_bus_source = {`DataBusSrc__NBits{1'bX}};
+    address_bus_source = `AddrBusSrc_Pc;
+    alu_in_bus_src <= {`AluInSrc__NBits{1'bX}};
+    alu_op <= {`AluOp__NBits{1'bX}};
+    alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
 end
 endtask
 
@@ -623,8 +632,8 @@ begin
     end
     */
     8'ha2: begin
-        setup_addr_imm();
         active_op <= `Op_ldx;
+        setup_addr_imm();
     end
     /*
     8'ha4: begin
@@ -721,10 +730,12 @@ begin
         setup_addr_abs_x();
         active_op <= `Op_ldy;
     end
+    */
     8'hbd: begin
-        setup_addr_abs_x();
         active_op <= `Op_lda;
+        setup_addr_abs_x();
     end
+    /*
     8'hbe: begin
         setup_addr_abs_x();
         active_op <= `Op_ldx;
