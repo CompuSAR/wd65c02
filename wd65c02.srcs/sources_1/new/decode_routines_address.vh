@@ -36,7 +36,7 @@ begin
     active_address_resolution <= `Addr_abs;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source = `AddrBusSrc_Pc;
-    data_latch_ctl_low = `DllSrc_DataIn;
+    data_latch_ctl_low <= `DllSrc_DataIn;
 end
 endtask
 
@@ -45,7 +45,7 @@ begin
     if( timing_counter==1 ) begin
         control_signals[`CtlSig_PcAdvance] <= 1;
         address_bus_source = `AddrBusSrc_Pc;
-        data_latch_ctl_high = `DlhSrc_DataIn;
+        data_latch_ctl_high <= `DlhSrc_DataIn;
     end else begin
         address_bus_source = `AddrBusSrc_Dl;
 
@@ -66,7 +66,7 @@ begin
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source = `AddrBusSrc_Pc;
     data_bus_source = `DataBusSrc_Mem;
-    data_latch_ctl_low = `DllSrc_DataIn;
+    data_latch_ctl_low <= `DllSrc_DataIn;
 end
 endtask
 
@@ -76,14 +76,14 @@ begin
         // Load address MSB
         control_signals[`CtlSig_PcAdvance] <= 1;
         address_bus_source = `AddrBusSrc_Pc;
-        data_latch_ctl_high = `DlhSrc_DataIn;
+        data_latch_ctl_high <= `DlhSrc_DataIn;
         
         // Add X to LSB
         data_bus_source = `DataBusSrc_RegX;
-        alu_in_bus_src = `AluInSrc_Acc;
-        alu_op = `AluOp_add; // XXX Should this be blocking or non?
-        alu_carry_src = `AluCarryIn_Zero;
-        data_latch_ctl_low = `DllSrc_AluRes;
+        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_op <= `AluOp_add;
+        alu_carry_src <= `AluCarryIn_Zero;
+        data_latch_ctl_low <= `DllSrc_AluRes;
     end else begin
         address_bus_source = `AddrBusSrc_Dl;
 
@@ -138,8 +138,8 @@ begin
     active_address_resolution <= `Addr_zp;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source = `AddrBusSrc_Pc;
-    data_latch_ctl_high = `DlhSrc_Zero;
-    data_latch_ctl_low = `DllSrc_DataIn;
+    data_latch_ctl_high <= `DlhSrc_Zero;
+    data_latch_ctl_low <= `DllSrc_DataIn;
 end
 endtask
 
