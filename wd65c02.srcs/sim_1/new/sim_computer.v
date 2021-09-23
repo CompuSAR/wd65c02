@@ -20,9 +20,24 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module sim_computer(
+module sim_computer();
 
-    );
+// Timing parameters for 14Mhz operation
+localparam tACC = 30;       // Access time (min)
+localparam tAH = 10;        // Address hold time (min)
+localparam tADS = 30;       // Address setup time (max)
+localparam tBVD = 25;       // BE to valid data (max)
+localparam tPWH = 35;       // Clock pulse width high (min)
+localparam tPWL = 35;       // Clock pulse width low (min)
+localparam tCYC = 70;       // Cycle time (min)
+localparam tF = 5;          // Fall time (max)
+localparam tR = 5;          // Rise time (max)
+localparam tPCH = 10;       // Processor control hold time (min)
+localparam tPCS = 10;       // Processor control setup time (min)
+localparam tDHR = 10;       // Read data hold time (min)
+localparam tDSR = 10;       // Read data setup time (min)
+localparam tMDS = 25;       // Write data delay time (max)
+localparam tDHW = 10;       // Write data hold time (min)
 
 wire [15:0]address_bus;
 wire [7:0]data_bus_out;
@@ -30,11 +45,12 @@ wire data_bus_rW;
 
 reg clock;
 reg RESET;
+reg [7:0]data_bus_in;
 
 wd65c02 cpu(
     .address(address_bus),
     .data_out(data_bus_out),
-    .data_in(memory[address_bus]),
+    .data_in(data_bus_in),
     .IRQ(1'b1),
     .NMI(1'b1),
     .phi2(clock),
@@ -47,10 +63,10 @@ reg [7:0]memory[65535:0];
 
 initial begin
     memory[16'h0000] = 8'hea; // NOP
-    memory[16'h0001] = 8'ha9; // LDA #$75
-    memory[16'h0002] = 8'h75;
-    memory[16'h0003] = 8'ha9; // LDA #$2a
-    memory[16'h0004] = 8'h2a;
+    memory[16'h0001] = 8'ha9; // LDA #$01
+    memory[16'h0002] = 8'h01;
+    memory[16'h0003] = 8'ha9; // LDA #$03
+    memory[16'h0004] = 8'h03;
     memory[16'h0005] = 8'ha5; // LDA $a9
     memory[16'h0006] = 8'ha9;
     memory[16'h0007] = 8'hea; // NOP
@@ -82,11 +98,17 @@ initial begin
     memory[16'h3842] = 8'h14; // Command at address 14 should load this value
     memory[16'h8623] = 8'h08; // Command at address 8 should load this value
     memory[16'hffb1] = 8'hXX; // Command at adderss 17 should NOT load this value
-    
+end
+
+initial begin    
     clock = 0;
     
-    forever
-        #500 clock = ~clock;
+    forever begin
+        #tDHR data_bus_in = 8'bX;
+        #(tPWL-tDHR) clock = 1;
+        #(tPWH-tDSR) data_bus_in=memory[address_bus];
+        #tDSR clock = 0;
+    end
 end
 
 initial begin

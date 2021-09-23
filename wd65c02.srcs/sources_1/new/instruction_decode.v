@@ -79,8 +79,8 @@ endtask
 task clear_signals();
 begin
     control_signals <= {`CtlSig__NumSignals{1'b0}};
-    data_latch_ctl_high <= `DlhSrc_None;
-    data_latch_ctl_low <= `DllSrc_None;
+    data_latch_ctl_high = `DlhSrc_None;
+    data_latch_ctl_low = `DllSrc_None;
 
     data_bus_source = {`DataBusSrc__NBits{1'bX}};
     address_bus_source = `AddrBusSrc_Pc;
