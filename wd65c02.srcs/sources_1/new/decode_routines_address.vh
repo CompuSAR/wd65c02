@@ -79,11 +79,18 @@ begin
         data_latch_ctl_high <= `DlhSrc_DataIn;
         
         // Add X to LSB
-        data_bus_source = `DataBusSrc_RegX;
         alu_in_bus_src <= `AluInSrc_DlLow;
+        data_bus_source = `DataBusSrc_RegX;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_Zero;
         data_latch_ctl_low <= `DllSrc_AluRes;
+    end else if( timing_counter==2 && alu_carry ) begin
+        // Adding X transitioned a page
+        alu_in_bus_src <= `AluInSrc_DlHigh;
+        data_bus_source = `DataBusSrc_Zeros;
+        alu_op <= `AluOp_add;
+        alu_carry_src <= `AluCarryIn_One;
+        data_latch_ctl_high <= `DlhSrc_AluRes;
     end else begin
         address_bus_source = `AddrBusSrc_Dl;
 

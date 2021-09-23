@@ -64,9 +64,16 @@ initial begin
     memory[16'h000f] = 8'h81;
     memory[16'h0010] = 8'h37;
     memory[16'h0011] = 8'hea; // NOP
+    memory[16'h0012] = 8'ha2; // LDX #$c1
+    memory[16'h0013] = 8'hc1;
+    memory[16'h0014] = 8'hbd; // LDA $3781,x
+    memory[16'h0015] = 8'h81;
+    memory[16'h0016] = 8'h37;
+    memory[16'h0011] = 8'hea; // NOP
 
     memory[16'h00a9] = 8'h17; // Command at adderss 5 should load this value
     memory[16'h3785] = 8'h9c; // Command at address e should load this value
+    memory[16'h3842] = 8'h42; // Command at address 14 should load this value
     memory[16'h8623] = 8'hf2; // Command at address 8 should load this value
     
     clock = 0;

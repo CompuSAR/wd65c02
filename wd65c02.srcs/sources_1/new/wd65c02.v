@@ -76,8 +76,6 @@ assign sync = control_signals[`CtlSig_sync];
 assign waitP = control_signals[`CtlSig_halted];
 assign rW = ~control_signals[`CtlSig_write];
 
-assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
-
 register register_y(
     .data_in(data_bus),
     .data_out(data_bus_inputs[`DataBusSrc_RegY]),
@@ -120,33 +118,22 @@ program_counter pc(
     .RESET(RES)
 );
 latch#(.NBits(16)) pc_latch(.in(pc_value), .out(address_bus_inputs[`AddrBusSrc_Pc]), .clock(~phi2));
-assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
-assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
 
 wire [7:0]data_latch_low_inputs[`DllSrc__NumOptions-1:0];
 wire [`DllSrc__NBits-1:0]data_latch_low_source;
 wire [7:0]data_latch_high_inputs[`DlhSrc__NumOptions-1:0];
 wire [`DlhSrc__NBits-1:0]data_latch_high_source;
+wire [15:0]data_latch_value;
 input_data_latch data_latch(
     .data_in_low( data_latch_low_inputs[data_latch_low_source] ),
     .data_in_low_enable( data_latch_low_source!=`DllSrc_None ),
     .data_in_high( data_latch_high_inputs[data_latch_high_source] ),
     .data_in_high_enable( data_latch_high_source!=`DlhSrc_None ),
     .clock(phi2),
-    .data_out( address_bus_inputs[`AddrBusSrc_Dl] )
+    .data_out( data_latch_value )
 );
 
 wire [7:0]alu_result;
-
-assign data_latch_low_inputs[`DllSrc_None] = 8'bX;
-assign data_latch_low_inputs[`DllSrc_DataIn] = data_in;
-assign data_latch_low_inputs[`DllSrc_AluRes] = alu_result;
-
-assign data_latch_high_inputs[`DlhSrc_None] = 8'bX;
-assign data_latch_high_inputs[`DlhSrc_Zero] = 8'd0;
-assign data_latch_high_inputs[`DlhSrc_One] = 8'd1;
-assign data_latch_high_inputs[`DlhSrc_DataIn] = data_in;
-assign data_latch_high_inputs[`DlhSrc_AluRes] = alu_result;
 
 wire alu_carry_inputs[`AluCarryIn__NumOptions-1:0];
 wire [`AluCarryIn__NBits-1:0]alu_carry_source;
@@ -160,18 +147,6 @@ alu alu(
     .control(alu_control),
     .status_out(alu_status)
 );
-assign data_bus_inputs[`DataBusSrc_ALU] = alu_result;
-
-assign alu_bus_inputs[`AluInSrc_Acc] = data_bus_inputs[`DataBusSrc_RegAcc];
-assign alu_bus_inputs[`AluInSrc_RegX] = data_bus_inputs[`DataBusSrc_RegX];
-assign alu_bus_inputs[`AluInSrc_RegY] = data_bus_inputs[`DataBusSrc_RegY];
-assign alu_bus_inputs[`AluInSrc_DlLow] = address_bus_inputs[`AddrBusSrc_Dl][7:0];
-assign alu_bus_inputs[`AluInSrc_DlHigh] = address_bus_inputs[`AddrBusSrc_Dl][15:8];
-assign alu_bus_inputs[`AluInSrc_PcLow] = pc_value[7:0];
-assign alu_bus_inputs[`AluInSrc_PcHigh] = pc_value[15:8];
-
-assign alu_carry_inputs[`AluCarryIn_Zero] = 1'b0;
-assign alu_carry_inputs[`AluCarryIn_One] = 1'b1;
 
 instruction_decode decoder(
     .data_in(data_in),
@@ -196,5 +171,34 @@ end
 always@(negedge phi2) begin
     data_in_latched <= data_in;
 end
+
+assign data_bus_inputs[`DataBusSrc_Zeros] = 8'b0;
+assign data_bus_inputs[`DataBusSrc_ALU] = alu_result;
+assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
+assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
+assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
+
+assign address_bus_inputs[`AddrBusSrc_Dl] = data_latch_value;
+
+assign alu_bus_inputs[`AluInSrc_Acc] = data_bus_inputs[`DataBusSrc_RegAcc];
+assign alu_bus_inputs[`AluInSrc_RegX] = data_bus_inputs[`DataBusSrc_RegX];
+assign alu_bus_inputs[`AluInSrc_RegY] = data_bus_inputs[`DataBusSrc_RegY];
+assign alu_bus_inputs[`AluInSrc_DlLow] = data_latch_value[7:0];
+assign alu_bus_inputs[`AluInSrc_DlHigh] = data_latch_value[15:8];
+assign alu_bus_inputs[`AluInSrc_PcLow] = pc_value[7:0];
+assign alu_bus_inputs[`AluInSrc_PcHigh] = pc_value[15:8];
+
+assign data_latch_low_inputs[`DllSrc_None] = 8'bX;
+assign data_latch_low_inputs[`DllSrc_DataIn] = data_in;
+assign data_latch_low_inputs[`DllSrc_AluRes] = alu_result;
+
+assign data_latch_high_inputs[`DlhSrc_None] = 8'bX;
+assign data_latch_high_inputs[`DlhSrc_Zero] = 8'd0;
+assign data_latch_high_inputs[`DlhSrc_One] = 8'd1;
+assign data_latch_high_inputs[`DlhSrc_DataIn] = data_in;
+assign data_latch_high_inputs[`DlhSrc_AluRes] = alu_result;
+
+assign alu_carry_inputs[`AluCarryIn_Zero] = 1'b0;
+assign alu_carry_inputs[`AluCarryIn_One] = 1'b1;
 
 endmodule
