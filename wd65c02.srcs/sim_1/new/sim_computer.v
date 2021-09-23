@@ -69,12 +69,19 @@ initial begin
     memory[16'h0014] = 8'hbd; // LDA $3781,x
     memory[16'h0015] = 8'h81;
     memory[16'h0016] = 8'h37;
-    memory[16'h0011] = 8'hea; // NOP
+    memory[16'h0017] = 8'hbd; // LDA $fff0,x
+    memory[16'h0018] = 8'hf0;
+    memory[16'h0019] = 8'hff;
+    memory[16'h001a] = 8'hea; // NOP
 
-    memory[16'h00a9] = 8'h17; // Command at adderss 5 should load this value
-    memory[16'h3785] = 8'h9c; // Command at address e should load this value
-    memory[16'h3842] = 8'h42; // Command at address 14 should load this value
-    memory[16'h8623] = 8'hf2; // Command at address 8 should load this value
+    memory[16'h00b1] = 8'h17; // Command at adderss 17 should load this value
+    memory[16'h00a9] = 8'h05; // Command at adderss 5 should load this value
+    memory[16'h01b1] = 8'hXX; // Command at adderss 17 should NOT load this value
+    memory[16'h3785] = 8'h0e; // Command at address e should load this value
+    memory[16'h3742] = 8'hXX; // Command at address 14 should NOT load this value
+    memory[16'h3842] = 8'h14; // Command at address 14 should load this value
+    memory[16'h8623] = 8'h08; // Command at address 8 should load this value
+    memory[16'hffb1] = 8'hXX; // Command at adderss 17 should NOT load this value
     
     clock = 0;
     
