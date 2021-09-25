@@ -1,0 +1,38 @@
+ea // 0000: NOP
+ea // 0001: NOP
+ea // 0002: NOP
+a9 // 0003: LDA #$03
+03
+a9 // 0005: LDA #$05
+05
+a5 // 0007: LDA $a9
+a9
+ea // 0009: NOP
+ad // 000a: LDA $8623
+23
+86
+ea // 000d: NOP
+a2 // 000e: LDX #$4
+04
+bd // 0010: LDA $3781,x
+81
+37
+ea // 0013: NOP
+a2 // 0014: LDX #$c1
+c1
+bd // 0016: LDA $3781,x
+81
+37
+bd // 0019: LDA $fff0,x
+f0
+ff
+ea // 001c: NOP
+
+@00b1 19 // Command at adderss 19 should load this value
+@00a9 07 // Command at adderss 7 should load this value
+@01b1 XX // Command at adderss 19 should NOT load this value
+@3785 11 // Command at address 11 should load this value
+@3742 XX // Command at address 16 should NOT load this value
+@3842 16 // Command at address 16 should load this value
+@8623 0a // Command at address a should load this value
+@ffb1 XX // Command at adderss 18 should NOT load this value

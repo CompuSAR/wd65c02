@@ -72,16 +72,12 @@ assign alu_bus = alu_bus_inputs[alu_bus_source];
 
 wire [`CtlSig__NumSignals-1:0] control_signals;
 
-assign sync = control_signals[`CtlSig_sync];
-assign waitP = control_signals[`CtlSig_halted];
-assign rW = ~control_signals[`CtlSig_write];
-
 register register_y(
     .data_in(data_bus),
     .data_out(data_bus_inputs[`DataBusSrc_RegY]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegYWrite]),
-    .bReset(1)
+    .bReset(1'b1)
 );
 
 register register_x(
@@ -89,15 +85,16 @@ register register_x(
     .data_out(data_bus_inputs[`DataBusSrc_RegX]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegXWrite]),
-    .bReset(1)
+    .bReset(1'b1)
 );
 
+wire [7:0]register_s_value;
 register register_s(
     .data_in(data_bus),
-    .data_out(data_bus_inputs[`DataBusSrc_RegS]),
+    .data_out(register_s_value),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegSWrite]),
-    .bReset(1)
+    .bReset(1'b1)
 );
 
 register register_accumulator(
@@ -105,7 +102,7 @@ register register_accumulator(
     .data_out(data_bus_inputs[`DataBusSrc_RegAcc]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegAccWrite]),
-    .bReset(1)
+    .bReset(1'b1)
 );
 
 wire [15:0]pc_value;
@@ -172,7 +169,12 @@ always@(negedge phi2) begin
     data_in_latched <= data_in;
 end
 
+assign sync = control_signals[`CtlSig_sync];
+assign waitP = control_signals[`CtlSig_halted];
+assign rW = ~control_signals[`CtlSig_write];
+
 assign data_bus_inputs[`DataBusSrc_Zeros] = 8'b0;
+assign data_bus_inputs[`DataBusSrc_RegS] = register_s_value;
 assign data_bus_inputs[`DataBusSrc_ALU] = alu_result;
 assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
 assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
