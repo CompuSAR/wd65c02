@@ -35,7 +35,7 @@
 `include "control_signals.vh"
 
 module wd65c02(
-    output [15:0]address,
+    output reg [15:0]address,
     output reg [7:0]data_out,
     input [7:0] data_in,
     input IRQ,
@@ -58,11 +58,12 @@ assign data_bus = data_bus_inputs[data_bus_source];
 reg [7:0]data_in_latched;
 
 wire [15:0]address_bus;
-wire [`AddrBusSrc__NBits-1:0]address_bus_source;
-wire [15:0]address_bus_inputs[`AddrBusSrc__NumOptions-1:0];
+wire [`AddrBusLowSrc__NBits-1:0]address_bus_low_source;
+wire [7:0]address_bus_low_inputs[`AddrBusLowSrc__NumOptions-1:0];
+wire [`AddrBusHighSrc__NBits-1:0]address_bus_high_source;
+wire [7:0]address_bus_high_inputs[`AddrBusHighSrc__NumOptions-1:0];
 
-assign address_bus = address_bus_inputs[address_bus_source];
-assign address = address_bus;
+assign address_bus = {address_bus_high_inputs[address_bus_high_source], address_bus_low_inputs[address_bus_low_source]};
 
 wire [7:0]alu_bus;
 wire [`AluInSrc__NBits-1:0]alu_bus_source;
@@ -81,7 +82,7 @@ register register_y(
     .data_out(data_bus_inputs[`DataBusSrc_RegY]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegYWrite]),
-    .bReset(1)
+    .bReset(1'b1)
 );
 
 register register_x(
@@ -89,15 +90,16 @@ register register_x(
     .data_out(data_bus_inputs[`DataBusSrc_RegX]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegXWrite]),
-    .bReset(1)
+    .bReset(1'b1)
 );
 
+wire [7:0]register_s_value;
 register register_s(
     .data_in(data_bus),
-    .data_out(data_bus_inputs[`DataBusSrc_RegS]),
+    .data_out(register_s_value),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegSWrite]),
-    .bReset(1)
+    .bReset(1'b1)
 );
 
 register register_accumulator(
@@ -105,7 +107,7 @@ register register_accumulator(
     .data_out(data_bus_inputs[`DataBusSrc_RegAcc]),
     .clock(phi2),
     .write_enable(control_signals[`CtlSig_RegAccWrite]),
-    .bReset(1)
+    .bReset(1'b1)
 );
 
 wire [15:0]pc_value;
@@ -117,7 +119,6 @@ program_counter pc(
     .clock(phi2),
     .RESET(RES)
 );
-latch#(.NBits(16)) pc_latch(.in(pc_value), .out(address_bus_inputs[`AddrBusSrc_Pc]), .clock(~phi2));
 
 wire [7:0]data_latch_low_inputs[`DllSrc__NumOptions-1:0];
 wire [`DllSrc__NBits-1:0]data_latch_low_source;
@@ -158,7 +159,8 @@ instruction_decode decoder(
     .data_latch_ctl_low(data_latch_low_source),
     .data_latch_ctl_high(data_latch_high_source),
     .data_bus_source(data_bus_source),
-    .address_bus_source(address_bus_source),
+    .address_bus_low_source(address_bus_low_source),
+    .address_bus_high_source(address_bus_high_source),
     .alu_in_bus_src(alu_bus_source),
     .alu_op(alu_control),
     .alu_carry_src(alu_carry_source)
@@ -170,15 +172,25 @@ end
 
 always@(negedge phi2) begin
     data_in_latched <= data_in;
+    
+    if( control_signals[`CtlSig_LatchAddrBus] )
+        address <= address_bus;
 end
 
 assign data_bus_inputs[`DataBusSrc_Zeros] = 8'b0;
+assign data_bus_inputs[`DataBusSrc_RegS] = register_s_value;
 assign data_bus_inputs[`DataBusSrc_ALU] = alu_result;
-assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
-assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
 assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
 
-assign address_bus_inputs[`AddrBusSrc_Dl] = data_latch_value;
+assign address_bus_low_inputs[`AddrBusLowSrc_Pc] = pc_value[7:0];
+assign address_bus_low_inputs[`AddrBusLowSrc_Dl] = data_latch_value[7:0];
+assign address_bus_low_inputs[`AddrBusLowSrc_Sp] = register_s_value;
+assign address_bus_low_inputs[`AddrBusLowSrc_DataIn] = data_in;
+
+assign address_bus_high_inputs[`AddrBusHighSrc_Zero] = 8'b0;
+assign address_bus_high_inputs[`AddrBusHighSrc_One] = 8'b1;
+assign address_bus_high_inputs[`AddrBusHighSrc_Pc] = pc_value[15:8];
+assign address_bus_high_inputs[`AddrBusHighSrc_Dl] = data_latch_value[15:8];
 
 assign alu_bus_inputs[`AluInSrc_Acc] = data_bus_inputs[`DataBusSrc_RegAcc];
 assign alu_bus_inputs[`AluInSrc_RegX] = data_bus_inputs[`DataBusSrc_RegX];

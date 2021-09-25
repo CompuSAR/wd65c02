@@ -3,9 +3,7 @@
 `define CtlSig_halted       1
 `define CtlSig_sync         2
 
-// Decoder internal signals
-//`define CtlSig_IrIn         3
-//`define CtlSig_OprandDone   4
+`define CtlSig_LatchAddrBus 3
 
 // CPU internal signals
 `define CtlSig_RegYWrite    5

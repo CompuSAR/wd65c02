@@ -102,11 +102,6 @@
 `define Op__Count 99
 `define Op__NBits $clog2(`Op__Count)
 
-task do_opcode_nop();
-    // Do... nothing
-    next_instruction();
-endtask
-
 task perform_instruction();
 begin
     case(active_op)
@@ -120,13 +115,19 @@ endtask
 task next_instruction();
 begin
     timing_counter <= 0;
-    address_bus_source = `AddrBusSrc_Pc;
+    address_bus_low_source = `AddrBusLowSrc_Pc;
+    address_bus_high_source = `AddrBusHighSrc_Pc;
     active_op <= `Op__invalid;
     control_signals[`CtlSig_PcAdvance] <= 1;
 
     control_signals[`CtlSig_sync] <= 1;
     control_signals[`CtlSig_write] <= 0;
 end
+endtask
+
+task do_opcode_nop();
+    // Do... nothing
+    next_instruction();
 endtask
 
 task do_opcode_lda();

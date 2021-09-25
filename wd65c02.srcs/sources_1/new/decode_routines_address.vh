@@ -35,8 +35,9 @@ begin
     // Absolute address: a
     active_address_resolution <= `Addr_abs;
     control_signals[`CtlSig_PcAdvance] <= 1;
-    address_bus_source = `AddrBusSrc_Pc;
-    data_latch_ctl_low = `DllSrc_DataIn;
+    address_bus_low_source = `AddrBusLowSrc_Pc;
+    address_bus_high_source = `AddrBusHighSrc_Pc;
+    data_latch_ctl_low <= `DllSrc_DataIn;
 end
 endtask
 
@@ -44,10 +45,10 @@ task do_addr_abs();
 begin
     if( timing_counter==1 ) begin
         control_signals[`CtlSig_PcAdvance] <= 1;
-        address_bus_source = `AddrBusSrc_Pc;
-        data_latch_ctl_high = `DlhSrc_DataIn;
+        data_latch_ctl_high <= `DlhSrc_DataIn;
     end else begin
-        address_bus_source = `AddrBusSrc_Dl;
+        address_bus_low_source = `AddrBusLowSrc_Dl;
+        address_bus_high_source = `AddrBusHighSrc_Dl;
 
         active_address_resolution <= `Addr_invalid; // Last address cycle
     end
@@ -64,9 +65,8 @@ begin
     // Absolute + X: a,x
     active_address_resolution <= `Addr_abs_x;
     control_signals[`CtlSig_PcAdvance] <= 1;
-    address_bus_source = `AddrBusSrc_Pc;
     data_bus_source = `DataBusSrc_Mem;
-    data_latch_ctl_low = `DllSrc_DataIn;
+    data_latch_ctl_low <= `DllSrc_DataIn;
 end
 endtask
 
@@ -75,24 +75,24 @@ begin
     if( timing_counter==1 ) begin
         // Load address MSB
         control_signals[`CtlSig_PcAdvance] <= 1;
-        address_bus_source = `AddrBusSrc_Pc;
-        data_latch_ctl_high = `DlhSrc_DataIn;
+        data_latch_ctl_high <= `DlhSrc_DataIn;
         
         // Add X to LSB
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source = `DataBusSrc_RegX;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_Zero;
-        data_latch_ctl_low = `DllSrc_AluRes;
+        data_latch_ctl_low <= `DllSrc_AluRes;
     end else if( timing_counter==2 && alu_carry ) begin
         // Adding X transitioned a page
         alu_in_bus_src <= `AluInSrc_DlHigh;
         data_bus_source = `DataBusSrc_Zeros;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_One;
-        data_latch_ctl_high = `DlhSrc_AluRes;
+        data_latch_ctl_high <= `DlhSrc_AluRes;
     end else begin
-        address_bus_source = `AddrBusSrc_Dl;
+        address_bus_low_source = `AddrBusLowSrc_Dl;
+        address_bus_high_source = `AddrBusHighSrc_Dl;
 
         active_address_resolution <= `Addr_invalid; // Last address cycle
     end
@@ -119,7 +119,6 @@ begin
     // Immediate: #
     active_address_resolution <= `Addr_invalid; // Only need this cycle
     control_signals[`CtlSig_PcAdvance] <= 1;
-    address_bus_source = `AddrBusSrc_Pc;
 end
 endtask
 
@@ -144,15 +143,13 @@ begin
     // Zero page: zp
     active_address_resolution <= `Addr_zp;
     control_signals[`CtlSig_PcAdvance] <= 1;
-    address_bus_source = `AddrBusSrc_Pc;
-    data_latch_ctl_high = `DlhSrc_Zero;
-    data_latch_ctl_low = `DllSrc_DataIn;
 end
 endtask
 
 task do_addr_zp();
 begin
-    address_bus_source = `AddrBusSrc_Dl;
+    address_bus_low_source = `AddrBusLowSrc_DataIn;
+    address_bus_high_source = `AddrBusHighSrc_Zero;
 
     active_address_resolution <= `Addr_invalid; // We're done
 end

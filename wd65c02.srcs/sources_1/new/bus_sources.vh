@@ -4,10 +4,8 @@
 `define DataBusSrc_RegS     3
 `define DataBusSrc_ALU      4
 `define DataBusSrc_RegAcc   5
-`define DataBusSrc_PCL      6
-`define DataBusSrc_PCH      7
 
-`define DataBusSrc_Mem      8
+`define DataBusSrc_Mem      6
 
 `define DataBusSrc__NumOptions 9
 `define DataBusSrc__NBits $clog2( `DataBusSrc__NumOptions )
@@ -33,12 +31,21 @@
 `define DlhSrc__NBits $clog2( `DlhSrc__NumOptions )
 
 
-`define AddrBusSrc_Pc       0
-`define AddrBusSrc_Dl       1
-`define AddrBusSrc_Sp       2
+`define AddrBusLowSrc_Pc        0
+`define AddrBusLowSrc_Dl        1
+`define AddrBusLowSrc_Sp        2
+`define AddrBusLowSrc_DataIn    3
 
-`define AddrBusSrc__NumOptions 3
-`define AddrBusSrc__NBits $clog2( `AddrBusSrc__NumOptions )
+`define AddrBusLowSrc__NumOptions 4
+`define AddrBusLowSrc__NBits $clog2( `AddrBusLowSrc__NumOptions )
+
+`define AddrBusHighSrc_Zero     0
+`define AddrBusHighSrc_One      1
+`define AddrBusHighSrc_Pc       2
+`define AddrBusHighSrc_Dl       3
+
+`define AddrBusHighSrc__NumOptions 4
+`define AddrBusHighSrc__NBits $clog2( `AddrBusHighSrc__NumOptions )
 
 
 `define AluInSrc_Acc       0
