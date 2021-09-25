@@ -24,6 +24,7 @@ begin
     case(active_address_resolution)
     `Addr_abs: do_addr_abs();
     `Addr_abs_x: do_addr_abs_x();
+    `Addr_abs_y: do_addr_abs_y();
     `Addr_zp: do_addr_zp();
     default: begin end
     endcase
@@ -100,8 +101,43 @@ end
 endtask
 
 task setup_addr_abs_y();
+begin
     // Absolute + Y: a,y
-    // TODO implement
+    active_address_resolution <= `Addr_abs_y;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source = `AddrBusSrc_Pc;
+    data_bus_source = `DataBusSrc_Mem;
+    data_latch_ctl_low = `DllSrc_DataIn;
+end
+endtask
+
+task do_addr_abs_y();
+begin
+    if( timing_counter==1 ) begin
+        // Load address MSB
+        control_signals[`CtlSig_PcAdvance] <= 1;
+        address_bus_source = `AddrBusSrc_Pc;
+        data_latch_ctl_high = `DlhSrc_DataIn;
+        
+        // Add X to LSB
+        alu_in_bus_src <= `AluInSrc_DlLow;
+        data_bus_source = `DataBusSrc_RegY;
+        alu_op <= `AluOp_add;
+        alu_carry_src <= `AluCarryIn_Zero;
+        data_latch_ctl_low = `DllSrc_AluRes;
+    end else if( timing_counter==2 && alu_carry ) begin
+        // Adding X transitioned a page
+        alu_in_bus_src <= `AluInSrc_DlHigh;
+        data_bus_source = `DataBusSrc_Zeros;
+        alu_op <= `AluOp_add;
+        alu_carry_src <= `AluCarryIn_One;
+        data_latch_ctl_high = `DlhSrc_AluRes;
+    end else begin
+        address_bus_source = `AddrBusSrc_Dl;
+
+        active_address_resolution <= `Addr_invalid; // Last address cycle
+    end
+end
 endtask
 
 task setup_addr_abs_ind();

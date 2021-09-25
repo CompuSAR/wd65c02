@@ -28,7 +28,10 @@ f0
 ff
 a0 // 001c: LDY #17
 17
-ea // 001e: NOP
+b9 // 001e: LDA $3820,y
+20
+38
+ea // 0021: NOP
 
 
 @00b1 19 // Command at adderss 19 should load this value
@@ -36,6 +39,7 @@ ea // 001e: NOP
 @01b1 XX // Command at adderss 19 should NOT load this value
 @3785 11 // Command at address 11 should load this value
 @3742 XX // Command at address 16 should NOT load this value
+@3837 1e // Command at address 1e should load this value
 @3842 16 // Command at address 16 should load this value
 @8623 0a // Command at address a should load this value
 @ffb1 XX // Command at adderss 18 should NOT load this value

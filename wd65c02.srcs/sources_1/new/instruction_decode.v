@@ -720,10 +720,12 @@ begin
         setup_addr_i();
         do_opcode_clv();
     end
+    */
     8'hb9: begin
-        setup_addr_abs_y();
         active_op <= `Op_lda;
+        setup_addr_abs_y();
     end
+    /*
     8'hba: begin
         setup_addr_i();
         do_opcode_tsx();
