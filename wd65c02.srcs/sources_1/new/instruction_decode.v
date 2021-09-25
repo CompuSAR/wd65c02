@@ -622,10 +622,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbs1;
     end
+    */
     8'ha0: begin
-        setup_addr_imm();
         active_op <= `Op_ldy;
+        setup_addr_imm();
     end
+    /*
     8'ha1: begin
         setup_addr_zpxi();
         active_op <= `Op_lda;
@@ -669,8 +671,8 @@ begin
         do_opcode_tax();
     end
     8'hac: begin
-        setup_addr_abs();
         active_op <= `Op_ldy;
+        setup_addr_abs();
     end
     */
     8'had: begin

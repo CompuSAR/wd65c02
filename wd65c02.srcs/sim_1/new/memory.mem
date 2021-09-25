@@ -26,7 +26,10 @@ bd // 0016: LDA $3781,x
 bd // 0019: LDA $fff0,x
 f0
 ff
-ea // 001c: NOP
+a0 // 001c: LDY #17
+17
+ea // 001e: NOP
+
 
 @00b1 19 // Command at adderss 19 should load this value
 @00a9 07 // Command at adderss 7 should load this value
