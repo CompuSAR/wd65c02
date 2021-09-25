@@ -62,8 +62,7 @@ wd65c02 cpu(
 reg [7:0]memory[65535:0];
 
 initial begin
-    $readmemh("/home/shachar/sources/fpga/Spartan-7/wd65c02/wd65c02.srcs/sim_1/new/memory.hex", memory);
-//    $readmemh("memory.hex", memory);
+    $readmemh("memory.mem", memory);
     
 end
 

@@ -46,8 +46,8 @@ module wd65c02(
     input rdy,
     input RES,
     output sync,
-    output VP,
-    output waitP
+    output reg VP,
+    output reg waitP
     );
 
 wire [7:0]data_bus;
@@ -72,10 +72,6 @@ wire [7:0]alu_bus_inputs[`AluInSrc__NumOptions-1:0];
 assign alu_bus = alu_bus_inputs[alu_bus_source];
 
 wire [`CtlSig__NumSignals-1:0] control_signals;
-
-assign sync = control_signals[`CtlSig_sync];
-assign waitP = control_signals[`CtlSig_halted];
-assign rW = ~control_signals[`CtlSig_write];
 
 register register_y(
     .data_in(data_bus),
@@ -150,7 +146,7 @@ alu alu(
 );
 
 instruction_decode decoder(
-    .data_in(data_in),
+    .data_in(data_in_latched),
     .clock(phi2),
     .RESET(RES),
 //        input [7:0]status_register,
@@ -175,7 +171,12 @@ always@(negedge phi2) begin
     
     if( control_signals[`CtlSig_LatchAddrBus] )
         address <= address_bus;
+    
+    waitP <= control_signals[`CtlSig_halted];
 end
+
+assign sync = control_signals[`CtlSig_sync];
+assign rW = ~control_signals[`CtlSig_write];
 
 assign data_bus_inputs[`DataBusSrc_Zeros] = 8'b0;
 assign data_bus_inputs[`DataBusSrc_RegS] = register_s_value;
