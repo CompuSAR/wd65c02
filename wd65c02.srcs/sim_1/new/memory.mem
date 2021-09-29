@@ -37,7 +37,7 @@ ea // 0021: NOP
 @00b1 19 // Command at adderss 19 should load this value
 @00a9 07 // Command at adderss 7 should load this value
 @01b1 XX // Command at adderss 19 should NOT load this value
-@3785 11 // Command at address 11 should load this value
+@3785 10 // Command at address 10 should load this value
 @3742 XX // Command at address 16 should NOT load this value
 @3837 1e // Command at address 1e should load this value
 @3842 16 // Command at address 16 should load this value
