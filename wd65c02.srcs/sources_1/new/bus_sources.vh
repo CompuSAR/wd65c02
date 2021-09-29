@@ -1,4 +1,4 @@
-`define DataBusSrc_Zeros    0
+`define DataBusSrc_Zero     0
 `define DataBusSrc_RegY     1
 `define DataBusSrc_RegX     2
 `define DataBusSrc_RegS     3
@@ -36,21 +36,23 @@
 `define AddrBusSrc_Pc       0
 `define AddrBusSrc_Dl       1
 `define AddrBusSrc_Sp       2
+`define AddrBusSrc_Alu      3
 
-`define AddrBusSrc__NumOptions 3
+`define AddrBusSrc__NumOptions 4
 `define AddrBusSrc__NBits $clog2( `AddrBusSrc__NumOptions )
 
 
-`define AluInSrc_Acc       0
-`define AluInSrc_RegX      1
-`define AluInSrc_RegY      2
+`define AluInSrc_Zero      0
+`define AluInSrc_Acc       1
+`define AluInSrc_RegX      2
+`define AluInSrc_RegY      3
 //`define AluInSrc_RegS      3
-`define AluInSrc_DlLow     3
-`define AluInSrc_DlHigh    4
-`define AluInSrc_PcLow     5
-`define AluInSrc_PcHigh    6
+`define AluInSrc_DlLow     4
+`define AluInSrc_DlHigh    5
+`define AluInSrc_PcLow     6
+`define AluInSrc_PcHigh    7
 
-`define AluInSrc__NumOptions 7
+`define AluInSrc__NumOptions 8
 `define AluInSrc__NBits $clog2( `AluInSrc__NumOptions )
 
 

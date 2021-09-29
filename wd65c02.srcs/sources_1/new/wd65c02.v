@@ -144,6 +144,8 @@ alu alu(
     .control(alu_control),
     .status_out(alu_status)
 );
+wire [7:0]alu_latch_value;
+latch#(.NBits(8)) alu_latch(.in(alu_result), .out(alu_latch_value), .clock(~phi2));
 
 instruction_decode decoder(
     .data_in(data_in),
@@ -173,7 +175,7 @@ assign sync = control_signals[`CtlSig_sync];
 assign waitP = control_signals[`CtlSig_halted];
 assign rW = ~control_signals[`CtlSig_write];
 
-assign data_bus_inputs[`DataBusSrc_Zeros] = 8'b0;
+assign data_bus_inputs[`DataBusSrc_Zero] = 8'b0;
 assign data_bus_inputs[`DataBusSrc_RegS] = register_s_value;
 assign data_bus_inputs[`DataBusSrc_ALU] = alu_result;
 assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
@@ -181,7 +183,9 @@ assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:
 assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
 
 assign address_bus_inputs[`AddrBusSrc_Dl] = data_latch_value;
+assign address_bus_inputs[`AddrBusSrc_Alu] = {8'b0, alu_latch_value};
 
+assign alu_bus_inputs[`AluInSrc_Zero] = 8'b0;
 assign alu_bus_inputs[`AluInSrc_Acc] = data_bus_inputs[`DataBusSrc_RegAcc];
 assign alu_bus_inputs[`AluInSrc_RegX] = data_bus_inputs[`DataBusSrc_RegX];
 assign alu_bus_inputs[`AluInSrc_RegY] = data_bus_inputs[`DataBusSrc_RegY];

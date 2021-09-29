@@ -124,7 +124,6 @@ initial begin
 
     // Wait for the CPU to start after reset
     @(negedge clock)
-    @(negedge clock)
     results_index = 0;
     while( expected_results[results_index] != EndMarker ) begin
         current_command = expected_results[results_index];
