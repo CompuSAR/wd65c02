@@ -2,21 +2,21 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company: Some Assembly Required Youtube channel https://www.youtube.com/channel/UCp5Z7utSI2IHQUsnkPH41bw
 // Engineer: Shachar Shemesh
-// 
+//
 // Create Date: 09/15/2021 10:43:31 PM
-// Design Name: WD65C02S core almost compatible design 
+// Design Name: WD65C02S core almost compatible design
 // Module Name: instruction_decode
 // Project Name: CompuSAR
 // Target Devices: Xilinx Spartan-7
 // Tool Versions: Vivado 2021.1
-// Description: 
-// 
-// Dependencies: 
-// 
+// Description:
+//
+// Dependencies:
+//
 // Revision:
 // Revision 0.01 - File Created
 // Additional Comments:
-// 
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "bus_sources.vh"

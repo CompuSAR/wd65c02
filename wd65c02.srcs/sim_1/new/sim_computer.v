@@ -4,7 +4,7 @@
 // Engineer: Shachar Shemesh
 //
 // Create Date: 09/18/2021 08:06:23 PM
-// Design Name: WD65C02S core almost compatible design 
+// Design Name: WD65C02S core almost compatible design
 // Module Name: sim_computer
 // Project Name: CompuSAR
 // Target Devices: Xilinx Spartan-7
@@ -157,11 +157,11 @@ begin
     while( opcode_cycle_count < current_command[51:48] ) begin
         @(posedge clock)
         assert(!sync, 3 ); // "Opcode shorter than expected"
-        
+
         @(negedge clock)
         opcode_cycle_count = opcode_cycle_count+1;
     end
-    
+
     assert( current_command[15:0] == address_bus, 4 ); // "Last address bus different than expected"
     case( current_command[OperationBitsHigh:OperationBitsLow] )
     4'h0: ; // nothing

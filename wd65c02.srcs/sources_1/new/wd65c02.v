@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company: Some Assembly Required Youtube channel https://www.youtube.com/channel/UCp5Z7utSI2IHQUsnkPH41bw
 // Engineer: Shachar Shemesh
-// 
+//
 // Create Date: 09/15/2021 09:12:26 PM
-// Design Name: WD65C02S core almost compatible design 
+// Design Name: WD65C02S core almost compatible design
 // Module Name: wd65c02
 // Project Name: CompuSAR
 // Target Devices: Xilinx Spartan-7
 // Tool Versions: Vivado 2021.1
-// Description: 
-// 
-// Dependencies: 
-// 
+// Description:
+//
+// Dependencies:
+//
 // Revision:
 // Revision 0.01 - File Created
 // Additional Comments:
@@ -25,7 +25,7 @@
 // * Removed the deprecated Set Overflow (SOB) signal.
 // * The CPU does not produce both waitP and waitN. The implementor feels confident in the user's ability to apply the NOT
 //   gate herself, if applicable.
-// 
+//
 // The implementation follows the WD65C02S data sheet from October 08, 2018, downloaded from
 // https://www.westerndesigncenter.com/wdc/documentation/w65c02s.pdf
 //

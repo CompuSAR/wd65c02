@@ -2,21 +2,21 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Company: Some Assembly Required Youtube channel https://www.youtube.com/channel/UCp5Z7utSI2IHQUsnkPH41bw
 // Engineer: Shachar Shemesh
-// 
+//
 // Create Date: 09/16/2021 06:54:27 AM
-// Design Name: WD65C02S core almost compatible design 
+// Design Name: WD65C02S core almost compatible design
 // Module Name: program_counter
 // Project Name: CompuSAR
 // Target Devices: Xilinx Spartan-7
 // Tool Versions: Vivado 2021.1
-// Description: 
-// 
-// Dependencies: 
-// 
+// Description:
+//
+// Dependencies:
+//
 // Revision:
 // Revision 0.01 - File Created
 // Additional Comments:
-// 
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 
