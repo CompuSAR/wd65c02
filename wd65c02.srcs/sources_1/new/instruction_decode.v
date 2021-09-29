@@ -704,10 +704,12 @@ begin
         setup_addr_zpx();
         active_op <= `Op_ldy;
     end
+    */
     8'hb5: begin
-        setup_addr_zpx();
         active_op <= `Op_lda;
+        setup_addr_zp_x();
     end
+    /*
     8'hb6: begin
         setup_addr_zpy();
         active_op <= `Op_ldx;

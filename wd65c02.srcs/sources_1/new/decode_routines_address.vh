@@ -26,6 +26,7 @@ begin
     `Addr_abs_x: do_addr_abs_x();
     `Addr_abs_y: do_addr_abs_y();
     `Addr_zp: do_addr_zp();
+    `Addr_zp_x: do_addr_zp_x();
     default: begin end
     endcase
 end
@@ -78,7 +79,7 @@ begin
         control_signals[`CtlSig_PcAdvance] <= 1;
         address_bus_source = `AddrBusSrc_Pc;
         data_latch_ctl_high = `DlhSrc_DataIn;
-        
+
         // Add X to LSB
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source = `DataBusSrc_RegX;
@@ -118,7 +119,7 @@ begin
         control_signals[`CtlSig_PcAdvance] <= 1;
         address_bus_source = `AddrBusSrc_Pc;
         data_latch_ctl_high = `DlhSrc_DataIn;
-        
+
         // Add X to LSB
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source = `DataBusSrc_RegY;
@@ -200,8 +201,33 @@ task setup_addr_zp_x_ind();
 endtask
 
 task setup_addr_zp_x();
+begin
     // Zero page + X: zp,x
-    // TODO implement
+    active_address_resolution <= `Addr_zp_x;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source = `AddrBusSrc_Pc;
+    data_latch_ctl_high = `DlhSrc_Zero;
+    data_latch_ctl_low = `DllSrc_DataIn;
+end
+endtask
+
+task do_addr_zp_x();
+begin
+    if( timing_counter==1 ) begin
+        // Load address MSB
+        address_bus_source = `AddrBusSrc_Dl;    // XXX 6502 cycle 3 is dummy read from unmodified address. Need to test on 65c02
+
+        // Add X to LSB
+        alu_in_bus_src <= `AluInSrc_DlLow;
+        data_bus_source = `DataBusSrc_RegX;
+        alu_op <= `AluOp_add;
+        alu_carry_src <= `AluCarryIn_Zero;
+        data_latch_ctl_low = `DllSrc_AluRes;
+    end else begin
+        address_bus_source = `AddrBusSrc_Dl;
+        active_address_resolution <= `Addr_invalid; // We're done
+    end
+end
 endtask
 
 task setup_addr_zp_y();
