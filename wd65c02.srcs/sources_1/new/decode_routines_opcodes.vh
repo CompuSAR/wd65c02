@@ -120,36 +120,34 @@ endtask
 
 task next_instruction();
 begin
-    timing_counter_next = 0;
-    address_bus_source = `AddrBusSrc_Pc;
-    active_op_next = `Op__invalid;
-    control_signals[`CtlSig_PcAdvance] = 1;
+    timing_counter <= 0;
 
-    control_signals[`CtlSig_sync] = 1;
-    control_signals[`CtlSig_write] = 0;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+
+    control_signals[`CtlSig_write] <= 0;
 end
 endtask
 
 task do_opcode_lda();
 begin
-    control_signals[`CtlSig_RegAccWrite] = 1;
-    data_bus_source = `DataBusSrc_Mem;
+    control_signals[`CtlSig_RegAccWrite] <= 1;
+    data_bus_source <= `DataBusSrc_Mem;
     next_instruction();
 end
 endtask
 
 task do_opcode_ldx();
 begin
-    control_signals[`CtlSig_RegXWrite] = 1;
-    data_bus_source = `DataBusSrc_Mem;
+    control_signals[`CtlSig_RegXWrite] <= 1;
+    data_bus_source <= `DataBusSrc_Mem;
     next_instruction();
 end
 endtask
 
 task do_opcode_ldy();
 begin
-    control_signals[`CtlSig_RegYWrite] = 1;
-    data_bus_source = `DataBusSrc_Mem;
+    control_signals[`CtlSig_RegYWrite] <= 1;
+    data_bus_source <= `DataBusSrc_Mem;
     next_instruction();
 end
 endtask

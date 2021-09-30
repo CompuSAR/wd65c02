@@ -1,7 +1,6 @@
 // Signals that go out of the CPU
 `define CtlSig_write        0
 `define CtlSig_halted       1
-`define CtlSig_sync         2
 
 // Decoder internal signals
 //`define CtlSig_IrIn         3

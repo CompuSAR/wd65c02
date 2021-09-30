@@ -32,7 +32,7 @@ module program_counter(
 reg [15:0]address;
 assign addr_out = address;
 
-always@(posedge clock) begin
+always@(negedge clock) begin
     if( ! RESET ) begin
         address <= 16'h0;
     end else if( advance ) begin

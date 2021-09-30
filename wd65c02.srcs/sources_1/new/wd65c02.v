@@ -42,12 +42,12 @@ module wd65c02(
     output reg ML,
     input NMI,
     input phi2,
-    output rW,
+    output reg rW,
     input rdy,
     input RES,
     output sync,
-    output VP,
-    output waitP
+    output reg VP,
+    output reg waitP
     );
 
 wire [7:0]data_bus;
@@ -116,7 +116,6 @@ program_counter pc(
     .clock(phi2),
     .RESET(reset_latched)
 );
-latch#(.NBits(16)) pc_latch(.in(pc_value), .out(address_bus_inputs[`AddrBusSrc_Pc]), .clock(~phi2));
 
 wire [7:0]data_latch_low_inputs[`DllSrc__NumOptions-1:0];
 wire [`DllSrc__NBits-1:0]data_latch_low_source;
@@ -138,7 +137,6 @@ wire alu_carry_inputs[`AluCarryIn__NumOptions-1:0];
 wire [`AluCarryIn__NBits-1:0]alu_carry_source;
 wire [`AluOp__NBits-1:0]alu_control;
 wire [7:0]alu_status;
-reg alu_carry_latched;
 alu alu(
     .a(alu_bus),
     .b(control_signals[`CtlSig_AluInverse] ? ~data_bus : data_bus),
@@ -151,11 +149,11 @@ wire [7:0]alu_latch_value;
 latch#(.NBits(8)) alu_latch(.in(alu_result), .out(alu_latch_value), .clock(~phi2));
 
 instruction_decode decoder(
-    .data_in(data_in_latched),
+    .data_in(data_in),
     .clock(phi2),
     .RESET(reset_latched),
 //        input [7:0]status_register,
-    .alu_carry(alu_carry_latched),
+    .alu_carry(alu_status[`Flags_Carry]),
     .control_signals(control_signals),
     .data_latch_ctl_low(data_latch_low_source),
     .data_latch_ctl_high(data_latch_high_source),
@@ -163,22 +161,22 @@ instruction_decode decoder(
     .address_bus_source(address_bus_source),
     .alu_in_bus_src(alu_bus_source),
     .alu_op(alu_control),
-    .alu_carry_src(alu_carry_source)
+    .alu_carry_src(alu_carry_source),
+    .sync(sync)
 );
 
 always@(posedge phi2) begin
-    data_out <= control_signals[`CtlSig_write] ? data_bus : 8'b0;
+    data_out <= data_bus;
 end
 
 always@(negedge phi2) begin
     data_in_latched <= data_in;
-    alu_carry_latched <= alu_status[`Flags_Carry];
     reset_latched <= RES;
-end
 
-assign sync = control_signals[`CtlSig_sync];
-assign waitP = control_signals[`CtlSig_halted];
-assign rW = ~control_signals[`CtlSig_write];
+    // External control lines
+    waitP <= control_signals[`CtlSig_halted];
+    rW <= ~control_signals[`CtlSig_write];
+end
 
 assign data_bus_inputs[`DataBusSrc_Zero] = 8'b0;
 assign data_bus_inputs[`DataBusSrc_RegS] = register_s_value;
@@ -187,6 +185,7 @@ assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0
 assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
 assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
 
+assign address_bus_inputs[`AddrBusSrc_Pc] = pc_value;
 assign address_bus_inputs[`AddrBusSrc_Dl] = data_latch_value;
 assign address_bus_inputs[`AddrBusSrc_Alu] = {8'b0, alu_latch_value};
 

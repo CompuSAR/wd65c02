@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="4,124.736 ns"></ZoomStartTime>
-      <ZoomEndTime time="4,485.737 ns"></ZoomEndTime>
-      <Cursor1Time time="4,389.736 ns"></Cursor1Time>
+      <ZoomStartTime time="216.353 ns"></ZoomStartTime>
+      <ZoomEndTime time="712.730 ns"></ZoomEndTime>
+      <Cursor1Time time="630.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="241"></NameColumnWidth>
-      <ValueColumnWidth column_width="62"></ValueColumnWidth>
+      <NameColumnWidth column_width="239"></NameColumnWidth>
+      <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="27" />
+   <WVObjectSize size="23" />
    <wvobject type="logic" fp_name="/sim_computer/clock">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -82,14 +82,6 @@
       <obj_property name="CustomSignalColor">#0000FF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus_inputs">
-      <obj_property name="ElementShortName">data_bus_inputs[8:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_bus_inputs[8:0][7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus_source">
-      <obj_property name="ElementShortName">data_bus_source[3:0]</obj_property>
-      <obj_property name="ObjectShortName">data_bus_source[3:0]</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/sim_computer/cpu/data_in_latched">
       <obj_property name="ElementShortName">data_in_latched[7:0]</obj_property>
       <obj_property name="ObjectShortName">data_in_latched[7:0]</obj_property>
@@ -107,14 +99,6 @@
       <obj_property name="ElementShortName">data_out[15:0]</obj_property>
       <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
       <obj_property name="label">Data Latch</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_latch_low_source">
-      <obj_property name="ElementShortName">data_latch_low_source[1:0]</obj_property>
-      <obj_property name="ObjectShortName">data_latch_low_source[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/data_latch_high_source">
-      <obj_property name="ElementShortName">data_latch_high_source[2:0]</obj_property>
-      <obj_property name="ObjectShortName">data_latch_high_source[2:0]</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/sim_computer/RESET">
       <obj_property name="ElementShortName">RESET</obj_property>
@@ -148,10 +132,77 @@
       <obj_property name="ObjectShortName">result[7:0]</obj_property>
       <obj_property name="label">alu_result</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/sim_computer/cpu/alu/control">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">control[2:0]</obj_property>
-      <obj_property name="ObjectShortName">control[2:0]</obj_property>
-      <obj_property name="label">alu control</obj_property>
+   <wvobject type="array" fp_name="/sim_computer/cpu/control_signals">
+      <obj_property name="ElementShortName">control_signals[11:0]</obj_property>
+      <obj_property name="ObjectShortName">control_signals[11:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[11]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[11]</obj_property>
+         <obj_property name="ObjectShortName">[11]</obj_property>
+         <obj_property name="label">ALU inverse</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[10]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[10]</obj_property>
+         <obj_property name="ObjectShortName">[10]</obj_property>
+         <obj_property name="label">Jump</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[9]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[9]</obj_property>
+         <obj_property name="ObjectShortName">[9]</obj_property>
+         <obj_property name="label">advance PC</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[8]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[8]</obj_property>
+         <obj_property name="ObjectShortName">[8]</obj_property>
+         <obj_property name="label">write A</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[7]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[7]</obj_property>
+         <obj_property name="ObjectShortName">[7]</obj_property>
+         <obj_property name="label">write S</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[6]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">[6]</obj_property>
+         <obj_property name="label">write X</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[5]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">[5]</obj_property>
+         <obj_property name="label">write Y</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[4]">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">[4]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[3]">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">[3]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[2]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">[2]</obj_property>
+         <obj_property name="label">sync</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[1]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">[1]</obj_property>
+         <obj_property name="label">halted</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[0]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+         <obj_property name="label">Write</obj_property>
+      </wvobject>
    </wvobject>
 </wave_config>
