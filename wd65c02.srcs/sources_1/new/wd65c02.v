@@ -72,6 +72,8 @@ assign alu_bus = alu_bus_inputs[alu_bus_source];
 
 wire [`CtlSig__NumSignals-1:0] control_signals;
 
+reg reset_latched;
+
 register register_y(
     .data_in(data_bus),
     .data_out(data_bus_inputs[`DataBusSrc_RegY]),
@@ -112,7 +114,7 @@ program_counter pc(
     .advance(control_signals[`CtlSig_PcAdvance]),
     .jump(control_signals[`CtlSig_Jump]),
     .clock(phi2),
-    .RESET(RES)
+    .RESET(reset_latched)
 );
 latch#(.NBits(16)) pc_latch(.in(pc_value), .out(address_bus_inputs[`AddrBusSrc_Pc]), .clock(~phi2));
 
@@ -136,6 +138,7 @@ wire alu_carry_inputs[`AluCarryIn__NumOptions-1:0];
 wire [`AluCarryIn__NBits-1:0]alu_carry_source;
 wire [`AluOp__NBits-1:0]alu_control;
 wire [7:0]alu_status;
+reg alu_carry_latched;
 alu alu(
     .a(alu_bus),
     .b(control_signals[`CtlSig_AluInverse] ? ~data_bus : data_bus),
@@ -148,11 +151,11 @@ wire [7:0]alu_latch_value;
 latch#(.NBits(8)) alu_latch(.in(alu_result), .out(alu_latch_value), .clock(~phi2));
 
 instruction_decode decoder(
-    .data_in(data_in),
+    .data_in(data_in_latched),
     .clock(phi2),
-    .RESET(RES),
+    .RESET(reset_latched),
 //        input [7:0]status_register,
-    .alu_carry(alu_status[`Flags_Carry]),
+    .alu_carry(alu_carry_latched),
     .control_signals(control_signals),
     .data_latch_ctl_low(data_latch_low_source),
     .data_latch_ctl_high(data_latch_high_source),
@@ -169,6 +172,8 @@ end
 
 always@(negedge phi2) begin
     data_in_latched <= data_in;
+    alu_carry_latched <= alu_status[`Flags_Carry];
+    reset_latched <= RES;
 end
 
 assign sync = control_signals[`CtlSig_sync];
