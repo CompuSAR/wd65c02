@@ -86,7 +86,7 @@ begin
         control_signals[`CtlSig_PcAdvance] <= 1;
         address_bus_source <= `AddrBusSrc_Pc;
         data_latch_ctl_high <= `DlhSrc_DataIn;
-        
+
         // Add X to LSB
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source <= `DataBusSrc_RegX;
@@ -126,7 +126,7 @@ begin
         control_signals[`CtlSig_PcAdvance] <= 1;
         address_bus_source <= `AddrBusSrc_Pc;
         data_latch_ctl_high <= `DlhSrc_DataIn;
-        
+
         // Add X to LSB
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source <= `DataBusSrc_RegY;
@@ -217,7 +217,7 @@ begin
     if( timing_counter==1 ) begin
         // Load address MSB
         address_bus_source <= `AddrBusSrc_Dl;    // XXX 6502 cycle 3 is dummy read from unmodified address. Need to test on 65c02
-        
+
         // Add X to LSB
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source <= `DataBusSrc_RegX;
@@ -226,7 +226,7 @@ begin
         data_latch_ctl_low <= `DllSrc_AluRes;
     end else if( timing_counter==2 ) begin
         address_bus_source <= `AddrBusSrc_Dl;
-        
+
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source <= `DataBusSrc_Zero;
         alu_op <= `AluOp_add;
@@ -260,7 +260,7 @@ begin
     if( timing_counter==1 ) begin
         // Load address MSB
         address_bus_source <= `AddrBusSrc_Dl;    // XXX 6502 cycle 3 is dummy read from unmodified address. Need to test on 65c02
-        
+
         // Add X to LSB
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source <= `DataBusSrc_RegX;
@@ -290,7 +290,7 @@ begin
     if( timing_counter==1 ) begin
         // Load address MSB
         address_bus_source <= `AddrBusSrc_Dl;    // XXX 6502 cycle 3 is dummy read from unmodified address. Need to test on 65c02
-        
+
         // Add X to LSB
         alu_in_bus_src <= `AluInSrc_DlLow;
         data_bus_source <= `DataBusSrc_RegY;
@@ -394,7 +394,7 @@ task handover_instruction(input [`Op__NBits-1:0]op);
 begin
     active_address_resolution <= `Addr_invalid;
     timing_counter <= OpCounterStart;
-    
+
     perform_instruction(op);
 end
 endtask

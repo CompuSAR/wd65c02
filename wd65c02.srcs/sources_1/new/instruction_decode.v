@@ -22,7 +22,7 @@
 `include "bus_sources.vh"
 `include "control_signals.vh"
 
-module instruction_decode#(PageBoundryWrongAccess = 0)
+module instruction_decode#(PageBoundryWrongAccess = 0, UnknownOpcodesNop = 1)
 (
         input [7:0]data_in,
         input clock,
@@ -88,6 +88,20 @@ begin
 
     data_bus_source <= {`DataBusSrc__NBits{1'bX}};
     address_bus_source <= `AddrBusSrc_Pc;
+    alu_in_bus_src <= {`AluInSrc__NBits{1'bX}};
+    alu_op <= {`AluOp__NBits{1'bX}};
+    alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
+end
+endtask
+
+task set_invalid_state();
+begin
+    control_signals <= {`CtlSig__NumSignals{1'bX}};
+    data_latch_ctl_high <= {`DlhSrc__NBits{1'bX}};
+    data_latch_ctl_low <= {`DllSrc__NBits{1'bX}};
+
+    data_bus_source <= {`DataBusSrc__NBits{1'bX}};
+    address_bus_source <= {`AddrBusSrc__NBits{1'bX}};
     alu_in_bus_src <= {`AluInSrc__NBits{1'bX}};
     alu_op <= {`AluOp__NBits{1'bX}};
     alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
@@ -968,10 +982,19 @@ begin
     end
     */
     default: begin
-        active_op <= `Op_nop; // Unknown commands are NOP
-        setup_addr_i(`Op_nop);
+        setup_unknown_command();
     end
     endcase
+end
+endtask
+
+task setup_unknown_command();
+begin
+    if( UnknownOpcodesNop ) begin
+        active_op <= `Op_nop; // Unknown commands are NOP
+        setup_addr_i(`Op_nop);
+    end else
+        set_invalid_state();
 end
 endtask
 
