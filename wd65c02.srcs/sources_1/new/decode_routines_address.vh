@@ -19,13 +19,15 @@
 `define Addr__Count     17
 `define Addr__NBits     $clog2(`Addr__Count)
 
+`include "decode_routines_opcodes.vh"
+
 task fetch_operand();
 begin
     case(active_address_resolution)
     `Addr_abs: do_addr_abs();
     `Addr_abs_x: do_addr_abs_x();
     `Addr_abs_y: do_addr_abs_y();
-    `Addr_immediate: do_addr_imm();
+    //`Addr_immediate: do_addr_imm();
     `Addr_zp: do_addr_zp();
     `Addr_zp_x_ind: do_addr_zp_x_ind();
     `Addr_zp_x: do_addr_zp_x();
@@ -53,7 +55,7 @@ begin
     end else begin
         address_bus_source <= `AddrBusSrc_Dl;
 
-        active_address_resolution <= `Addr_invalid; // Last address cycle
+        handover_instruction(active_op);
     end
 end
 endtask
@@ -98,7 +100,7 @@ begin
     end else begin
         address_bus_source <= `AddrBusSrc_Dl;
 
-        active_address_resolution <= `Addr_invalid; // Last address cycle
+        handover_instruction(active_op);
     end
 end
 endtask
@@ -138,7 +140,7 @@ begin
     end else begin
         address_bus_source <= `AddrBusSrc_Dl;
 
-        active_address_resolution <= `Addr_invalid; // Last address cycle
+        handover_instruction(active_op);
     end
 end
 endtask
@@ -153,25 +155,18 @@ task setup_addr_acc();
     // TODO implement
 endtask
 
-task setup_addr_imm();
+task setup_addr_imm(input [`Op__NBits-1:0]op);
 begin
     // Immediate: #
     address_bus_source <= `AddrBusSrc_Pc;
     control_signals[`CtlSig_PcAdvance] <= 1;
+    handover_instruction(op);
 end
 endtask
 
-task do_addr_imm();
-begin
-    active_address_resolution <= `Addr_invalid; // We're done
-    
-    perform_instruction();
-end
-endtask
-
-task setup_addr_i();
+task setup_addr_i(input [`Op__NBits-1:0]op);
     // Implied: i
-    active_address_resolution <= `Addr_invalid;
+    handover_instruction(op);
 endtask
 
 task setup_addr_pc_rel();
@@ -199,7 +194,7 @@ endtask
 task do_addr_zp();
 begin
     address_bus_source <= `AddrBusSrc_Dl;
-    active_address_resolution <= `Addr_invalid; // We're done
+    handover_instruction(active_op);
 end
 endtask
 
@@ -241,7 +236,7 @@ begin
         data_latch_ctl_high <= `DlhSrc_DataIn;
     end else begin
         address_bus_source <= `AddrBusSrc_Dl;
-        active_address_resolution <= `Addr_invalid; // We're done
+        handover_instruction(active_op);
     end
 end
 endtask
@@ -271,7 +266,7 @@ begin
         data_latch_ctl_low <= `DllSrc_AluRes;
     end else begin
         address_bus_source <= `AddrBusSrc_Dl;
-        active_address_resolution <= `Addr_invalid; // We're done
+        handover_instruction(active_op);
     end
 end
 endtask
@@ -289,4 +284,13 @@ endtask
 task setup_addr_zp_ind_y();
     // Zero page indirect + Y: (zp),y
     // TODO implement
+endtask
+
+task handover_instruction(input [`Op__NBits-1:0]op);
+begin
+    active_address_resolution <= `Addr_invalid;
+    timing_counter <= OpCounterStart;
+    
+    perform_instruction(op);
+end
 endtask

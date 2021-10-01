@@ -40,10 +40,10 @@ module instruction_decode(
     );
 
 `include "decode_routines_address.vh"
-`include "decode_routines_opcodes.vh"
 
 localparam TimingCounterBits = 4; // 4 bits ought to be enough for anybody...
 reg [TimingCounterBits-1:0]timing_counter;
+localparam [TimingCounterBits-1:0]OpCounterStart = {1'b1, {TimingCounterBits-1{1'b0}}};
 
 assign sync = timing_counter==0;
 
@@ -67,7 +67,7 @@ always@(negedge clock) begin
         else if( active_address_resolution!=`Addr_invalid )
             fetch_operand();
         else
-            perform_instruction();
+            perform_instruction(active_op);
     end
 end
 
@@ -557,10 +557,12 @@ begin
         setup_addr_abs();
         active_op <= `Op_sty;
     end
+    */
     8'h8d: begin
-        setup_addr_abs();
         active_op <= `Op_sta;
+        setup_addr_abs();
     end
+    /*
     8'h8e: begin
         setup_addr_abs();
         active_op <= `Op_stx;
@@ -628,7 +630,7 @@ begin
     */
     8'ha0: begin
         active_op <= `Op_ldy;
-        setup_addr_imm();
+        setup_addr_imm(`Op_ldy);
     end
     8'ha1: begin
         active_op <= `Op_lda;
@@ -636,7 +638,7 @@ begin
     end
     8'ha2: begin
         active_op <= `Op_ldx;
-        setup_addr_imm();
+        setup_addr_imm(`Op_ldx);
     end
     /*
     8'ha4: begin
@@ -664,7 +666,7 @@ begin
     */
     8'ha9: begin
         active_op <= `Op_lda;
-        setup_addr_imm();
+        setup_addr_imm(`Op_lda);
     end
     /*
     8'haa: begin
@@ -894,7 +896,7 @@ begin
     */
     8'hea: begin
         active_op <= `Op_nop;
-        setup_addr_i();
+        setup_addr_i(`Op_nop);
     end
     /*
     8'hec: begin
@@ -964,7 +966,7 @@ begin
     */
     default: begin
         active_op <= `Op_nop; // Unknown commands are NOP
-        setup_addr_i();
+        setup_addr_i(`Op_nop);
     end
     endcase
 end

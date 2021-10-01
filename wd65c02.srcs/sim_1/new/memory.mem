@@ -37,6 +37,13 @@ b5 // 0022: LDA $81,x
 a1 // 0024: LDA ($81,x)
 81
 ea // 0026: NOP
+8d // 0027: STA $be71
+71
+be
+ad // 002a: LDA $be71
+71
+be
+ea // 002d: NOP
 
 @0042 22 // Command at address 22 should load this value
 @0043 48 // Command at address 24 indirects through here (and the previous one)
@@ -51,4 +58,5 @@ ea // 0026: NOP
 @3842 16 // Command at address 16 should load this value
 @4822 24 // Command at address 24 should load this value
 @8623 0a // Command at address a should load this value
+@be71 1f // Written to by command at 0027
 @ffb1 XX // Command at adderss 18 should NOT load this value

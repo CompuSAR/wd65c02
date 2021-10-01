@@ -42,12 +42,12 @@ module wd65c02(
     output reg ML,
     input NMI,
     input phi2,
-    output reg rW,
+    output rW,
     input rdy,
     input RES,
     output sync,
     output reg VP,
-    output reg waitP
+    output waitP
     );
 
 wire [7:0]data_bus;
@@ -71,6 +71,10 @@ wire [7:0]alu_bus_inputs[`AluInSrc__NumOptions-1:0];
 assign alu_bus = alu_bus_inputs[alu_bus_source];
 
 wire [`CtlSig__NumSignals-1:0] control_signals;
+
+// External control lines
+assign waitP = control_signals[`CtlSig_halted];
+assign rW = ~control_signals[`CtlSig_write];
 
 reg reset_latched;
 
@@ -172,10 +176,6 @@ end
 always@(negedge phi2) begin
     data_in_latched <= data_in;
     reset_latched <= RES;
-
-    // External control lines
-    waitP <= control_signals[`CtlSig_halted];
-    rW <= ~control_signals[`CtlSig_write];
 end
 
 assign data_bus_inputs[`DataBusSrc_Zero] = 8'b0;

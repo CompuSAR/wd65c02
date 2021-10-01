@@ -113,6 +113,11 @@ initial begin
     end
 end
 
+always@(negedge clock) begin
+    if( !data_bus_rW )
+        memory[address_bus] = data_bus_out;
+end
+
 localparam EndMarker = {4'hf, {BitsInExpectedResult-4{1'b0}}};
 integer results_index;
 integer opcode_cycle_count;

@@ -102,18 +102,14 @@
 `define Op__Count 99
 `define Op__NBits $clog2(`Op__Count)
 
-task do_opcode_nop();
-    // Do... nothing
-    next_instruction();
-endtask
-
-task perform_instruction();
+task perform_instruction(input [`Op__NBits-1:0]op);
 begin
-    case(active_op)
+    case(op)
     `Op_lda: do_opcode_lda();
     `Op_ldx: do_opcode_ldx();
     `Op_ldy: do_opcode_ldy();
     `Op_nop: do_opcode_nop();
+    `Op_sta: do_opcode_sta();
     endcase
 end
 endtask
@@ -130,24 +126,51 @@ endtask
 
 task do_opcode_lda();
 begin
-    control_signals[`CtlSig_RegAccWrite] <= 1;
-    data_bus_source <= `DataBusSrc_Mem;
-    next_instruction();
+    if( timing_counter < OpCounterStart ) begin
+    end else begin
+        control_signals[`CtlSig_RegAccWrite] <= 1;
+        data_bus_source <= `DataBusSrc_Mem;
+        next_instruction();
+    end
 end
 endtask
 
 task do_opcode_ldx();
 begin
-    control_signals[`CtlSig_RegXWrite] <= 1;
-    data_bus_source <= `DataBusSrc_Mem;
-    next_instruction();
+    if( timing_counter < OpCounterStart ) begin
+    end else begin
+        control_signals[`CtlSig_RegXWrite] <= 1;
+        data_bus_source <= `DataBusSrc_Mem;
+        next_instruction();
+    end
 end
 endtask
 
 task do_opcode_ldy();
 begin
-    control_signals[`CtlSig_RegYWrite] <= 1;
-    data_bus_source <= `DataBusSrc_Mem;
-    next_instruction();
+    if( timing_counter < OpCounterStart ) begin
+    end else begin
+        control_signals[`CtlSig_RegYWrite] <= 1;
+        data_bus_source <= `DataBusSrc_Mem;
+        next_instruction();
+    end
+end
+endtask
+
+task do_opcode_nop();
+    // Do... nothing
+    if( timing_counter < OpCounterStart )
+        ;
+    else
+        next_instruction();
+endtask
+
+task do_opcode_sta();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        control_signals[`CtlSig_write] <= 1;
+        data_bus_source <= `DataBusSrc_RegAcc;
+    end else
+        next_instruction();
 end
 endtask
