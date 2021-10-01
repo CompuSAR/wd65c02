@@ -715,11 +715,11 @@ begin
         active_op <= `Op_lda;
         setup_addr_zp_x();
     end
-    /*
     8'hb6: begin
-        setup_addr_zpy();
         active_op <= `Op_ldx;
+        setup_addr_zp_y();
     end
+    /*
     8'hb7: begin
         setup_addr_zp();
         active_op <= `Op_smb3;

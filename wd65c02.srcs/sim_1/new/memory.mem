@@ -53,21 +53,24 @@ f8
 b1 // 0034: LDA ($44),y
 44
 ea // 0036: NOP
+b6 // 0037: LDX $ff,y
+ff
 
-@0042 22 // Command at 22 should load this value
+@0042 22 // Command at 22 loads this value
 @0043 48 // Command at 24 indirects through here (and the previous one)
 @0044 37 95 // Commands at 2e, 30 and 32 indirects through here
-@0081 XX // Command at 22 should NOT load this value
-@00b1 19 // Command at 19 should load this value
-@00a9 07 // Command at 07 should load this value
-@0142 XX // Command at 22 should NOT load this value
-@01b1 XX // Command at 19 should NOT load this value
-@3785 10 // Command at 10 should load this value
-@3742 XX // Command at 16 should NOT load this value
-@3837 1e // Command at 1e should load this value
-@3842 16 // Command at 16 should load this value
-@4822 24 // Command at 24 should load this value
-@8623 0a // Command at 0a should load this value
+@0081 ff // Command at 22 should NOT load this value
+@00b1 19 // Command at 19 loads this value
+@00a9 07 // Command at 07 loads this value
+@00f7 37 // Command at 37 loads this value
+@0142 ff // Command at 22 should NOT load this value
+@01b1 ff // Command at 19 should NOT load this value
+@3785 10 // Command at 10 loads this value
+@3742 ff // Command at 16 should NOT load this value
+@3837 1e // Command at 1e loads this value
+@3842 16 // Command at 16 loads this value
+@4822 24 // Command at 24 loads this value
+@8623 0a // Command at 0a loads this value
 @9537 2e // Command at 2e loads this value
 @954e 30 // Command at 30 loads this value
 @962f 34 // Command at 34 loads this value
