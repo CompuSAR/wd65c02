@@ -699,10 +699,12 @@ begin
         setup_addr_zpi_y();
         active_op <= `Op_lda;
     end
+    */
     8'hb2: begin
-        setup_addr_zpi();
         active_op <= `Op_lda;
+        setup_addr_zp_ind();
     end
+    /*
     8'hb4: begin
         setup_addr_zpx();
         active_op <= `Op_ldy;
