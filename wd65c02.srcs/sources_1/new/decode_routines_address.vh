@@ -32,6 +32,7 @@ begin
     `Addr_zp_x_ind: do_addr_zp_x_ind();
     `Addr_zp_x: do_addr_zp_x();
     `Addr_zp_ind: do_addr_zp_ind();
+    `Addr_zp_ind_y: do_addr_zp_ind_y();
     default: begin end
     endcase
 end
@@ -312,8 +313,55 @@ end
 endtask
 
 task setup_addr_zp_ind_y();
+begin
     // Zero page indirect + Y: (zp),y
-    // TODO implement
+    active_address_resolution <= `Addr_zp_ind_y;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source <= `AddrBusSrc_Pc;
+    data_latch_ctl_high <= `DlhSrc_Zero;
+    data_latch_ctl_low <= `DllSrc_DataIn;
+end
+endtask
+
+task do_addr_zp_ind_y();
+begin
+    if( timing_counter==1 ) begin
+        // Load address MSB
+        address_bus_source <= `AddrBusSrc_Dl;
+
+        alu_in_bus_src <= `AluInSrc_DlLow;
+        data_bus_source <= `DataBusSrc_Zero;
+        alu_op <= `AluOp_add;
+        alu_carry_src <= `AluCarryIn_One;
+
+        data_latch_ctl_low <= `DllSrc_DataIn;
+    end else if( timing_counter==2 ) begin
+        address_bus_source <= `AddrBusSrc_Alu;
+
+        alu_in_bus_src <= `AluInSrc_DlLow;
+        data_bus_source <= `DataBusSrc_RegY;
+        alu_op <= `AluOp_add;
+        alu_carry_src <= `AluCarryIn_Zero;
+
+        data_latch_ctl_low <= `DllSrc_AluRes;
+        data_latch_ctl_high <= `DlhSrc_DataIn;
+    end else if( timing_counter==3 && alu_carry ) begin
+        if( PageBoundryWrongAccess )
+            address_bus_source <= `AddrBusSrc_Dl;
+        else
+            address_bus_source <= `AddrBusSrc_Pc;
+
+        alu_in_bus_src <= `AluInSrc_DlHigh;
+        data_bus_source <= `DataBusSrc_Zero;
+        alu_op <= `AluOp_add;
+        alu_carry_src <= `AluCarryIn_One;
+
+        data_latch_ctl_high <= `DlhSrc_AluRes;
+    end else begin
+        address_bus_source <= `AddrBusSrc_Dl;
+        handover_instruction(active_op);
+    end
+end
 endtask
 
 task handover_instruction(input [`Op__NBits-1:0]op);

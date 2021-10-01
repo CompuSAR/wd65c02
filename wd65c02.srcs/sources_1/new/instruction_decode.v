@@ -22,7 +22,8 @@
 `include "bus_sources.vh"
 `include "control_signals.vh"
 
-module instruction_decode(
+module instruction_decode#(PageBoundryWrongAccess = 0)
+(
         input [7:0]data_in,
         input clock,
         input RESET,
@@ -695,11 +696,11 @@ begin
         setup_addr_r();
         active_op <= `Op_bcs;
     end
-    8'hb1: begin
-        setup_addr_zpi_y();
-        active_op <= `Op_lda;
-    end
     */
+    8'hb1: begin
+        active_op <= `Op_lda;
+        setup_addr_zp_ind_y();
+    end
     8'hb2: begin
         active_op <= `Op_lda;
         setup_addr_zp_ind();

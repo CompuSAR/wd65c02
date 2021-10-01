@@ -46,11 +46,17 @@ be
 ea // 002d: NOP
 b2 // 002e: LDA ($44)
 44
-ea // 0030: NOP
+b1 // 0030: LDA ($44),y
+44
+a0 // 0032: LDY #$f8
+f8
+b1 // 0034: LDA ($44),y
+44
+ea // 0036: NOP
 
 @0042 22 // Command at 22 should load this value
 @0043 48 // Command at 24 indirects through here (and the previous one)
-@0044 37 95 // Command at 2e indirects through here
+@0044 37 95 // Commands at 2e, 30 and 32 indirects through here
 @0081 XX // Command at 22 should NOT load this value
 @00b1 19 // Command at 19 should load this value
 @00a9 07 // Command at 07 should load this value
@@ -62,6 +68,8 @@ ea // 0030: NOP
 @3842 16 // Command at 16 should load this value
 @4822 24 // Command at 24 should load this value
 @8623 0a // Command at 0a should load this value
-@9537 2e // Command at 2e loads this value 
+@9537 2e // Command at 2e loads this value
+@954e 30 // Command at 30 loads this value
+@962f 34 // Command at 34 loads this value
 @be71 1f // Written to by command at 0027
 @ffb1 XX // Command at 18 should NOT load this value
