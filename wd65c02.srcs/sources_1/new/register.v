@@ -34,9 +34,9 @@ assign data_out = data;
 always@(posedge clock, negedge bReset)
 begin
     if( !bReset )
-        data = 0;
+        data <= 0;
     else if( write_enable )
-        data = data_in;
+        data <= data_in;
 end
 
 endmodule
