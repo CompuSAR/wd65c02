@@ -697,11 +697,11 @@ begin
         active_op <= `Op_lda;
         setup_addr_abs();
     end
-    /*
     8'hae: begin
-        setup_addr_abs();
         active_op <= `Op_ldx;
+        setup_addr_abs();
     end
+    /*
     8'haf: begin
         setup_addr_r();
         active_op <= `Op_bbs2;
