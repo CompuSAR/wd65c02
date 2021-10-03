@@ -110,6 +110,7 @@ begin
     `Op_ldy: do_opcode_ldy();
     `Op_nop: do_opcode_nop();
     `Op_sta: do_opcode_sta();
+    default: set_invalid_state();
     endcase
 end
 endtask

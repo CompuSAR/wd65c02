@@ -34,7 +34,7 @@ begin
     `Addr_zp_y: do_addr_zp_y();
     `Addr_zp_ind: do_addr_zp_ind();
     `Addr_zp_ind_y: do_addr_zp_ind_y();
-    default: begin end
+    default: set_invalid_state();
     endcase
 end
 endtask
