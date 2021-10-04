@@ -30,9 +30,9 @@ module input_data_latch(
 
 always@(negedge clock) begin
     if( data_in_low_enable )
-        data_out[7:0] = data_in_low;
+        data_out[7:0] <= data_in_low;
     if( data_in_high_enable )
-        data_out[15:8] = data_in_high;
+        data_out[15:8] <= data_in_high;
 end
 
 endmodule

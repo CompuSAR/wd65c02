@@ -115,7 +115,7 @@ end
 
 always@(negedge clock) begin
     if( !data_bus_rW )
-        memory[address_bus] = data_bus_out;
+        memory[address_bus] <= data_bus_out;
 end
 
 localparam EndMarker = {4'hf, {BitsInExpectedResult-4{1'b0}}};
