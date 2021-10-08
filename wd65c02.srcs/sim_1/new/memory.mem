@@ -1,83 +1,55 @@
-ea // 0000: NOP
-ea // 0001: NOP
-ea // 0002: NOP
-a9 // 0003: LDA #$03
-03
-a9 // 0005: LDA #$05
-05
-a5 // 0007: LDA $a9
-a9
-ea // 0009: NOP
-ad // 000a: LDA $8623
-23
-86
-ea // 000d: NOP
-a2 // 000e: LDX #$4
-04
-bd // 0010: LDA $3781,x
-81
-37
-ea // 0013: NOP
-a2 // 0014: LDX #$c1
-c1
-bd // 0016: LDA $3781,x
-81
-37
-bd // 0019: LDA $fff0,x
-f0
-ff
-a0 // 001c: LDY #17
-17
-b9 // 001e: LDA $3820,y
-20
-38
-ea // 0021: NOP
-b5 // 0022: LDA $81,x
-81
-a1 // 0024: LDA ($81,x)
-81
-ea // 0026: NOP
-8d // 0027: STA $be71
-71
-be
-ad // 002a: LDA $be71
-71
-be
-ea // 002d: NOP
-b2 // 002e: LDA ($44)
-44
-b1 // 0030: LDA ($44),y
-44
-a0 // 0032: LDY #$f8
-f8
-b1 // 0034: LDA ($44),y
-44
-ea // 0036: NOP
-b6 // 0037: LDX $ff,y
-ff
-ae // 0039: LDX $61a8
-a8
-61
-ea // 003b: NOP
+ea              // 0000: NOP
+ea              // 0001: NOP
+ea              // 0002: NOP
+a9 03           // 0003: LDA #$03
+a9 05           // 0005: LDA #$05
+a5 a9           // 0007: LDA $a9
+ea              // 0009: NOP
+ad 23 86        // 000a: LDA $8623
+ea              // 000d: NOP
+a2 04           // 000e: LDX #$4
+bd 81 37        // 0010: LDA $3781,x
+ea              // 0013: NOP
+a2 c1           // 0014: LDX #$c1
+bd 81 37        // 0016: LDA $3781,x
+bd f0 ff        // 0019: LDA $fff0,x
+a0 17           // 001c: LDY #17
+b9 20 38        // 001e: LDA $3820,y
+ea              // 0021: NOP
+b5 81           // 0022: LDA $81,x
+a1 81           // 0024: LDA ($81,x)
+ea              // 0026: NOP
+8d 71 be        // 0027: STA $be71
+ad 71 be        // 002a: LDA $be71
+ea              // 002d: NOP
+b2 44           // 002e: LDA ($44)
+b1 44           // 0030: LDA ($44),y
+a0 f8           // 0032: LDY #$f8
+b1 44           // 0034: LDA ($44),y
+ea              // 0036: NOP
+b6 ff           // 0037: LDX $ff,y
+ae a8 61        // 0039: LDX $61a8
+ea              // 003b: NOP
 
-@0042 22 // Command at 22 loads this value
-@0043 48 // Command at 24 indirects through here (and the previous one)
-@0044 37 95 // Commands at 2e, 30 and 32 indirects through here
-@0081 ff // Command at 22 should NOT load this value
-@00b1 19 // Command at 19 loads this value
-@00a9 07 // Command at 07 loads this value
-@00f7 37 // Command at 37 loads this value
-@0142 ff // Command at 22 should NOT load this value
-@01b1 ff // Command at 19 should NOT load this value
-@3785 10 // Command at 10 loads this value
-@3742 ff // Command at 16 should NOT load this value
-@3837 1e // Command at 1e loads this value
-@3842 16 // Command at 16 loads this value
-@4822 24 // Command at 24 loads this value
-@61a8 39 // Command at 39 loads this value
-@8623 0a // Command at 0a loads this value
-@9537 2e // Command at 2e loads this value
-@954e 30 // Command at 30 loads this value
-@962f 34 // Command at 34 loads this value
-@be71 1f // Written to by command at 0027
-@ffb1 ff // Command at 18 should NOT load this value
+
+@0042 22        // Command at 22 loads this value
+@0043 48        // Command at 24 indirects through here (and the previous one)
+@0044 37 95     // Commands at 2e, 30 and 32 indirects through here
+@0081 ff        // Command at 22 should NOT load this value
+@00b1 19        // Command at 19 loads this value
+@00a9 07        // Command at 07 loads this value
+@00f7 37        // Command at 37 loads this value
+@0142 ff        // Command at 22 should NOT load this value
+@01b1 ff        // Command at 19 should NOT load this value
+@3785 10        // Command at 10 loads this value
+@3742 ff        // Command at 16 should NOT load this value
+@3837 1e        // Command at 1e loads this value
+@3842 16        // Command at 16 loads this value
+@4822 24        // Command at 24 loads this value
+@61a8 39        // Command at 39 loads this value
+@8623 0a        // Command at 0a loads this value
+@9537 2e        // Command at 2e loads this value
+@954e 30        // Command at 30 loads this value
+@962f 34        // Command at 34 loads this value
+@be71 1f        // Written to by command at 0027
+@ffb1 ff        // Command at 18 should NOT load this value
