@@ -52,11 +52,19 @@ endtask
 task do_addr_abs();
 begin
     if( timing_counter==1 ) begin
-        control_signals[`CtlSig_PcAdvance] <= 1;
         address_bus_source <= `AddrBusSrc_Pc;
-        data_latch_ctl_high <= `DlhSrc_DataIn;
+
+        if( addr_pc ) begin
+            pc_low_src <= `PcLowIn_Dl;
+            pc_high_src <= `PcHighIn_Mem;
+            control_signals[`CtlSig_Jump] <= 1;
+        end else begin
+            data_latch_ctl_high <= `DlhSrc_DataIn;
+            control_signals[`CtlSig_PcAdvance] <= 1;
+        end
     end else if( timing_counter==2 ) begin
-        address_bus_source <= `AddrBusSrc_Dl;
+        if( !addr_pc )
+            address_bus_source <= `AddrBusSrc_Dl;
 
         handover_instruction(active_op);
     end else

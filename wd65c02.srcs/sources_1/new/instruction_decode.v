@@ -60,6 +60,8 @@ assign sync = timing_counter==0;
 reg [`Addr__NBits-1:0]active_address_resolution;
 reg [`Op__NBits-1:0]active_op;
 
+reg addr_pc; // Address loads into PC rather than Data latch
+
 initial begin
     timing_counter = 0;
     ext_waitP = 1; // CPU is halted on power on
@@ -391,7 +393,8 @@ begin
     */
     8'h4c: begin
         active_op <= `Op_jmp;
-        setup_addr_i(`Op_jmp);
+        addr_pc <= 1'b1;
+        setup_addr_abs();
     end
     /*
     8'h4d: begin

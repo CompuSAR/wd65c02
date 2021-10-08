@@ -124,22 +124,14 @@ begin
 
     ext_sync <= 1;
     ext_rW <= 1;
+
+    addr_pc <= 0;
 end
 endtask
 
 task do_opcode_jmp();
 begin
-    if( timing_counter < OpCounterStart ) begin
-        control_signals[`CtlSig_PcAdvance] <= 1;
-        address_bus_source <= `AddrBusSrc_Pc;
-        data_latch_ctl_low <= `DllSrc_DataIn;
-    end else if( timing_counter == OpCounterStart ) begin
-        pc_low_src <= `PcLowIn_Dl;
-        pc_high_src <= `PcHighIn_Mem;
-        control_signals[`CtlSig_Jump] <= 1;
-    end else begin
-        next_instruction();
-    end
+    next_instruction();
 end
 endtask
 
