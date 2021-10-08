@@ -29,8 +29,8 @@ b1 44           // 0034: LDA ($44),y
 ea              // 0036: NOP
 b6 ff           // 0037: LDX $ff,y
 ae a8 61        // 0039: LDX $61a8
-ea              // 003b: NOP
-
+ea              // 003c: NOP
+4c 00 03        // 003d: JMP $300
 
 @0042 22        // Command at 22 loads this value
 @0043 48        // Command at 24 indirects through here (and the previous one)
@@ -41,6 +41,10 @@ ea              // 003b: NOP
 @00f7 37        // Command at 37 loads this value
 @0142 ff        // Command at 22 should NOT load this value
 @01b1 ff        // Command at 19 should NOT load this value
+
+@300
+ea              // 0300: NOP
+
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value
 @3837 1e        // Command at 1e loads this value

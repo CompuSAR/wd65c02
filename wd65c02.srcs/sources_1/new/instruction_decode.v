@@ -38,6 +38,8 @@ module instruction_decode#(PageBoundryWrongAccess = 0, UnknownOpcodesNop = 1)
         output reg [`AluOp__NBits-1:0]alu_op,
         output reg [`AluCarryIn__NBits-1:0]alu_carry_src,
         output reg [`StatusSrc__NBits-1:0]status_src,
+        output reg [`PcLowIn__NBits-1:0]pc_low_src,
+        output reg [`PcHighIn__NBits-1:0]pc_high_src,
         output reg [`StatusZeroCtl__NBits-1:0]status_zero_ctl,
         output reg ext_rW,
         output reg ext_ML,
@@ -106,6 +108,8 @@ begin
     alu_op <= {`AluOp__NBits{1'bX}};
     alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
     status_src <= {`StatusSrc__NBits{1'bX}};
+    pc_low_src <= {`PcLowIn__NBits{1'bX}};
+    pc_high_src <= {`PcHighIn__NBits{1'bX}};
 end
 endtask
 
@@ -127,6 +131,8 @@ begin
     alu_op <= {`AluOp__NBits{1'bX}};
     alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
     status_src <= {`StatusSrc__NBits{1'bX}};
+    pc_low_src <= {`PcLowIn__NBits{1'bX}};
+    pc_high_src <= {`PcHighIn__NBits{1'bX}};
 end
 endtask
 
@@ -382,10 +388,12 @@ begin
         setup_addr_acc();
         active_op <= `Op_lsr;
     end
+    */
     8'h4c: begin
-        setup_addr_abs();
         active_op <= `Op_jmp;
+        setup_addr_i(`Op_jmp);
     end
+    /*
     8'h4d: begin
         setup_addr_abs();
         active_op <= `Op_eor;

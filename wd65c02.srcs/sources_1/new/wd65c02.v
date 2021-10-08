@@ -191,6 +191,8 @@ instruction_decode decoder(
     .alu_op(alu_control),
     .alu_carry_src(alu_carry_source),
     .status_src(status_source),
+    .pc_low_src(pc_low_in_src),
+    .pc_high_src(pc_high_in_src),
     .status_zero_ctl(status_zero_ctl),
     .ext_ML(ML),
     .ext_rW(rW),
