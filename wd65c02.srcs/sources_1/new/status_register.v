@@ -54,6 +54,8 @@ end
 
 always@(posedge clock)
 begin
+    if( update_c )
+        status[`Flags_Carry] <= data_in[`Flags_Carry];
     case(update_z)
         `StatusZeroCtl_Preserve:        ;
         `StatusZeroCtl_Data:            status[`Flags_Zero] <= data_in[`Flags_Zero];

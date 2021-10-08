@@ -1,16 +1,17 @@
 `define DataBusSrc_Zero     0
-`define DataBusSrc_RegY     1
-`define DataBusSrc_RegX     2
-`define DataBusSrc_RegS     3
-`define DataBusSrc_ALU      4
-`define DataBusSrc_RegAcc   5
-`define DataBusSrc_PCL      6
-`define DataBusSrc_PCH      7
-`define DataBusSrc_Status   8
+`define DataBusSrc_Ones     1
+`define DataBusSrc_RegY     2
+`define DataBusSrc_RegX     3
+`define DataBusSrc_RegS     4
+`define DataBusSrc_ALU      5
+`define DataBusSrc_RegAcc   6
+`define DataBusSrc_PCL      7
+`define DataBusSrc_PCH      8
+`define DataBusSrc_Status   9
 
-`define DataBusSrc_Mem      9
+`define DataBusSrc_Mem      10
 
-`define DataBusSrc__NumOptions 10
+`define DataBusSrc__NumOptions 11
 `define DataBusSrc__NBits $clog2( `DataBusSrc__NumOptions )
 
 

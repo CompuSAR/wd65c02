@@ -211,6 +211,7 @@ always@(negedge phi2) begin
 end
 
 assign data_bus_inputs[`DataBusSrc_Zero] = 8'b0;
+assign data_bus_inputs[`DataBusSrc_Ones] = ~8'b0;
 assign data_bus_inputs[`DataBusSrc_RegS] = register_s_value;
 // Temporarily disable to resolve asynchronous loop in logic
 //assign data_bus_inputs[`DataBusSrc_ALU] = alu_result;

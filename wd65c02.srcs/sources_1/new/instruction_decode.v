@@ -222,10 +222,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_rmb1;
     end
+    */
     8'h18: begin
-        setup_addr_i();
-        do_opcode_clc();
+        active_op <= `Op_clc;
+        setup_addr_i(`Op_clc);
     end
+    /*
     8'h19: begin
         setup_addr_abs_y();
         active_op <= `Op_ora;
@@ -330,10 +332,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_rmb3;
     end
+    */
     8'h38: begin
-        setup_addr_i();
-        do_opcode_sec();
+        active_op <= `Op_sec;
+        setup_addr_i(`Op_sec);
     end
+    /*
     8'h39: begin
         setup_addr_abs_y();
         active_op <= `Op_and;

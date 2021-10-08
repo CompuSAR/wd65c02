@@ -44,6 +44,9 @@ ea              // 003c: NOP
 
 @300
 ea              // 0300: NOP
+38              // 0301: SEC
+18              // 0302: CLC
+ea              // 0303: NOP
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value

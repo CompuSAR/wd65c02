@@ -105,13 +105,15 @@
 task perform_instruction(input [`Op__NBits-1:0]op);
 begin
     case(op)
-    `Op_jmp: do_opcode_jmp();
-    `Op_lda: do_opcode_lda();
-    `Op_ldx: do_opcode_ldx();
-    `Op_ldy: do_opcode_ldy();
-    `Op_nop: do_opcode_nop();
-    `Op_sta: do_opcode_sta();
-    default: set_invalid_state();
+        `Op_clc: do_opcode_clc();
+        `Op_jmp: do_opcode_jmp();
+        `Op_lda: do_opcode_lda();
+        `Op_ldx: do_opcode_ldx();
+        `Op_ldy: do_opcode_ldy();
+        `Op_nop: do_opcode_nop();
+        `Op_sec: do_opcode_sec();
+        `Op_sta: do_opcode_sta();
+        default: set_invalid_state();
     endcase
 end
 endtask
@@ -126,6 +128,18 @@ begin
     ext_rW <= 1;
 
     addr_pc <= 0;
+end
+endtask
+
+task do_opcode_clc();
+begin
+    if( timing_counter == OpCounterStart ) begin
+        data_bus_source <= `DataBusSrc_Zero;
+        control_signals[`CtlSig_StatUpdateC] <= 1;
+        status_src <= `StatusSrc_Data;
+
+        next_instruction();
+    end
 end
 endtask
 
@@ -189,6 +203,18 @@ task do_opcode_nop();
         ;
     else
         next_instruction();
+endtask
+
+task do_opcode_sec();
+begin
+    if( timing_counter == OpCounterStart ) begin
+        data_bus_source <= `DataBusSrc_Ones;
+        control_signals[`CtlSig_StatUpdateC] <= 1;
+        status_src <= `StatusSrc_Data;
+
+        next_instruction();
+    end
+end
 endtask
 
 task do_opcode_sta();
