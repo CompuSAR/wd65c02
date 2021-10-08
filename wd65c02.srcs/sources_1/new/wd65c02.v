@@ -39,14 +39,14 @@ module wd65c02(
     output reg [7:0]data_out,
     input [7:0] data_in,
     input IRQ,
-    output reg ML,
+    output ML,
     input NMI,
     input phi2,
     output rW,
     input rdy,
     input RES,
     output sync,
-    output reg VP,
+    output VP,
     output waitP
     );
 
@@ -70,11 +70,17 @@ wire [7:0]alu_bus_inputs[`AluInSrc__NumOptions-1:0];
 
 assign alu_bus = alu_bus_inputs[alu_bus_source];
 
-wire [`CtlSig__NumSignals-1:0] control_signals;
+wire [7:0]pc_low_in;
+wire [7:0]pc_low_in_inputs[`PcLowIn__NumOptions:0];
+wire [`PcLowIn__NBits-1:0]pc_low_in_src;
+wire [15:8]pc_high_in;
+wire [7:0]pc_high_in_inputs[`PcHighIn__NumOptions:0];
+wire [`PcHighIn__NBits-1:0]pc_high_in_src;
 
-// External control lines
-assign waitP = control_signals[`CtlSig_halted];
-assign rW = ~control_signals[`CtlSig_write];
+assign pc_low_in = pc_low_in_inputs[ pc_low_in_src ];
+assign pc_high_in = pc_high_in_inputs[ pc_high_in_src ];
+
+wire [`CtlSig__NumSignals-1:0] control_signals;
 
 reg reset_latched;
 
@@ -113,7 +119,7 @@ register register_accumulator(
 
 wire [15:0]pc_value;
 program_counter pc(
-    .addr_in(address_bus),
+    .addr_in( {pc_high_in, pc_low_in} ),
     .addr_out(pc_value),
     .advance(control_signals[`CtlSig_PcAdvance]),
     .jump(control_signals[`CtlSig_Jump]),
@@ -133,6 +139,24 @@ input_data_latch data_latch(
     .data_in_high_enable( data_latch_high_source!=`DlhSrc_None ),
     .clock(phi2),
     .data_out( data_latch_value )
+);
+
+wire [7:0]status_value;
+wire [7:0]status_inputs[`StatusSrc__NumOptions-1:0];
+wire [`StatusSrc__NBits-1:0]status_source;
+wire [`StatusZeroCtl__NBits-1:0]status_zero_ctl;
+status_register status_register(
+    .data_in( status_inputs[status_source] ),
+    .data_out(status_value),
+    .clock(phi2),
+
+    .update_c( control_signals[`CtlSig_StatUpdateC] ),
+    .update_z( status_zero_ctl ),
+    .update_i( control_signals[`CtlSig_StatUpdateI] ),
+    .update_d( control_signals[`CtlSig_StatUpdateD] ),
+    .output_b( control_signals[`CtlSig_StatOutputB] ),
+    .update_v( control_signals[`CtlSig_StatUpdateV] ),
+    .update_n( control_signals[`CtlSig_StatUpdateN] )
 );
 
 wire [7:0]alu_result;
@@ -156,7 +180,7 @@ instruction_decode decoder(
     .data_in(data_in),
     .clock(phi2),
     .RESET(reset_latched),
-//        input [7:0]status_register,
+    .status_register(status_value),
     .alu_carry(alu_status[`Flags_Carry]),
     .control_signals(control_signals),
     .data_latch_ctl_low(data_latch_low_source),
@@ -166,7 +190,13 @@ instruction_decode decoder(
     .alu_in_bus_src(alu_bus_source),
     .alu_op(alu_control),
     .alu_carry_src(alu_carry_source),
-    .sync(sync)
+    .status_src(status_source),
+    .status_zero_ctl(status_zero_ctl),
+    .ext_ML(ML),
+    .ext_rW(rW),
+    .ext_sync(sync),
+    .ext_VP(VP),
+    .ext_waitP(waitP)
 );
 
 always@(posedge phi2) begin
@@ -185,6 +215,7 @@ assign data_bus_inputs[`DataBusSrc_RegS] = register_s_value;
 assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
 assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
 assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;
+assign data_bus_inputs[`DataBusSrc_Status] = status_value;
 
 assign address_bus_inputs[`AddrBusSrc_Pc] = pc_value;
 assign address_bus_inputs[`AddrBusSrc_Dl] = data_latch_value;
@@ -209,7 +240,14 @@ assign data_latch_high_inputs[`DlhSrc_One] = 8'd1;
 assign data_latch_high_inputs[`DlhSrc_DataIn] = data_in;
 assign data_latch_high_inputs[`DlhSrc_AluRes] = alu_result;
 
+assign status_inputs[`StatusSrc_Data] = data_bus;
+assign status_inputs[`StatusSrc_ALU] = alu_status;
+
 assign alu_carry_inputs[`AluCarryIn_Zero] = 1'b0;
 assign alu_carry_inputs[`AluCarryIn_One] = 1'b1;
+
+assign pc_low_in_inputs[`PcLowIn_Dl] = data_latch_value[7:0];
+
+assign pc_high_in_inputs[`PcHighIn_Mem] = data_in;
 
 endmodule

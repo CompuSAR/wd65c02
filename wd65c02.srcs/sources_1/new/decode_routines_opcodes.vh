@@ -121,7 +121,8 @@ begin
 
     control_signals[`CtlSig_PcAdvance] <= 1;
 
-    control_signals[`CtlSig_write] <= 0;
+    ext_sync <= 1;
+    ext_rW <= 1;
 end
 endtask
 
@@ -129,8 +130,13 @@ task do_opcode_lda();
 begin
     if( timing_counter < OpCounterStart ) begin
     end else begin
-        control_signals[`CtlSig_RegAccWrite] <= 1;
         data_bus_source <= `DataBusSrc_Mem;
+        control_signals[`CtlSig_RegAccWrite] <= 1;
+
+        status_src <= `StatusSrc_Data;
+        control_signals[`CtlSig_StatUpdateN] <= 1;
+        status_zero_ctl <= `StatusZeroCtl_Calculate;
+
         next_instruction();
     end
 end
@@ -140,8 +146,13 @@ task do_opcode_ldx();
 begin
     if( timing_counter < OpCounterStart ) begin
     end else begin
-        control_signals[`CtlSig_RegXWrite] <= 1;
         data_bus_source <= `DataBusSrc_Mem;
+        control_signals[`CtlSig_RegXWrite] <= 1;
+
+        status_src <= `StatusSrc_Data;
+        control_signals[`CtlSig_StatUpdateN] <= 1;
+        status_zero_ctl <= `StatusZeroCtl_Calculate;
+
         next_instruction();
     end
 end
@@ -151,8 +162,13 @@ task do_opcode_ldy();
 begin
     if( timing_counter < OpCounterStart ) begin
     end else begin
-        control_signals[`CtlSig_RegYWrite] <= 1;
         data_bus_source <= `DataBusSrc_Mem;
+        control_signals[`CtlSig_RegYWrite] <= 1;
+
+        status_src <= `StatusSrc_Data;
+        control_signals[`CtlSig_StatUpdateN] <= 1;
+        status_zero_ctl <= `StatusZeroCtl_Calculate;
+
         next_instruction();
     end
 end
@@ -169,7 +185,7 @@ endtask
 task do_opcode_sta();
 begin
     if( timing_counter < OpCounterStart ) begin
-        control_signals[`CtlSig_write] <= 1;
+        ext_rW <= 0;
         data_bus_source <= `DataBusSrc_RegAcc;
     end else
         next_instruction();

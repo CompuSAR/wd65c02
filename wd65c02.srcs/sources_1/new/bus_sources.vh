@@ -6,10 +6,11 @@
 `define DataBusSrc_RegAcc   5
 `define DataBusSrc_PCL      6
 `define DataBusSrc_PCH      7
+`define DataBusSrc_Status   8
 
-`define DataBusSrc_Mem      8
+`define DataBusSrc_Mem      9
 
-`define DataBusSrc__NumOptions 9
+`define DataBusSrc__NumOptions 10
 `define DataBusSrc__NBits $clog2( `DataBusSrc__NumOptions )
 
 
@@ -61,3 +62,21 @@
 
 `define AluCarryIn__NumOptions  2
 `define AluCarryIn__NBits $clog2( `AluCarryIn__NumOptions )
+
+
+`define PcLowIn_Dl              0
+
+`define PcLowIn__NumOptions     1
+`define PcLowIn__NBits  $clog2( `PcLowIn__NumOptions )
+
+
+`define PcHighIn_Mem            0
+
+`define PcHighIn__NumOptions     1
+`define PcHighIn__NBits  $clog2( `PcHighIn__NumOptions )
+
+`define StatusSrc_Data          0
+`define StatusSrc_ALU           1
+
+`define StatusSrc__NumOptions   2
+`define StatusSrc__NBits    $clog2(`StatusSrc__NumOptions)

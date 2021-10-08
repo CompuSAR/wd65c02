@@ -37,7 +37,13 @@ module instruction_decode#(PageBoundryWrongAccess = 0, UnknownOpcodesNop = 1)
         output reg [`AluInSrc__NBits-1:0]alu_in_bus_src,
         output reg [`AluOp__NBits-1:0]alu_op,
         output reg [`AluCarryIn__NBits-1:0]alu_carry_src,
-        output sync
+        output reg [`StatusSrc__NBits-1:0]status_src,
+        output reg [`StatusZeroCtl__NBits-1:0]status_zero_ctl,
+        output reg ext_rW,
+        output reg ext_ML,
+        output reg ext_sync,
+        output reg ext_VP,
+        output reg ext_waitP
     );
 
 `include "decode_routines_address.vh"
@@ -54,7 +60,7 @@ reg [`Op__NBits-1:0]active_op;
 
 initial begin
     timing_counter = 0;
-    control_signals[`CtlSig_halted] = 1;
+    ext_waitP = 1; // CPU is halted on power on
 end
 
 always@(negedge clock) begin
@@ -76,6 +82,7 @@ task do_reset();
 begin
     active_address_resolution <= `Addr_invalid;
     active_op <= `Op__invalid;
+    ext_waitP <= 1'b0;
     next_instruction();
 end
 endtask
@@ -83,14 +90,22 @@ endtask
 task clear_signals();
 begin
     control_signals <= {`CtlSig__NumSignals{1'b0}};
+    control_signals[`CtlSig_StatOutputB] <= 1'b1;
     data_latch_ctl_high <= `DlhSrc_None;
     data_latch_ctl_low <= `DllSrc_None;
+    status_zero_ctl <= `StatusZeroCtl_Preserve;
+
+    ext_rW <= 1'b1;
+    ext_ML <= 1'b1;
+    ext_sync <= 1'b0;
+    ext_VP <= 1'b1;
 
     data_bus_source <= {`DataBusSrc__NBits{1'bX}};
     address_bus_source <= `AddrBusSrc_Pc;
     alu_in_bus_src <= {`AluInSrc__NBits{1'bX}};
     alu_op <= {`AluOp__NBits{1'bX}};
     alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
+    status_src <= {`StatusSrc__NBits{1'bX}};
 end
 endtask
 
@@ -99,12 +114,19 @@ begin
     control_signals <= {`CtlSig__NumSignals{1'bX}};
     data_latch_ctl_high <= {`DlhSrc__NBits{1'bX}};
     data_latch_ctl_low <= {`DllSrc__NBits{1'bX}};
+    status_zero_ctl <= {`StatusZeroCtl__NBits{1'bX}};
+
+    ext_rW <= 1'bX;
+    ext_ML <= 1'bX;
+    ext_sync <= 1'bX;
+    ext_VP <= 1'bX;
 
     data_bus_source <= {`DataBusSrc__NBits{1'bX}};
     address_bus_source <= {`AddrBusSrc__NBits{1'bX}};
     alu_in_bus_src <= {`AluInSrc__NBits{1'bX}};
     alu_op <= {`AluOp__NBits{1'bX}};
     alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
+    status_src <= {`StatusSrc__NBits{1'bX}};
 end
 endtask
 
