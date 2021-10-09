@@ -66,14 +66,16 @@
 
 
 `define PcLowIn_Dl              0
+`define PcLowIn_Alu             1
 
-`define PcLowIn__NumOptions     1
+`define PcLowIn__NumOptions     2
 `define PcLowIn__NBits  $clog2( `PcLowIn__NumOptions )
 
 
-`define PcHighIn_Mem            0
+`define PcHighIn_Preserve       0
+`define PcHighIn_Mem            1
 
-`define PcHighIn__NumOptions     1
+`define PcHighIn__NumOptions    2
 `define PcHighIn__NBits  $clog2( `PcHighIn__NumOptions )
 
 `define StatusSrc_Data          0

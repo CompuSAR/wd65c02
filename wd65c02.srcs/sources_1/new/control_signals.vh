@@ -15,13 +15,6 @@
 
 `define CtlSig__NumSignals      13
 
-`define DataLatch_Nop           2'b00
-`define DataLatch_LoadHi        2'b01
-`define DataLatch_LoadLowHiZero 2'b10
-`define DataLatch_LoadLowHiOne  2'b11
-`define DataLatch__NBits        2
-
-
 `define StatusZeroCtl_Preserve          0
 `define StatusZeroCtl_Data              1
 `define StatusZeroCtl_Calculate         2

@@ -35,11 +35,12 @@ assign addr_out = address;
 always@(negedge clock) begin
     if( ! RESET ) begin
         address <= 16'h0;
-    end else if( advance ) begin
+    end else if( advance && !jump ) begin
         address <= address + 1;
-    end else if( jump ) begin
+    end else if( jump && !advance ) begin
         address <= addr_in;
-    end
+    end else if( jump && advance )
+        address <= 15'bX; // Invalid state
 end
 
 endmodule

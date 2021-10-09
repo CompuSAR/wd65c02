@@ -623,10 +623,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbs0;
     end
+    */
     8'h90: begin
-        setup_addr_r();
         active_op <= `Op_bcc;
+        setup_addr_pc_rel();
     end
+    /*
     8'h91: begin
         setup_addr_zpi_y();
         active_op <= `Op_sta;
@@ -743,11 +745,11 @@ begin
         setup_addr_r();
         active_op <= `Op_bbs2;
     end
-    8'hb0: begin
-        setup_addr_r();
-        active_op <= `Op_bcs;
-    end
     */
+    8'hb0: begin
+        active_op <= `Op_bcs;
+        setup_addr_pc_rel();
+    end
     8'hb1: begin
         active_op <= `Op_lda;
         setup_addr_zp_ind_y();

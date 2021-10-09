@@ -123,6 +123,7 @@ begin
     timing_counter <= 0;
 
     control_signals[`CtlSig_PcAdvance] <= 1;
+    control_signals[`CtlSig_Jump] <= 0;
 
     ext_sync <= 1;
     ext_rW <= 1;
@@ -130,6 +131,31 @@ begin
     addr_pc <= 0;
 end
 endtask
+
+task perform_branch_opcode();
+begin
+    case(active_op)
+        `Op_bcc: do_opcode_bcc();
+        `Op_bcs: do_opcode_bcs();
+        default: set_invalid_state();
+    endcase
+end
+endtask
+
+task do_opcode_bcc();
+begin
+    if( status_register[`Flags_Carry] )
+        next_instruction();
+end
+endtask
+
+task do_opcode_bcs();
+begin
+    if( ! status_register[`Flags_Carry] )
+        next_instruction();
+end
+endtask
+
 
 task do_opcode_clc();
 begin

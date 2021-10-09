@@ -28,6 +28,7 @@ begin
     `Addr_abs_x: do_addr_abs_x();
     `Addr_abs_y: do_addr_abs_y();
     //`Addr_immediate: do_addr_imm();
+    `Addr_pc_rel: do_addr_pc_rel();
     `Addr_zp: do_addr_zp();
     `Addr_zp_x_ind: do_addr_zp_x_ind();
     `Addr_zp_x: do_addr_zp_x();
@@ -40,8 +41,8 @@ end
 endtask
 
 task setup_addr_abs();
-begin
     // Absolute address: a
+begin
     active_address_resolution <= `Addr_abs;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
@@ -78,8 +79,8 @@ task setup_addr_abs_x_ind();
 endtask
 
 task setup_addr_abs_x();
-begin
     // Absolute + X: a,x
+begin
     active_address_resolution <= `Addr_abs_x;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
@@ -123,8 +124,8 @@ end
 endtask
 
 task setup_addr_abs_y();
-begin
     // Absolute + Y: a,y
+begin
     active_address_resolution <= `Addr_abs_y;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
@@ -178,8 +179,8 @@ task setup_addr_acc();
 endtask
 
 task setup_addr_imm(input [`Op__NBits-1:0]op);
-begin
     // Immediate: #
+begin
     address_bus_source <= `AddrBusSrc_Pc;
     control_signals[`CtlSig_PcAdvance] <= 1;
     handover_instruction(op);
@@ -193,7 +194,43 @@ endtask
 
 task setup_addr_pc_rel();
     // Program counter relative: r
-    // TODO implement
+begin
+    active_address_resolution <= `Addr_pc_rel;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source <= `AddrBusSrc_Pc;
+end
+endtask
+
+reg relative_addressing_offset_negative;
+
+task do_addr_pc_rel();
+begin
+    if( timing_counter==1 ) begin
+        alu_in_bus_src <= `AluInSrc_PcLow;
+        alu_op <= `AluOp_add;
+        data_bus_source <= `DataBusSrc_Mem;
+        alu_carry_src <= `AluCarryIn_Zero;
+
+        data_latch_ctl_low <= `DllSrc_AluRes;
+
+        relative_addressing_offset_negative <= data_in[7];
+
+        pc_low_src <= `PcLowIn_Alu;
+        pc_high_src <= `PcHighIn_Preserve;
+        control_signals[`CtlSig_Jump] <= 1;
+
+        perform_branch_opcode();
+    end else if( timing_counter==2 ) begin
+        if( relative_addressing_offset_negative ^ alu_carry ) begin
+            // Jump crossed page boundary
+            set_invalid_state();
+        end else begin
+            next_instruction();
+        end
+    end else begin
+        next_instruction();
+    end
+end
 endtask
 
 task setup_addr_stack();
@@ -203,8 +240,8 @@ task setup_addr_stack();
 endtask
 
 task setup_addr_zp();
-begin
     // Zero page: zp
+begin
     active_address_resolution <= `Addr_zp;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
@@ -221,8 +258,8 @@ end
 endtask
 
 task setup_addr_zp_x_ind();
-begin
     // Zero page + X: (zp,x)
+begin
     active_address_resolution <= `Addr_zp_x_ind;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
@@ -264,8 +301,8 @@ end
 endtask
 
 task setup_addr_zp_x();
-begin
     // Zero page + X: zp,x
+begin
     active_address_resolution <= `Addr_zp_x;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
@@ -294,8 +331,8 @@ end
 endtask
 
 task setup_addr_zp_y();
-begin
     // Zero page + Y: zp,y
+begin
     active_address_resolution <= `Addr_zp_y;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
@@ -324,8 +361,8 @@ end
 endtask
 
 task setup_addr_zp_ind();
-begin
     // Zero page indirect: (zp)
+begin
     active_address_resolution <= `Addr_zp_ind;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
@@ -358,8 +395,8 @@ end
 endtask
 
 task setup_addr_zp_ind_y();
-begin
     // Zero page indirect + Y: (zp),y
+begin
     active_address_resolution <= `Addr_zp_ind_y;
     control_signals[`CtlSig_PcAdvance] <= 1;
     address_bus_source <= `AddrBusSrc_Pc;
