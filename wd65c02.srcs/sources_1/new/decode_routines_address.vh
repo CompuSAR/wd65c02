@@ -223,7 +223,15 @@ begin
     end else if( timing_counter==2 ) begin
         if( relative_addressing_offset_negative ^ alu_carry ) begin
             // Jump crossed page boundary
-            set_invalid_state();
+            alu_in_bus_src <= `AluInSrc_PcHigh;
+            alu_op <= `AluOp_add;
+            data_bus_source <= `DataBusSrc_Zero;
+            alu_carry_src <= alu_carry;
+            control_signals[`CtlSig_AluInverse] <= relative_addressing_offset_negative;
+
+            pc_low_src <= `PcLowIn_Preserve;
+            pc_high_src <= `PcHighIn_Alu;
+            control_signals[`CtlSig_Jump] <= 1;
         end else begin
             next_instruction();
         end

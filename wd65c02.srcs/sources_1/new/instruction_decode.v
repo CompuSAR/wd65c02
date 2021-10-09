@@ -865,10 +865,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbs4;
     end
+    */
     8'hd0: begin
-        setup_addr_r();
         active_op <= `Op_bne;
+        setup_addr_pc_rel();
     end
+    /*
     8'hd1: begin
         setup_addr_zpi_y();
         active_op <= `Op_cmp;
@@ -971,10 +973,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbs6;
     end
+    */
     8'hf0: begin
-        setup_addr_r();
         active_op <= `Op_beq;
+        setup_addr_pc_rel();
     end
+    /*
     8'hf1: begin
         setup_addr_zpi_y();
         active_op <= `Op_sbc;

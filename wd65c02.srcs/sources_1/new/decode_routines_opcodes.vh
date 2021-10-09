@@ -137,6 +137,8 @@ begin
     case(active_op)
         `Op_bcc: do_opcode_bcc();
         `Op_bcs: do_opcode_bcs();
+        `Op_beq: do_opcode_beq();
+        `Op_bne: do_opcode_bne();
         default: set_invalid_state();
     endcase
 end
@@ -154,6 +156,16 @@ begin
     if( ! status_register[`Flags_Carry] )
         next_instruction();
 end
+endtask
+
+task do_opcode_beq();
+    if( ! status_register[`Flags_Zero] )
+        next_instruction();
+endtask
+
+task do_opcode_bne();
+    if( status_register[`Flags_Zero] )
+        next_instruction();
 endtask
 
 
