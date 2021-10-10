@@ -153,37 +153,37 @@ task expect_opcode();
 begin
     opcode_cycle_count = 0;
     @(posedge clock)
-    sim_assert(sync, 0); // "Opcode does not start on fetch cycle"
-    sim_assert( address_bus==current_command[39:24], 1 ); // "Command read from wrong address"
+    sim_assert(sync, "Opcode does not start on fetch cycle");
+    sim_assert( address_bus==current_command[39:24], "Command read from wrong address" );
     @(negedge clock)
-    sim_assert( data_bus_in == current_command[47:40], 2 ); // "Wrong command read"
+    sim_assert( data_bus_in == current_command[47:40], "Wrong command read" );
     opcode_cycle_count = 1;
     while( opcode_cycle_count < current_command[51:48] ) begin
         @(posedge clock)
-        sim_assert(!sync, 3 ); // "Opcode shorter than expected"
+        sim_assert(!sync, "Opcode shorter than expected");
 
         @(negedge clock)
         opcode_cycle_count = opcode_cycle_count+1;
     end
 
-    sim_assert( current_command[15:0] == address_bus, 4 ); // "Last address bus different than expected"
+    sim_assert( current_command[15:0] == address_bus, "Last address bus different than expected" );
     case( current_command[OperationBitsHigh:OperationBitsLow] )
     4'h0: ; // nothing
     4'h1: begin
-        sim_assert( data_bus_rW, 5 ); // "Data bus in write when it should be in read mode"
-        sim_assert( current_command[23:16] == data_bus_in, 6 ); // "Last access data incorrect"
+        sim_assert( data_bus_rW, "Data bus in write when it should be in read mode" );
+        sim_assert( current_command[23:16] == data_bus_in, "Last access data incorrect" );
     end
     4'h2: begin
-        sim_assert( ~data_bus_rW, 7 ); // "Data bus in read when it should be in write mode"
-        sim_assert( current_command[23:16] == data_bus_out, 8 ); // "Last access data incorrect"
+        sim_assert( ~data_bus_rW, "Data bus in read when it should be in write mode" );
+        sim_assert( current_command[23:16] == data_bus_out, "Last access data incorrect" );
     end
     endcase
 end
 endtask
 
-task sim_assert(input cond, input integer msg);
+task sim_assert(input cond, input string msg);
     if( !cond ) begin
-        $display("ASSERT failed event %d time %t: %d", results_index, $time, msg);
+        $display("ASSERT failed event %d time %t: %s", results_index, $time, msg);
         $finish();
     end
 endtask
