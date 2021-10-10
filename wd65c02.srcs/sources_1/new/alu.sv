@@ -30,7 +30,7 @@ module alu(
         input [`AluOp__NBits-1:0]control
     );
 
-always@(*)
+always_comb
 begin
     status_out = 0;
 

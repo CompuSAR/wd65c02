@@ -31,7 +31,7 @@ module register#(parameter DataBits = 8)(
 reg [DataBits-1:0]data;
 assign data_out = data;
 
-always@(posedge clock, negedge bReset)
+always_ff@(posedge clock, negedge bReset)
 begin
     if( !bReset )
         data <= 0;

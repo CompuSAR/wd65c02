@@ -62,12 +62,7 @@ reg [`Op__NBits-1:0]active_op;
 
 reg addr_pc; // Address loads into PC rather than Data latch
 
-initial begin
-    timing_counter = 0;
-    ext_waitP = 1; // CPU is halted on power on
-end
-
-always@(negedge clock) begin
+always_ff@(negedge clock) begin
     clear_signals();
     timing_counter <= timing_counter+1;
     if( ! RESET )

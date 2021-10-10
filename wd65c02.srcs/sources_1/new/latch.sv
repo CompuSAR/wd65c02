@@ -26,7 +26,7 @@ module latch#(parameter NBits=8)(
     input clock
     );
 
-always@(posedge clock)
+always_ff@(posedge clock)
     out <= in;
 
 endmodule

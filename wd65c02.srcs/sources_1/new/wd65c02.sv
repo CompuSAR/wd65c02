@@ -201,11 +201,11 @@ instruction_decode decoder(
     .ext_waitP(waitP)
 );
 
-always@(posedge phi2) begin
+always_ff@(posedge phi2) begin
     data_out <= data_bus;
 end
 
-always@(negedge phi2) begin
+always_ff@(negedge phi2) begin
     data_in_latched <= data_in;
     reset_latched <= RES;
 end

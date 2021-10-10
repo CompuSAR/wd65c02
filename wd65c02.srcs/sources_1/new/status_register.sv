@@ -36,23 +36,14 @@ module status_register(
 
 reg [7:0]status;
 
-always@(*)
+always_comb
 begin
     data_out = status;
     data_out[`Flags_Brk] = output_b;
     data_out[`Flags__Unused] = 1'b1;
 end
 
-initial
-begin
-    status = 8'b0;
-    status[`Flags_IrqDisable] = 1'b1;
-
-    status[`Flags_Brk] = 1'b1;          // Should never change
-    status[`Flags__Unused] = 1'b1;      // Should never change
-end
-
-always@(posedge clock)
+always_ff@(posedge clock)
 begin
     if( update_c )
         status[`Flags_Carry] <= data_in[`Flags_Carry];

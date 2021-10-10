@@ -113,7 +113,7 @@ initial begin
     end
 end
 
-always@(negedge clock) begin
+always_ff@(negedge clock) begin
     if( !data_bus_rW )
         memory[address_bus] <= data_bus_out;
 end
