@@ -50,16 +50,16 @@ b0 03           // 0304: BCS $309
 38              // 0306: SEC
 b0 f9           // 0307: BCS $302
 ea              // 0309: NOP
-4c f0 03        // 030a: JMP $3f0
+4c c0 03        // 030a: JMP $3c0
 
-@03f0
-a9 00           // 03f0: LDA #$00
-f0 0c           // 03f2: BEQ $0400
-ea              // 03f4: NOP
+@03c0
+a9 00           // 03c0: LDA #$00
+f0 3c           // 03c2: BEQ $0400
+ea              // 03c4: NOP
 
 @0400
 a2 03           // 0400: LDX #$03
-d0 ee           // 0402: BNE #$03f2
+d0 be           // 0402: BNE #$03c2
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value
