@@ -55,11 +55,14 @@ ea              // 0309: NOP
 @03c0
 a9 00           // 03c0: LDA #$00
 f0 3c           // 03c2: BEQ $0400
-ea              // 03c4: NOP
+10 3e           // 03c4: BPL $0404
+ea              // 03c6: NOP
 
 @0400
 a2 03           // 0400: LDX #$03
 d0 be           // 0402: BNE #$03c2
+a0 80           // 0404: LDY #$80
+30 bc           // 0406: BMI $03c4
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value

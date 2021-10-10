@@ -138,7 +138,9 @@ begin
         `Op_bcc: do_opcode_bcc();
         `Op_bcs: do_opcode_bcs();
         `Op_beq: do_opcode_beq();
+        `Op_bmi: do_opcode_bmi();
         `Op_bne: do_opcode_bne();
+        `Op_bpl: do_opcode_bpl();
         default: set_invalid_state();
     endcase
 end
@@ -163,8 +165,18 @@ task do_opcode_beq();
         next_instruction();
 endtask
 
+task do_opcode_bmi();
+    if( ! status_register[`Flags_Neg] )
+        next_instruction();
+endtask
+
 task do_opcode_bne();
     if( status_register[`Flags_Zero] )
+        next_instruction();
+endtask
+
+task do_opcode_bpl();
+    if( status_register[`Flags_Neg] )
         next_instruction();
 endtask
 

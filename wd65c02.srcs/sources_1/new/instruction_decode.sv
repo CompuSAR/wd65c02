@@ -189,10 +189,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbr0;
     end
+    */
     8'h10: begin
-        setup_addr_r();
         active_op <= `Op_bpl;
+        setup_addr_pc_rel();
     end
+    /*
     8'h11: begin
         setup_addr_zpi_y();
         active_op <= `Op_ora;
@@ -299,10 +301,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbr2;
     end
+    */
     8'h30: begin
-        setup_addr_r();
         active_op <= `Op_bmi;
+        setup_addr_pc_rel();
     end
+    /*
     8'h31: begin
         setup_addr_zpi_y();
         active_op <= `Op_and;

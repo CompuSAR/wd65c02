@@ -54,5 +54,9 @@ Type: 0 - opcode imm, 1 - opcode read, 2 - opcode write
 1_2_a2_0400_03_0401
 0_4_d0_0402_00_04c2     // Invalid address access (legacy 6502)
 0_2_f0_03c2_00_03c3
-0_2_ea_03c4_00_03c5
+0_4_10_03c4_00_0304     // Invalid address access (legacy 6502)
+1_2_a0_0404_80_0405
+0_4_30_0406_00_04c4     // Invalid address access (legacy 6502)
+0_2_10_03c4_00_03c5
+0_2_ea_03c6_00_03c7
 f_0_00_0000_00_0000
