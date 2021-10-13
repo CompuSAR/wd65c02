@@ -496,10 +496,12 @@ begin
         setup_addr_acc();
         active_op <= `Op_ror;
     end
+    */
     8'h6c: begin
-        setup_addr_ind16();
         active_op <= `Op_jmp;
+        setup_addr_abs_ind();
     end
+    /*
     8'h6d: begin
         setup_addr_abs();
         active_op <= `Op_adc;

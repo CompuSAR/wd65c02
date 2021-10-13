@@ -68,8 +68,9 @@
 `define PcLowIn_Preserve        0
 `define PcLowIn_Dl              1
 `define PcLowIn_Alu             2
+`define PcLowIn_Mem             3
 
-`define PcLowIn__NumOptions     3
+`define PcLowIn__NumOptions     4
 `define PcLowIn__NBits  $clog2( `PcLowIn__NumOptions )
 
 

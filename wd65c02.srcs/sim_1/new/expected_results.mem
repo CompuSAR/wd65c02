@@ -59,4 +59,7 @@ Type: 0 - opcode imm, 1 - opcode read, 2 - opcode write
 0_4_30_0406_00_04c4     // Invalid address access (legacy 6502)
 0_2_10_03c4_00_03c5
 0_2_ea_03c6_00_03c7
+0_6_6c_03c7_00_b400     // Takes 6 cycles on the 65c02, 5 on the 6502
+2_6_0e_0408_aa_5ddb
+0_2_ea_040b_00_0311
 f_0_00_0000_00_0000

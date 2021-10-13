@@ -252,6 +252,7 @@ assign alu_carry_inputs[`AluCarryIn_One] = 1'b1;
 assign pc_low_in_inputs[`PcLowIn_Preserve] = pc_value[7:0];
 assign pc_low_in_inputs[`PcLowIn_Dl] = data_latch_value[7:0];
 assign pc_low_in_inputs[`PcLowIn_Alu] = alu_result;
+assign pc_low_in_inputs[`PcLowIn_Mem] = data_in_latched;
 
 assign pc_high_in_inputs[`PcHighIn_Preserve] = pc_value[15:8];
 assign pc_high_in_inputs[`PcHighIn_Mem] = data_in;

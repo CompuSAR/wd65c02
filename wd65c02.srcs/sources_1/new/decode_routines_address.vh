@@ -27,6 +27,7 @@ begin
     `Addr_abs: do_addr_abs();
     `Addr_abs_x: do_addr_abs_x();
     `Addr_abs_y: do_addr_abs_y();
+    `Addr_abs_ind: do_addr_abs_ind();
     //`Addr_immediate: do_addr_imm();
     `Addr_pc_rel: do_addr_pc_rel();
     `Addr_zp: do_addr_zp();
@@ -170,7 +171,52 @@ endtask
 
 task setup_addr_abs_ind();
     // Absolute indirect: (a)
-    // TODO implement
+begin
+    active_address_resolution <= `Addr_abs_ind;
+    control_signals[`CtlSig_PcAdvance] <= 1;
+    address_bus_source <= `AddrBusSrc_Pc;
+    data_bus_source <= `DataBusSrc_Mem;
+    data_latch_ctl_low <= `DllSrc_DataIn;
+end
+endtask
+
+task do_addr_abs_ind();
+    if( timing_counter==1 ) begin
+        control_signals[`CtlSig_PcAdvance] <= 1;
+        address_bus_source <= `AddrBusSrc_Pc;
+        data_bus_source <= `DataBusSrc_Mem;
+        data_latch_ctl_high <= `DlhSrc_DataIn;
+    end else if( timing_counter==2 ) begin
+        address_bus_source <= `AddrBusSrc_Dl;
+
+        data_bus_source <= `DataBusSrc_Zero;
+        alu_carry_src <= `AluCarryIn_One;
+        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_op <= `AluOp_add;
+        data_latch_ctl_low <= `DllSrc_AluRes;
+    end else if( timing_counter==3 ) begin
+        pc_low_src <= `PcLowIn_Mem;
+        pc_high_src <= `PcHighIn_Preserve;
+        control_signals[`CtlSig_Jump] <= 1;
+
+        if( ! PageBoundryWrongAccess ) begin
+            data_bus_source <= `DataBusSrc_Zero;
+            alu_carry_src <= alu_carry;
+            alu_in_bus_src <= `AluInSrc_DlHigh;
+            alu_op <= `AluOp_add;
+            data_latch_ctl_high <= `DlhSrc_AluRes;
+
+            address_bus_source <= `AddrBusSrc_Pc;
+        end
+    end else if( timing_counter==4 && ! PageBoundryWrongAccess ) begin
+        address_bus_source <= `AddrBusSrc_Dl;
+
+        pc_low_src <= `PcLowIn_Preserve;
+        pc_high_src <= `PcHighIn_Mem;
+        control_signals[`CtlSig_Jump] <= 1;
+    end else begin
+        handover_instruction(active_op);
+    end
 endtask
 
 task setup_addr_acc();
