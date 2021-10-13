@@ -35,6 +35,7 @@ ea              // 003c: NOP
 @0042 22        // Command at 22 loads this value
 @0043 48        // Command at 24 indirects through here (and the previous one)
 @0044 37 95     // Commands at 2e, 30 and 32 indirects through here
+@007d b9        // Commands at 080a shift this value
 @0081 ff        // Command at 22 should NOT load this value
 @00b1 19        // Command at 19 loads this value
 @00a9 07        // Command at 07 loads this value
@@ -74,6 +75,12 @@ a0 80           // 0404: LDY #$80
 1e d8 5d        // 080a: ASL $5dd8,x
 b0 fb           // 080d: BCS $0807
 ea              // 080f: NOP
+06 7d           // 0810: ASL $7d
+30 fc           // 0812: BMI $080a
+16 7a           // 0814: ASL $7a,x
+30 fc           // 0816: BMI $080e
+d0 fa           // 0818: BNE $080e
+ea              // 081a: NOP
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value

@@ -153,10 +153,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_ora;
     end
+    */
     8'h06: begin
-        setup_addr_zp();
         active_op <= `Op_asl;
+        setup_addr_zp();
     end
+    /*
     8'h07: begin
         setup_addr_zp();
         active_op <= `Op_rmb0;
@@ -213,10 +215,12 @@ begin
         setup_addr_zpx();
         active_op <= `Op_ora;
     end
+    */
     8'h16: begin
-        setup_addr_zpx();
         active_op <= `Op_asl;
+        setup_addr_zp_x();
     end
+    /*
     8'h17: begin
         setup_addr_zp();
         active_op <= `Op_rmb1;
