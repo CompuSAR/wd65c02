@@ -61,5 +61,7 @@ Type: 0 - opcode imm, 1 - opcode read, 2 - opcode write
 0_2_ea_03c6_00_03c7
 0_6_6c_03c7_00_b400     // Takes 6 cycles on the 65c02, 5 on the 6502
 2_6_0e_0408_aa_5ddb
-0_2_ea_040b_00_0311
+0_2_ea_040b_00_040c
+0_6_6c_040c_00_b3ff
+0_2_ea_0801_00_0802
 f_0_00_0000_00_0000

@@ -213,8 +213,7 @@ end
 assign data_bus_inputs[`DataBusSrc_Zero] = 8'b0;
 assign data_bus_inputs[`DataBusSrc_Ones] = ~8'b0;
 assign data_bus_inputs[`DataBusSrc_RegS] = register_s_value;
-// Temporarily disable to resolve asynchronous loop in logic
-//assign data_bus_inputs[`DataBusSrc_ALU] = alu_result;
+assign data_bus_inputs[`DataBusSrc_ALU] = alu_latch_value;
 assign data_bus_inputs[`DataBusSrc_PCL] = address_bus_inputs[`AddrBusSrc_Pc][7:0];
 assign data_bus_inputs[`DataBusSrc_PCH] = address_bus_inputs[`AddrBusSrc_Pc][15:8];
 assign data_bus_inputs[`DataBusSrc_Mem] = data_in_latched;

@@ -35,11 +35,13 @@ begin
     status_out = 0;
 
     case(control)
-        `AluOp_pass:    result = a;
-        `AluOp_add:     do_plus();
-        `AluOp_and:     result = a & b;
-        `AluOp_or:      result = a | b;
-        `AluOp_xor:     result = a ^ b;
+        `AluOp_pass:            result = a;
+        `AluOp_add:             do_plus();
+        `AluOp_and:             result = a & b;
+        `AluOp_or:              result = a | b;
+        `AluOp_xor:             result = a ^ b;
+        `AluOp_shift_left:      { status_out[`Flags_Carry], result } = { b, carry_in };
+        `AluOp_shift_right:     { result, status_out[`Flags_Carry] } = { carry_in, b };
         default:
             result = 8'bX;
     endcase

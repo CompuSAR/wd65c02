@@ -66,6 +66,10 @@ a0 80           // 0404: LDY #$80
 30 bc           // 0406: BMI $03c4
 0e db 5d        // 0408: ASL $5ddb
 ea              // 040b: NOP
+6c fe b3        // 040c: JMP ($b3fe)
+
+@0801
+ea              // 0801: NOP
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value
@@ -78,6 +82,6 @@ ea              // 040b: NOP
 @9537 2e        // Command at 2e loads this value
 @954e 30        // Command at 30 loads this value
 @962f 34        // Command at 34 loads this value
-@b3ff 08 04     // Command at 3c7 indirects through here
+@b3fe 01 08 04  // Commands at 040c and 03c7 indirect through here
 @be71 1f        // Written to by command at 0027
 @ffb1 ff        // Command at 18 should NOT load this value

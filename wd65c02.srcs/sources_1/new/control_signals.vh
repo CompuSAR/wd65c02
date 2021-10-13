@@ -22,13 +22,15 @@
 `define StatusZeroCtl__NumSignals       3
 `define StatusZeroCtl__NBits            $clog2(`StatusZeroCtl__NumSignals)
 
-`define AluOp_pass  0
-`define AluOp_add   1
-`define AluOp_and   2
-`define AluOp_or    3
-`define AluOp_xor   4
+`define AluOp_pass              0
+`define AluOp_add               1
+`define AluOp_and               2
+`define AluOp_or                3
+`define AluOp_xor               4
+`define AluOp_shift_left        5
+`define AluOp_shift_right       6
 
-`define AluOp__NumOps   8
+`define AluOp__NumOps           7
 `define AluOp__NBits    $clog2( `AluOp__NumOps )
 
 `define Flags_Carry         0

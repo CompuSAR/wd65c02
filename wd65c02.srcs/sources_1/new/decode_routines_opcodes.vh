@@ -105,6 +105,7 @@
 task perform_instruction(input [`Op__NBits-1:0]op);
 begin
     case(op)
+        `Op_asl: do_opcode_asl();
         `Op_clc: do_opcode_clc();
         `Op_jmp: do_opcode_jmp();
         `Op_lda: do_opcode_lda();
@@ -180,6 +181,25 @@ task do_opcode_bpl();
         next_instruction();
 endtask
 
+
+task do_opcode_asl();
+    if( timing_counter<OpCounterStart ) begin
+        ext_ML <= 0;
+    end else if( timing_counter==OpCounterStart ) begin
+        address_bus_source <= `AddrBusSrc_Dl;
+        data_bus_source <= `DataBusSrc_Mem;
+        alu_carry_src <= `AluCarryIn_Zero;
+        alu_op <= `AluOp_shift_left;
+        ext_ML <= 0;
+    end else if( timing_counter==OpCounterStart+1 ) begin
+        address_bus_source <= `AddrBusSrc_Dl;
+        data_bus_source <= `DataBusSrc_ALU;
+        ext_ML <= 0;
+        ext_rW <= 0;
+    end else begin
+        next_instruction();
+    end
+endtask
 
 task do_opcode_clc();
 begin
