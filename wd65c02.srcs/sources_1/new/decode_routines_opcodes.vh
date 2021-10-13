@@ -191,11 +191,18 @@ task do_opcode_asl();
         alu_carry_src <= `AluCarryIn_Zero;
         alu_op <= `AluOp_shift_left;
         ext_ML <= 0;
+
+        status_src <= `StatusSrc_ALU;
+        control_signals[`CtlSig_StatUpdateC] <= 1;
     end else if( timing_counter==OpCounterStart+1 ) begin
         address_bus_source <= `AddrBusSrc_Dl;
         data_bus_source <= `DataBusSrc_ALU;
         ext_ML <= 0;
         ext_rW <= 0;
+
+        status_src <= `StatusSrc_Data;
+        status_zero_ctl <= `StatusZeroCtl_Calculate;
+        control_signals[`CtlSig_StatUpdateN] <= 1;
     end else begin
         next_instruction();
     end

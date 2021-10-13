@@ -243,10 +243,12 @@ begin
         setup_addr_abs_x();
         active_op <= `Op_ora;
     end
+    */
     8'h1e: begin
-        setup_addr_abs_x();
         active_op <= `Op_asl;
+        setup_addr_abs_x();
     end
+    /*
     8'h1f: begin
         setup_addr_r();
         active_op <= `Op_bbr1;

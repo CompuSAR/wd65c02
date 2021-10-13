@@ -11,12 +11,12 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="11,502.245 ns"></ZoomStartTime>
-      <ZoomEndTime time="12,021.552 ns"></ZoomEndTime>
-      <Cursor1Time time="11,935.000 ns"></Cursor1Time>
+      <ZoomStartTime time="14,760.416 ns"></ZoomStartTime>
+      <ZoomEndTime time="15,107.917 ns"></ZoomEndTime>
+      <Cursor1Time time="15,050.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="223"></NameColumnWidth>
+      <NameColumnWidth column_width="219"></NameColumnWidth>
       <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="26" />
@@ -51,6 +51,50 @@
    <wvobject type="array" fp_name="/sim_computer/cpu/status_value">
       <obj_property name="ElementShortName">status_value[7:0]</obj_property>
       <obj_property name="ObjectShortName">status_value[7:0]</obj_property>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/status_value[7]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[7]</obj_property>
+         <obj_property name="ObjectShortName">[7]</obj_property>
+         <obj_property name="label">Negative</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/status_value[6]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">[6]</obj_property>
+         <obj_property name="label">oVerflow</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/status_value[5]">
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">[5]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/status_value[4]">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">[4]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/status_value[3]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">[3]</obj_property>
+         <obj_property name="label">Decimal</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/status_value[2]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">[2]</obj_property>
+         <obj_property name="label">IrqDisable</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/status_value[1]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">[1]</obj_property>
+         <obj_property name="label">Zero</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/sim_computer/cpu/status_value[0]">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+         <obj_property name="label">Carry</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject type="array" fp_name="/sim_computer/cpu/pc/address">
       <obj_property name="DisplayName">label</obj_property>
@@ -133,64 +177,6 @@
    <wvobject type="array" fp_name="/sim_computer/cpu/control_signals">
       <obj_property name="ElementShortName">control_signals[12:0]</obj_property>
       <obj_property name="ObjectShortName">control_signals[12:0]</obj_property>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[12]">
-         <obj_property name="ElementShortName">[12]</obj_property>
-         <obj_property name="ObjectShortName">[12]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[11]">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">[11]</obj_property>
-         <obj_property name="ObjectShortName">[11]</obj_property>
-         <obj_property name="label">Jump</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[10]">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">[10]</obj_property>
-         <obj_property name="ObjectShortName">[10]</obj_property>
-         <obj_property name="label">PC advance</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[9]">
-         <obj_property name="ElementShortName">[9]</obj_property>
-         <obj_property name="ObjectShortName">[9]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[8]">
-         <obj_property name="ElementShortName">[8]</obj_property>
-         <obj_property name="ObjectShortName">[8]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[7]">
-         <obj_property name="ElementShortName">[7]</obj_property>
-         <obj_property name="ObjectShortName">[7]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[6]">
-         <obj_property name="ElementShortName">[6]</obj_property>
-         <obj_property name="ObjectShortName">[6]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[5]">
-         <obj_property name="ElementShortName">[5]</obj_property>
-         <obj_property name="ObjectShortName">[5]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[4]">
-         <obj_property name="ElementShortName">[4]</obj_property>
-         <obj_property name="ObjectShortName">[4]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[3]">
-         <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="ElementShortName">[3]</obj_property>
-         <obj_property name="ObjectShortName">[3]</obj_property>
-         <obj_property name="label">Out BRK</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[2]">
-         <obj_property name="ElementShortName">[2]</obj_property>
-         <obj_property name="ObjectShortName">[2]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[1]">
-         <obj_property name="ElementShortName">[1]</obj_property>
-         <obj_property name="ObjectShortName">[1]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/sim_computer/cpu/control_signals[0]">
-         <obj_property name="ElementShortName">[0]</obj_property>
-         <obj_property name="ObjectShortName">[0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject type="logic" fp_name="/sim_computer/cpu/ML">
       <obj_property name="ElementShortName">ML</obj_property>

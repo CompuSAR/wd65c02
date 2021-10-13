@@ -64,12 +64,16 @@ a2 03           // 0400: LDX #$03
 d0 be           // 0402: BNE #$03c2
 a0 80           // 0404: LDY #$80
 30 bc           // 0406: BMI $03c4
-0e db 5d        // 0408: ASL $5ddb
-ea              // 040b: NOP
-6c fe b3        // 040c: JMP ($b3fe)
+6c fe b3        // 0408: JMP ($b3fe)
 
 @0801
-ea              // 0801: NOP
+38              // 0801: SEC
+0e db 5d        // 0802: ASL $5ddb
+90 fb           // 0805: BCC $0802
+1e d8 5d        // 0807: ASL $5dd8,x
+1e d8 5d        // 080a: ASL $5dd8,x
+b0 fb           // 080d: BCS $0807
+ea              // 080f: NOP
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value
