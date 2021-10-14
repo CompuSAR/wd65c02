@@ -715,12 +715,10 @@ begin
         active_op <= `Op_ldx;
         setup_addr_imm(`Op_ldx);
     end
-    /*
     8'ha4: begin
-        setup_addr_zp();
         active_op <= `Op_ldy;
+        setup_addr_zp();
     end
-    */
     8'ha5: begin
         active_op <= `Op_lda;
         setup_addr_zp();
@@ -748,11 +746,11 @@ begin
         setup_addr_i();
         do_opcode_tax();
     end
+    */
     8'hac: begin
         active_op <= `Op_ldy;
         setup_addr_abs();
     end
-    */
     8'had: begin
         active_op <= `Op_lda;
         setup_addr_abs();
@@ -779,12 +777,10 @@ begin
         active_op <= `Op_lda;
         setup_addr_zp_ind();
     end
-    /*
     8'hb4: begin
-        setup_addr_zpx();
         active_op <= `Op_ldy;
+        setup_addr_zp_x();
     end
-    */
     8'hb5: begin
         active_op <= `Op_lda;
         setup_addr_zp_x();
@@ -812,11 +808,11 @@ begin
         setup_addr_i();
         do_opcode_tsx();
     end
-    8'hbc: begin
-        setup_addr_abs_x();
-        active_op <= `Op_ldy;
-    end
     */
+    8'hbc: begin
+        active_op <= `Op_ldy;
+        setup_addr_abs_x();
+    end
     8'hbd: begin
         active_op <= `Op_lda;
         setup_addr_abs_x();
