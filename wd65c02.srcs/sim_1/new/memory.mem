@@ -36,6 +36,7 @@ ea              // 003c: NOP
 @0043 48        // Command at 24 indirects through here (and the previous one)
 @0044 37 95     // Commands at 2e, 30 and 32 indirects through here
 @007d b9        // Commands at 080a shift this value
+@0080 25        // Command at 081b loads this value
 @0081 ff        // Command at 22 should NOT load this value
 @00b1 19        // Command at 19 loads this value
 @00a9 07        // Command at 07 loads this value
@@ -81,6 +82,13 @@ ea              // 080f: NOP
 30 fc           // 0816: BMI $080e
 d0 fa           // 0818: BNE $080e
 ea              // 081a: NOP
+
+a6 80           // 081b: LDX $80
+8e 03 33        // 081d: STX $3303
+4e 03 33        // 0820: LSR $3303
+b0 fb           // 0823: BCS $0820
+d0 f9           // 0825: BNE $0820
+ea              // 0827: NOP
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value
