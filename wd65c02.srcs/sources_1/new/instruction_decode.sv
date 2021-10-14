@@ -381,10 +381,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_eor;
     end
+    */
     8'h46: begin
-        setup_addr_zp();
         active_op <= `Op_lsr;
+        setup_addr_zp();
     end
+    /*
     8'h47: begin
         setup_addr_zp();
         active_op <= `Op_rmb4;
@@ -438,10 +440,12 @@ begin
         setup_addr_zpx();
         active_op <= `Op_eor;
     end
+    */
     8'h56: begin
-        setup_addr_zpx();
         active_op <= `Op_lsr;
+        setup_addr_zp_x();
     end
+    /*
     8'h57: begin
         setup_addr_zp();
         active_op <= `Op_rmb5;
@@ -462,10 +466,12 @@ begin
         setup_addr_abs_x();
         active_op <= `Op_eor;
     end
+    */
     8'h5e: begin
-        setup_addr_abs_x();
         active_op <= `Op_lsr;
+        setup_addr_abs_x();
     end
+    /*
     8'h5f: begin
         setup_addr_r();
         active_op <= `Op_bbr5;
@@ -815,11 +821,11 @@ begin
         active_op <= `Op_lda;
         setup_addr_abs_x();
     end
-    /*
     8'hbe: begin
-        setup_addr_abs_x();
         active_op <= `Op_ldx;
+        setup_addr_abs_x();
     end
+    /*
     8'hbf: begin
         setup_addr_r();
         active_op <= `Op_bbs3;
