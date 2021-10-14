@@ -90,6 +90,9 @@ b0 fb           // 0823: BCS $0820
 d0 f9           // 0825: BNE $0820
 ea              // 0827: NOP
 
+86 81           // 0828: STX $81
+96 02           // 082a: STX $02,y
+
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value
 @3837 1e        // Command at 1e loads this value

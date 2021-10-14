@@ -596,10 +596,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_sta;
     end
+    */
     8'h86: begin
-        setup_addr_zp();
         active_op <= `Op_stx;
+        setup_addr_zp();
     end
+    /*
     8'h87: begin
         setup_addr_zp();
         active_op <= `Op_smb0;
@@ -656,10 +658,12 @@ begin
         setup_addr_zpx();
         active_op <= `Op_sta;
     end
+    */
     8'h96: begin
-        setup_addr_zpy();
         active_op <= `Op_stx;
+        setup_addr_zp_y();
     end
+    /*
     8'h97: begin
         setup_addr_zp();
         active_op <= `Op_smb1;
