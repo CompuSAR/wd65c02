@@ -111,6 +111,7 @@ begin
         `Op_lda: do_opcode_lda();
         `Op_ldx: do_opcode_ldx();
         `Op_ldy: do_opcode_ldy();
+        `Op_lsr: do_opcode_lsr();
         `Op_nop: do_opcode_nop();
         `Op_sec: do_opcode_sec();
         `Op_sta: do_opcode_sta();
@@ -273,6 +274,32 @@ begin
         next_instruction();
     end
 end
+endtask
+
+task do_opcode_lsr();
+    if( timing_counter<OpCounterStart ) begin
+        ext_ML <= 0;
+    end else if( timing_counter==OpCounterStart ) begin
+        address_bus_source <= `AddrBusSrc_Dl;
+        data_bus_source <= `DataBusSrc_Mem;
+        alu_carry_src <= `AluCarryIn_Zero;
+        alu_op <= `AluOp_shift_right;
+        ext_ML <= 0;
+
+        status_src <= `StatusSrc_ALU;
+        control_signals[`CtlSig_StatUpdateC] <= 1;
+    end else if( timing_counter==OpCounterStart+1 ) begin
+        address_bus_source <= `AddrBusSrc_Dl;
+        data_bus_source <= `DataBusSrc_ALU;
+        ext_ML <= 0;
+        ext_rW <= 0;
+
+        status_src <= `StatusSrc_Data;
+        status_zero_ctl <= `StatusZeroCtl_Calculate;
+        control_signals[`CtlSig_StatUpdateN] <= 1;
+    end else begin
+        next_instruction();
+    end
 endtask
 
 task do_opcode_nop();

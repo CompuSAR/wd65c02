@@ -412,10 +412,12 @@ begin
         setup_addr_abs();
         active_op <= `Op_eor;
     end
+    */
     8'h4e: begin
         setup_addr_abs();
         active_op <= `Op_lsr;
     end
+    /*
     8'h4f: begin
         setup_addr_r();
         active_op <= `Op_bbr4;
