@@ -114,6 +114,7 @@ begin
         `Op_nop: do_opcode_nop();
         `Op_sec: do_opcode_sec();
         `Op_sta: do_opcode_sta();
+        `Op_stx: do_opcode_stx();
         default: set_invalid_state();
     endcase
 end
@@ -299,6 +300,16 @@ begin
     if( timing_counter < OpCounterStart ) begin
         ext_rW <= 0;
         data_bus_source <= `DataBusSrc_RegAcc;
+    end else
+        next_instruction();
+end
+endtask
+
+task do_opcode_stx();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        ext_rW <= 0;
+        data_bus_source <= `DataBusSrc_RegX;
     end else
         next_instruction();
 end

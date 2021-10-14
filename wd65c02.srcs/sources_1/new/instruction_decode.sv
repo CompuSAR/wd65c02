@@ -623,11 +623,11 @@ begin
         active_op <= `Op_sta;
         setup_addr_abs();
     end
-    /*
     8'h8e: begin
-        setup_addr_abs();
         active_op <= `Op_stx;
+        setup_addr_abs();
     end
+    /*
     8'h8f: begin
         setup_addr_r();
         active_op <= `Op_bbs0;
