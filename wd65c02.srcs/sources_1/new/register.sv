@@ -28,7 +28,7 @@ module register#(parameter DataBits = 8)(
     input bReset
     );
 
-reg [DataBits-1:0]data;
+reg [DataBits-1:0]data = 8'h0;
 assign data_out = data;
 
 always_ff@(posedge clock, negedge bReset)

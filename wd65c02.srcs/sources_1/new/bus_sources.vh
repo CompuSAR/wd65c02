@@ -19,15 +19,18 @@
 `define DllSrc_None         0
 `define DllSrc_DataIn       1
 `define DllSrc_AluRes       2
+`define DllSrc_Nmi          3
+`define DllSrc_Reset        4
+`define DllSrc_Irq          5
 
-`define DllSrc__NumOptions  3
+`define DllSrc__NumOptions  6
 `define DllSrc__NBits $clog2( `DllSrc__NumOptions )
 
 
 // Data latch high sources
 `define DlhSrc_None         0
 `define DlhSrc_Zero         1
-`define DlhSrc_One          2
+`define DlhSrc_Ones         2
 `define DlhSrc_DataIn       3
 `define DlhSrc_AluRes       4
 
@@ -44,18 +47,25 @@
 `define AddrBusSrc__NBits $clog2( `AddrBusSrc__NumOptions )
 
 
-`define AluInSrc_Zero      0
-`define AluInSrc_Acc       1
-`define AluInSrc_RegX      2
-`define AluInSrc_RegY      3
-//`define AluInSrc_RegS      3
-`define AluInSrc_DlLow     4
-`define AluInSrc_DlHigh    5
-`define AluInSrc_PcLow     6
-`define AluInSrc_PcHigh    7
+`define AluASrc_Zero      0
+`define AluASrc_Acc       1
+`define AluASrc_RegX      2
+`define AluASrc_RegY      3
+`define AluASrc_RegS      4
+`define AluASrc_DlLow     5
+`define AluASrc_DlHigh    6
+`define AluASrc_PcLow     7
+`define AluASrc_PcHigh    8
 
-`define AluInSrc__NumOptions 8
-`define AluInSrc__NBits $clog2( `AluInSrc__NumOptions )
+`define AluASrc__NumOptions 9
+`define AluASrc__NBits $clog2( `AluASrc__NumOptions )
+
+
+`define AluBSrc_Zero            0
+`define AluBSrc_DataBus         1
+
+`define AluBSrc__NumOptions     2
+`define AluBSrc__NBits  $clog2( `AluBSrc__NumOptions )
 
 
 `define AluCarryIn_Zero         0
@@ -75,11 +85,21 @@
 
 
 `define PcHighIn_Preserve       0
-`define PcHighIn_Mem            1
-`define PcHighIn_Alu            2
+`define PcHighIn_Ones           1
+`define PcHighIn_Mem            2
+`define PcHighIn_Alu            3
 
-`define PcHighIn__NumOptions    3
+`define PcHighIn__NumOptions    4
 `define PcHighIn__NBits  $clog2( `PcHighIn__NumOptions )
+
+
+`define StackIn_Preserve        0
+`define StackIn_AluRes          1
+`define StackIn_DataBus         2
+
+`define StackIn__NumOptions     3
+`define StackIn__NBits  $clog2( `StackIn__NumOptions )
+
 
 `define StatusSrc_Data          0
 `define StatusSrc_ALU           1

@@ -34,13 +34,15 @@ module instruction_decode#(PageBoundryWrongAccess = 0, UnknownOpcodesNop = 1)
         output reg [`DllSrc__NBits-1:0]data_latch_ctl_low,
         output reg [`DataBusSrc__NBits-1:0]data_bus_source,
         output reg [`AddrBusSrc__NBits-1:0]address_bus_source,
-        output reg [`AluInSrc__NBits-1:0]alu_in_bus_src,
+        output reg [`AluASrc__NBits-1:0]alu_a_src,
+        output reg [`AluBSrc__NBits-1:0]alu_b_src,
         output reg [`AluOp__NBits-1:0]alu_op,
         output reg [`AluCarryIn__NBits-1:0]alu_carry_src,
         output reg [`StatusSrc__NBits-1:0]status_src,
         output reg [`PcLowIn__NBits-1:0]pc_low_src,
         output reg [`PcHighIn__NBits-1:0]pc_high_src,
         output reg [`StatusZeroCtl__NBits-1:0]status_zero_ctl,
+        output [`StackIn__NBits-1:0]stack_pointer_src,
         output reg ext_rW,
         output reg ext_ML,
         output reg ext_sync,
@@ -50,11 +52,18 @@ module instruction_decode#(PageBoundryWrongAccess = 0, UnknownOpcodesNop = 1)
 
 `include "decode_routines_address.vh"
 
+// If we don't set this, the inital value of the stack pointer is XX. We honestly don't care what the initial value is,
+// but this makes verification in simulation more difficult.
+reg [`StackIn__NBits-1:0]stack_pointer_src_register = `StackIn_Preserve;
+assign stack_pointer_src = stack_pointer_src_register;
+
 localparam TimingCounterBits = 4; // 4 bits ought to be enough for anybody...
 reg [TimingCounterBits-1:0]timing_counter;
 localparam [TimingCounterBits-1:0]OpCounterStart = {1'b1, {TimingCounterBits-1{1'b0}}};
 
 assign sync = timing_counter==0;
+
+enum { Halted, Reset, Irq, Nmi, Running } run_status;
 
 // Collectively, these serve as the instruction register
 reg [`Addr__NBits-1:0]active_address_resolution;
@@ -62,19 +71,21 @@ reg [`Op__NBits-1:0]active_op;
 
 reg addr_pc; // Address loads into PC rather than Data latch
 
-always_ff@(negedge clock) begin
+enum { IntrBrk = 0, IntrIrq = 1, IntrNmi = 2, IntrReset = 3 } active_int = IntrBrk;
+
+always_ff@(negedge clock, negedge RESET) begin
     clear_signals();
     timing_counter <= timing_counter+1;
-    if( ! RESET )
+    if( ! RESET ) begin
         do_reset();
-    else begin
-        if( timing_counter==0 )
-            do_opcode_decode();
-        else if( active_address_resolution!=`Addr_invalid )
-            fetch_operand();
-        else
-            perform_instruction(active_op);
-    end
+    end else if( run_status==Halted )
+        ;
+    else if( timing_counter==0 )
+        do_opcode_decode();
+    else if( timing_counter<OpCounterStart )
+        fetch_operand();
+    else
+        perform_instruction(active_op);
 end
 
 task do_reset();
@@ -82,7 +93,8 @@ begin
     active_address_resolution <= `Addr_invalid;
     active_op <= `Op__invalid;
     ext_waitP <= 1'b0;
-    next_instruction();
+    run_status <= Reset;
+    timing_counter <= 0;
 end
 endtask
 
@@ -93,6 +105,7 @@ begin
     data_latch_ctl_high <= `DlhSrc_None;
     data_latch_ctl_low <= `DllSrc_None;
     status_zero_ctl <= `StatusZeroCtl_Preserve;
+    stack_pointer_src_register <= `StackIn_Preserve;
 
     ext_rW <= 1'b1;
     ext_ML <= 1'b1;
@@ -101,7 +114,8 @@ begin
 
     data_bus_source <= {`DataBusSrc__NBits{1'bX}};
     address_bus_source <= `AddrBusSrc_Pc;
-    alu_in_bus_src <= {`AluInSrc__NBits{1'bX}};
+    alu_a_src <= {`AluASrc__NBits{1'bX}};
+    alu_b_src <= {`AluASrc__NBits{1'bX}};
     alu_op <= {`AluOp__NBits{1'bX}};
     alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
     status_src <= {`StatusSrc__NBits{1'bX}};
@@ -116,6 +130,7 @@ begin
     data_latch_ctl_high <= {`DlhSrc__NBits{1'bX}};
     data_latch_ctl_low <= {`DllSrc__NBits{1'bX}};
     status_zero_ctl <= {`StatusZeroCtl__NBits{1'bX}};
+    stack_pointer_src_register <= {`StackIn__NBits{1'bX}};
 
     ext_rW <= 1'bX;
     ext_ML <= 1'bX;
@@ -124,7 +139,8 @@ begin
 
     data_bus_source <= {`DataBusSrc__NBits{1'bX}};
     address_bus_source <= {`AddrBusSrc__NBits{1'bX}};
-    alu_in_bus_src <= {`AluInSrc__NBits{1'bX}};
+    alu_a_src <= {`AluASrc__NBits{1'bX}};
+    alu_b_src <= {`AluASrc__NBits{1'bX}};
     alu_op <= {`AluOp__NBits{1'bX}};
     alu_carry_src <= {`AluCarryIn__NBits{1'bX}};
     status_src <= {`StatusSrc__NBits{1'bX}};
@@ -135,11 +151,19 @@ endtask
 
 task do_opcode_decode();
 begin
+    if( run_status==Reset ) begin
+        active_op <= `Op_interrupt;
+        active_int <= IntrReset;
+        do_opcode_interrupt();
+        return;
+    end
+
     case( data_in )
     /*
     8'h00: begin
+        active_op <= `Op_interrupt;
+        active_int <= Intr_brk;
         setup_addr_s();
-        active_op <= `Op_brk;
     end
     8'h01: begin
         setup_addr_zpxi();

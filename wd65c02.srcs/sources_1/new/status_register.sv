@@ -24,6 +24,7 @@ module status_register(
     input [7:0] data_in,
     output reg [7:0]data_out,
     input clock,
+    input RESET,
 
     input update_c,
     input [`StatusZeroCtl__NBits-1:0] update_z,
@@ -34,7 +35,7 @@ module status_register(
     input update_n
 );
 
-reg [7:0]status;
+reg [7:0]status = 8'b0011_0100;
 
 always_comb
 begin
@@ -43,24 +44,29 @@ begin
     data_out[`Flags__Unused] = 1'b1;
 end
 
-always_ff@(posedge clock)
+always_ff@(posedge clock, negedge RESET)
 begin
-    if( update_c )
-        status[`Flags_Carry] <= data_in[`Flags_Carry];
-    case(update_z)
-        `StatusZeroCtl_Preserve:        ;
-        `StatusZeroCtl_Data:            status[`Flags_Zero] <= data_in[`Flags_Zero];
-        `StatusZeroCtl_Calculate:       status[`Flags_Zero] <= data_in == 7'b0;
-        default:                        status[`Flags_Zero] <= 1'bX;
-    endcase
-    if( update_i )
-        status[`Flags_IrqDisable] <= data_in[`Flags_IrqDisable];
-    if( update_d )
-        status[`Flags_Decimal] <= data_in[`Flags_Decimal];
-    if( update_v )
-        status[`Flags_oVerflow] <= data_in[`Flags_oVerflow];
-    if( update_n )
-        status[`Flags_Neg] <= data_in[7];
+    if( ! RESET ) begin
+        status[`Flags_Decimal] <= 1'b0;
+        status[`Flags_IrqDisable] <= 1'b1;
+    end else begin
+        if( update_c )
+            status[`Flags_Carry] <= data_in[`Flags_Carry];
+        case(update_z)
+            `StatusZeroCtl_Preserve:        ;
+            `StatusZeroCtl_Data:            status[`Flags_Zero] <= data_in[`Flags_Zero];
+            `StatusZeroCtl_Calculate:       status[`Flags_Zero] <= data_in == 7'b0;
+            default:                        status[`Flags_Zero] <= 1'bX;
+        endcase
+        if( update_i )
+            status[`Flags_IrqDisable] <= data_in[`Flags_IrqDisable];
+        if( update_d )
+            status[`Flags_Decimal] <= data_in[`Flags_Decimal];
+        if( update_v )
+            status[`Flags_oVerflow] <= data_in[`Flags_oVerflow];
+        if( update_n )
+            status[`Flags_Neg] <= data_in[7];
+    end
 end
 
 endmodule

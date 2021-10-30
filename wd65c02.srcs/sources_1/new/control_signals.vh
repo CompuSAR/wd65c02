@@ -7,11 +7,11 @@
 
 `define CtlSig_RegYWrite        6
 `define CtlSig_RegXWrite        7
-`define CtlSig_RegSWrite        8
-`define CtlSig_RegAccWrite      9
-`define CtlSig_PcAdvance        10
-`define CtlSig_Jump             11
-`define CtlSig_AluInverse       12
+`define CtlSig_RegAccWrite      8
+`define CtlSig_PcAdvance        9
+`define CtlSig_Jump             10
+`define CtlSig_AluInverse       11
+`define CtlSig_ResetStatus      12
 
 `define CtlSig__NumSignals      13
 

@@ -27,7 +27,6 @@
 `define Op_bne  25
 `define Op_bpl  26
 `define Op_bra  27
-`define Op_brk  28
 `define Op_bvc  29
 `define Op_bvs  30
 `define Op_clc  31
@@ -99,7 +98,9 @@
 `define Op_tya  97
 `define Op_wai  98
 
-`define Op__Count 99
+`define Op_interrupt 99
+
+`define Op__Count 100
 `define Op__NBits $clog2(`Op__Count)
 
 task perform_instruction(input [`Op__NBits-1:0]op);
@@ -116,6 +117,8 @@ begin
         `Op_sec: do_opcode_sec();
         `Op_sta: do_opcode_sta();
         `Op_stx: do_opcode_stx();
+
+        `Op_interrupt: do_opcode_interrupt();
         default: set_invalid_state();
     endcase
 end
@@ -339,5 +342,94 @@ begin
         data_bus_source <= `DataBusSrc_RegX;
     end else
         next_instruction();
+end
+endtask
+
+
+task do_opcode_interrupt();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        timing_counter <= OpCounterStart;
+        control_signals[`CtlSig_PcAdvance] <= 1;
+        run_status <= Running;
+    end else if( timing_counter == OpCounterStart ) begin
+        // Push return address to stack
+        data_bus_source <= `DataBusSrc_PCH;
+        address_bus_source <= `AddrBusSrc_Sp;
+        ext_rW <= (active_int == IntrReset);
+
+        // Subtract one from stack pointer (push)
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        control_signals[`CtlSig_AluInverse] <= 1'b1;
+        alu_carry_src <= `AluCarryIn_Zero;
+        alu_op <= `AluOp_add;
+        
+        stack_pointer_src_register <= `StackIn_AluRes;
+    end else if( timing_counter == OpCounterStart+1 ) begin
+        // Push return address to stack
+        data_bus_source <= `DataBusSrc_PCL;
+        address_bus_source <= `AddrBusSrc_Sp;
+        ext_rW <= (active_int == IntrReset);
+
+        // Subtract one from stack pointer
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        control_signals[`CtlSig_AluInverse] <= 1'b1;
+        alu_carry_src <= `AluCarryIn_Zero;
+        alu_op <= `AluOp_add;
+
+        stack_pointer_src_register <= `StackIn_AluRes;
+    end else if( timing_counter == OpCounterStart+2 ) begin
+        // Push status flags to stack
+        data_bus_source <= `DataBusSrc_Status;
+        address_bus_source <= `AddrBusSrc_Sp;
+        ext_rW <= (active_int == IntrReset);
+        control_signals[`CtlSig_StatOutputB] <= active_int==IntrBrk;
+
+        // Subtract one from stack pointer
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        control_signals[`CtlSig_AluInverse] <= 1'b1;
+        alu_carry_src <= `AluCarryIn_Zero;
+        alu_op <= `AluOp_add;
+
+        stack_pointer_src_register <= `StackIn_AluRes;
+
+        // Preload the DL with the reset vector
+        data_latch_ctl_high <= `DlhSrc_Ones;
+        case( active_int )
+            IntrBrk:
+                data_latch_ctl_low <= `DllSrc_Irq;
+            IntrIrq:
+                data_latch_ctl_low <= `DllSrc_Irq;
+            IntrNmi:
+                data_latch_ctl_low <= `DllSrc_Nmi;
+            IntrReset:
+                data_latch_ctl_low <= `DllSrc_Reset;
+        endcase
+    end else if( timing_counter == OpCounterStart+3 ) begin
+        // Load the vector
+        address_bus_source <= `AddrBusSrc_Dl;
+        ext_VP <= 1'b0;
+
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_Zero;
+        alu_carry_src <= `AluCarryIn_One;
+        alu_op <= `AluOp_add;
+        data_latch_ctl_low <= `DllSrc_AluRes;
+
+        pc_low_src <= `PcLowIn_Mem;
+        control_signals[`CtlSig_Jump] <= 1;
+    end else if( timing_counter == OpCounterStart+4 ) begin
+        address_bus_source <= `AddrBusSrc_Dl;
+        ext_VP <= 1'b0;
+
+        pc_low_src <= `PcLowIn_Preserve;
+        pc_high_src <= `PcHighIn_Mem;
+        control_signals[`CtlSig_Jump] <= 1;
+    end else if( timing_counter == OpCounterStart+5 ) begin
+        next_instruction();
+    end
 end
 endtask

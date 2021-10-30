@@ -93,6 +93,8 @@ ea              // 0827: NOP
 86 81           // 0828: STX $81
 96 02           // 082a: STX $02,y
 
+00 07           // 082c: BRK
+
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value
 @3837 1e        // Command at 1e loads this value
@@ -107,3 +109,5 @@ ea              // 0827: NOP
 @b3fe 01 08 04  // Commands at 040c and 03c7 indirect through here
 @be71 1f        // Written to by command at 0027
 @ffb1 ff        // Command at 18 should NOT load this value
+
+@fffc 00 00     // Reset vector

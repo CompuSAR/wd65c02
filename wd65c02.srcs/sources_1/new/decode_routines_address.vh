@@ -99,7 +99,8 @@ begin
         data_latch_ctl_high <= `DlhSrc_DataIn;
 
         // Add X to LSB
-        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_DataBus;
         data_bus_source <= `DataBusSrc_RegX;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_Zero;
@@ -111,8 +112,8 @@ begin
         else
             address_bus_source <= `AddrBusSrc_Pc;
 
-        alu_in_bus_src <= `AluInSrc_DlHigh;
-        data_bus_source <= `DataBusSrc_Zero;
+        alu_a_src <= `AluASrc_DlHigh;
+        alu_b_src <= `AluBSrc_Zero;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_One;
         data_latch_ctl_high <= `DlhSrc_AluRes;
@@ -144,7 +145,8 @@ begin
         data_latch_ctl_high <= `DlhSrc_DataIn;
 
         // Add Y to LSB
-        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_DataBus;
         data_bus_source <= `DataBusSrc_RegY;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_Zero;
@@ -156,8 +158,8 @@ begin
         else
             address_bus_source <= `AddrBusSrc_Pc;
 
-        alu_in_bus_src <= `AluInSrc_DlHigh;
-        data_bus_source <= `DataBusSrc_Zero;
+        alu_a_src <= `AluASrc_DlHigh;
+        alu_b_src <= `AluBSrc_Zero;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_One;
         data_latch_ctl_high <= `DlhSrc_AluRes;
@@ -189,9 +191,9 @@ task do_addr_abs_ind();
     end else if( timing_counter==2 ) begin
         address_bus_source <= `AddrBusSrc_Dl;
 
-        data_bus_source <= `DataBusSrc_Zero;
         alu_carry_src <= `AluCarryIn_One;
-        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_Zero;
         alu_op <= `AluOp_add;
         data_latch_ctl_low <= `DllSrc_AluRes;
     end else if( timing_counter==3 ) begin
@@ -200,9 +202,9 @@ task do_addr_abs_ind();
         control_signals[`CtlSig_Jump] <= 1;
 
         if( ! PageBoundryWrongAccess ) begin
-            data_bus_source <= `DataBusSrc_Zero;
             alu_carry_src <= alu_carry;
-            alu_in_bus_src <= `AluInSrc_DlHigh;
+            alu_a_src <= `AluASrc_DlHigh;
+            alu_b_src <= `AluBSrc_Zero;
             alu_op <= `AluOp_add;
             data_latch_ctl_high <= `DlhSrc_AluRes;
 
@@ -252,7 +254,8 @@ reg relative_addressing_offset_negative;
 task do_addr_pc_rel();
 begin
     if( timing_counter==1 ) begin
-        alu_in_bus_src <= `AluInSrc_PcLow;
+        alu_a_src <= `AluASrc_PcLow;
+        alu_b_src <= `AluBSrc_DataBus;
         alu_op <= `AluOp_add;
         data_bus_source <= `DataBusSrc_Mem;
         alu_carry_src <= `AluCarryIn_Zero;
@@ -269,9 +272,9 @@ begin
     end else if( timing_counter==2 ) begin
         if( relative_addressing_offset_negative ^ alu_carry ) begin
             // Jump crossed page boundary
-            alu_in_bus_src <= `AluInSrc_PcHigh;
+            alu_a_src <= `AluASrc_PcHigh;
+            alu_b_src <= `AluBSrc_Zero;
             alu_op <= `AluOp_add;
-            data_bus_source <= `DataBusSrc_Zero;
             alu_carry_src <= alu_carry;
             control_signals[`CtlSig_AluInverse] <= relative_addressing_offset_negative;
 
@@ -329,7 +332,8 @@ begin
         address_bus_source <= `AddrBusSrc_Dl;    // XXX 6502 cycle 3 is dummy read from unmodified address. Need to test on 65c02
 
         // Add X to LSB
-        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_DataBus;
         data_bus_source <= `DataBusSrc_RegX;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_Zero;
@@ -337,8 +341,8 @@ begin
     end else if( timing_counter==2 ) begin
         address_bus_source <= `AddrBusSrc_Dl;
 
-        alu_in_bus_src <= `AluInSrc_DlLow;
-        data_bus_source <= `DataBusSrc_Zero;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_Zero;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_One;
 
@@ -372,7 +376,8 @@ begin
         address_bus_source <= `AddrBusSrc_Dl;    // XXX 6502 cycle 3 is dummy read from unmodified address. Need to test on 65c02
 
         // Add X to LSB
-        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_DataBus;
         data_bus_source <= `DataBusSrc_RegX;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_Zero;
@@ -402,7 +407,8 @@ begin
         address_bus_source <= `AddrBusSrc_Dl;    // XXX 6502 cycle 3 is dummy read from unmodified address. Need to test on 65c02
 
         // Add X to LSB
-        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_DataBus;
         data_bus_source <= `DataBusSrc_RegY;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_Zero;
@@ -431,8 +437,8 @@ begin
         // Load address MSB
         address_bus_source <= `AddrBusSrc_Dl;    // XXX 6502 cycle 3 is dummy read from unmodified address. Need to test on 65c02
 
-        alu_in_bus_src <= `AluInSrc_DlLow;
-        data_bus_source <= `DataBusSrc_Zero;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_Zero;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_One;
 
@@ -465,8 +471,8 @@ begin
         // Load address MSB
         address_bus_source <= `AddrBusSrc_Dl;
 
-        alu_in_bus_src <= `AluInSrc_DlLow;
-        data_bus_source <= `DataBusSrc_Zero;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_Zero;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_One;
 
@@ -474,7 +480,8 @@ begin
     end else if( timing_counter==2 ) begin
         address_bus_source <= `AddrBusSrc_Alu;
 
-        alu_in_bus_src <= `AluInSrc_DlLow;
+        alu_a_src <= `AluASrc_DlLow;
+        alu_b_src <= `AluBSrc_DataBus;
         data_bus_source <= `DataBusSrc_RegY;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_Zero;
@@ -487,8 +494,8 @@ begin
         else
             address_bus_source <= `AddrBusSrc_Pc;
 
-        alu_in_bus_src <= `AluInSrc_DlHigh;
-        data_bus_source <= `DataBusSrc_Zero;
+        alu_a_src <= `AluASrc_DlHigh;
+        alu_b_src <= `AluBSrc_Zero;
         alu_op <= `AluOp_add;
         alu_carry_src <= `AluCarryIn_One;
 

@@ -25,17 +25,14 @@ module program_counter(
     output [15:0] addr_out,
     input advance,
     input jump,
-    input clock,
-    input RESET
+    input clock
     );
 
-reg [15:0]address;
+logic [15:0]address = 0;
 assign addr_out = address;
 
 always_ff@(negedge clock) begin
-    if( ! RESET ) begin
-        address <= 16'h0;
-    end else if( advance && !jump ) begin
+    if( advance && !jump ) begin
         address <= address + 1;
     end else if( jump && !advance ) begin
         address <= addr_in;
