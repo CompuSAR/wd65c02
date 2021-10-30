@@ -97,10 +97,13 @@ ea              // 0827: NOP
 96 02           // 082a: STX $02,y
 
 80 d0           // 082c: BRA $07fe
+ea              // 082e: NOP
 
 @35b3
 ea              // 35b3: NOP
-60              // 35b4: RTS
+a9 2d           // 35b4: LDA #$2d
+8d fe 01        // 35b6: STA $01fe      // Change the stack's return address
+60              // 35b9: RTS
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value

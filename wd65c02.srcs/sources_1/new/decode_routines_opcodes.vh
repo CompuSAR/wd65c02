@@ -132,6 +132,7 @@ begin
         `Op_ldy: do_opcode_ldy();
         `Op_lsr: do_opcode_lsr();
         `Op_nop: do_opcode_nop();
+        `Op_rts: do_opcode_rts();
         `Op_sec: do_opcode_sec();
         `Op_sta: do_opcode_sta();
         `Op_stx: do_opcode_stx();
@@ -386,6 +387,54 @@ task do_opcode_nop();
         ;
     else
         next_instruction();
+endtask
+
+task do_opcode_rts();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        // XXX DUMMY_CYCLE. There is no need to advance the PC. We're going to
+        // be overwriting it in just a couple of cycles
+        control_signals[`CtlSig_PcAdvance] <= 1;
+        address_bus_source <= `AddrBusSrc_Pc;
+    end else if( timing_counter == OpCounterStart ) begin
+        address_bus_source <= `AddrBusSrc_Sp;
+
+        alu_op <= `AluOp_add;
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        alu_carry_src <= `AluCarryIn_One;
+
+        stack_pointer_src_register <= `StackIn_AluRes;
+    end else if( timing_counter == OpCounterStart+1 ) begin
+        address_bus_source <= `AddrBusSrc_Sp;
+        data_latch_ctl_low <= `DllSrc_DataIn;
+
+        alu_op <= `AluOp_add;
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        alu_carry_src <= `AluCarryIn_One;
+
+        stack_pointer_src_register <= `StackIn_AluRes;
+    end else if( timing_counter == OpCounterStart+2 ) begin
+        address_bus_source <= `AddrBusSrc_Sp;
+        pc_low_src <= `PcLowIn_Dl;
+        pc_high_src <= `PcHighIn_Mem;
+        control_signals[`CtlSig_Jump] <= 1;
+
+        alu_op <= `AluOp_add;
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        alu_carry_src <= `AluCarryIn_One;
+
+        stack_pointer_src_register <= `StackIn_AluRes;
+    end else if( timing_counter == OpCounterStart+3 ) begin
+        address_bus_source <= `AddrBusSrc_Pc;
+
+        control_signals[`CtlSig_PcAdvance] <= 1;
+    end else if( timing_counter == OpCounterStart+4 ) begin
+        next_instruction();
+    end
+end
 endtask
 
 task do_opcode_sec();

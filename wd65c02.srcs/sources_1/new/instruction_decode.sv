@@ -520,10 +520,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbr5;
     end
+    */
     8'h60: begin
-        setup_addr_s();
         active_op <= `Op_rts;
+        setup_addr_i(`Op_rts);
     end
+    /*
     8'h61: begin
         setup_addr_zpxi();
         active_op <= `Op_adc;
