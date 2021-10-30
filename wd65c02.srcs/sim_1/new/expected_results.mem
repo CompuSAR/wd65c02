@@ -132,7 +132,8 @@ Type: 0 - opcode imm, 1 - opcode read, 2 - opcode write
 0_2_ea_0827_00_0828
 2_3_86_0828_25_0081 // STX tests
 2_4_96_082a_25_0082
-1_6_20_082c_b3_082e // JSR tests
+0_4_80_082c_00_08fe     // Legacy 6502
+1_6_20_07fe_35_0800 // JSR tests
 1_2_ea_35b3_60_32b4
 1_6_60_35b4_b3_082e
 1_2_ea_082f_00_0830

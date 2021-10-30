@@ -126,6 +126,7 @@ begin
         `Op_asl: do_opcode_asl();
         `Op_clc: do_opcode_clc();
         `Op_jmp: do_opcode_jmp();
+        `Op_jsr: do_opcode_jsr();
         `Op_lda: do_opcode_lda();
         `Op_ldx: do_opcode_ldx();
         `Op_ldy: do_opcode_ldy();
@@ -166,6 +167,7 @@ begin
         `Op_bmi: do_opcode_bmi();
         `Op_bne: do_opcode_bne();
         `Op_bpl: do_opcode_bpl();
+        `Op_bra: do_opcode_bra();
         default: set_invalid_state();
     endcase
 end
@@ -203,6 +205,9 @@ endtask
 task do_opcode_bpl();
     if( status_register[`Flags_Neg] )
         next_instruction();
+endtask
+
+task do_opcode_bra();
 endtask
 
 
@@ -248,6 +253,55 @@ endtask
 task do_opcode_jmp();
 begin
     next_instruction();
+end
+endtask
+
+task do_opcode_jsr();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        control_signals[`CtlSig_PcAdvance] <= 1;
+        address_bus_source <= `AddrBusSrc_Pc;
+        data_latch_ctl_low <= `DllSrc_DataIn;
+    end if( timing_counter == OpCounterStart ) begin
+        // There is absolutely nothing useful happening in this cycle. It's
+        // just there for compatibility. I can only hypothise that some
+        // version of the 6502 couldn't update the PC and read from the stack
+        // at the same time.
+        // XXX DUMMY_CYCLE
+        address_bus_source <= `AddrBusSrc_Sp;
+    end if( timing_counter == OpCounterStart+1 ) begin
+        address_bus_source <= `AddrBusSrc_Sp;
+        ext_rW <= 0;
+        data_bus_source <= `DataBusSrc_PCH;
+
+        alu_op <= `AluOp_add;
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        alu_carry_src <= `AluCarryIn_Zero;
+        control_signals[`CtlSig_AluInverse] <= 1;
+
+        stack_pointer_src_register <= `StackIn_AluRes;
+    end if( timing_counter == OpCounterStart+2 ) begin
+        address_bus_source <= `AddrBusSrc_Sp;
+        ext_rW <= 0;
+        data_bus_source <= `DataBusSrc_PCL;
+
+        alu_op <= `AluOp_add;
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        alu_carry_src <= `AluCarryIn_Zero;
+        control_signals[`CtlSig_AluInverse] <= 1;
+
+        stack_pointer_src_register <= `StackIn_AluRes;
+    end if( timing_counter == OpCounterStart+3 ) begin
+        address_bus_source <= `AddrBusSrc_Pc;
+
+        pc_low_src <= `PcLowIn_Dl;
+        pc_high_src <= `PcHighIn_Mem;
+        control_signals[`CtlSig_Jump] <= 1;
+    end if( timing_counter == OpCounterStart+4 ) begin
+        next_instruction();
+    end
 end
 endtask
 

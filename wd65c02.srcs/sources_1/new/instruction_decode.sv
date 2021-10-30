@@ -299,10 +299,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbr1;
     end
+    */
     8'h20: begin
-        setup_addr_a();
         active_op <= `Op_jsr;
+        setup_addr_i(`Op_jsr);
     end
+    /*
     8'h21: begin
         setup_addr_zpxi();
         active_op <= `Op_and;
@@ -628,10 +630,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbr7;
     end
+    */
     8'h80: begin
-        setup_addr_r();
         active_op <= `Op_bra;
+        setup_addr_pc_rel();
     end
+    /*
     8'h81: begin
         setup_addr_zpxi();
         active_op <= `Op_sta;
