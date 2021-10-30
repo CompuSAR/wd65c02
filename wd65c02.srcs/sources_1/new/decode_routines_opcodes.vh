@@ -193,6 +193,7 @@ task do_opcode_asl();
     end else if( timing_counter==OpCounterStart ) begin
         address_bus_source <= `AddrBusSrc_Dl;
         data_bus_source <= `DataBusSrc_Mem;
+        alu_b_src <= `AluBSrc_DataBus;
         alu_carry_src <= `AluCarryIn_Zero;
         alu_op <= `AluOp_shift_left;
         ext_ML <= 0;
@@ -285,6 +286,7 @@ task do_opcode_lsr();
     end else if( timing_counter==OpCounterStart ) begin
         address_bus_source <= `AddrBusSrc_Dl;
         data_bus_source <= `DataBusSrc_Mem;
+        alu_b_src <= `AluBSrc_DataBus;
         alu_carry_src <= `AluCarryIn_Zero;
         alu_op <= `AluOp_shift_right;
         ext_ML <= 0;
