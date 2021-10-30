@@ -18,6 +18,12 @@ Type: 0 - opcode imm, 1 - opcode read, 2 - opcode write
 | | |  |    |  Last fetch address
 | | |  |    |  |
 */
+1_2_a2_9b80_ff_9b81     // Post reset setup
+0_2_9a_9b82_00_9b83
+1_2_a2_9b83_7d_9b84
+0_2_ba_9b85_00_9b86
+2_4_8e_9b86_ff_25ee
+0_3_4c_9b89_00_9b8b
 0_2_ea_0000_00_0001
 0_2_ea_0001_00_0002
 0_2_ea_0002_00_0003
@@ -126,5 +132,9 @@ Type: 0 - opcode imm, 1 - opcode read, 2 - opcode write
 0_2_ea_0827_00_0828
 2_3_86_0828_25_0081 // STX tests
 2_4_96_082a_25_0082
+1_6_20_082c_b3_082e // JSR tests
+1_2_ea_35b3_60_32b4
+1_6_60_35b4_b3_082e
+1_2_ea_082f_00_0830
 f_0_00_0000_00_0000 // End marker
 

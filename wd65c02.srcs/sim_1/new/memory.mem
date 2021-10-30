@@ -93,7 +93,14 @@ ea              // 0827: NOP
 86 81           // 0828: STX $81
 96 02           // 082a: STX $02,y
 
-00 07           // 082c: BRK
+20 b3 35        // 082c: JSR $35b3
+ea              // 082f: NOP
+
+00 07           // 0830: BRK
+
+@35b3
+ea              // 35b3: NOP
+60              // 35b4: RTS
 
 @3785 10        // Command at 10 loads this value
 @3742 ff        // Command at 16 should NOT load this value
@@ -106,8 +113,17 @@ ea              // 0827: NOP
 @9537 2e        // Command at 2e loads this value
 @954e 30        // Command at 30 loads this value
 @962f 34        // Command at 34 loads this value
+
+@9b80   // Reset vector points here
+a2 ff           // 9b80: LDX #ff
+9a              // 9b82: TXS
+a2 7d           // 9b83: LDX #7d
+ba              // 9b85: TSX
+8e ee 25        // 9b86: STX $25ee
+4c 00 00        // 9b89: JMP $0000
+
 @b3fe 01 08 04  // Commands at 040c and 03c7 indirect through here
 @be71 1f        // Written to by command at 0027
 @ffb1 ff        // Command at 18 should NOT load this value
 
-@fffc 00 00     // Reset vector
+@fffc 80 9b     // Reset vector

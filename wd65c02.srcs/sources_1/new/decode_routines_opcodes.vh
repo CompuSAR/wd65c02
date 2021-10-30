@@ -134,6 +134,7 @@ begin
         `Op_sec: do_opcode_sec();
         `Op_sta: do_opcode_sta();
         `Op_stx: do_opcode_stx();
+        `Op_txs: do_opcode_txs();
 
         `Op_interrupt: do_opcode_interrupt();
         default: set_invalid_state();
@@ -364,6 +365,15 @@ begin
 end
 endtask
 
+task do_opcode_txs();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        data_bus_source <= `DataBusSrc_RegX;
+        stack_pointer_src_register <= `StackIn_DataBus;
+    end else
+        next_instruction();
+end
+endtask
 
 task do_opcode_interrupt();
 begin

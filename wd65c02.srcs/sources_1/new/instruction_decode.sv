@@ -724,10 +724,12 @@ begin
         setup_addr_abs_y();
         active_op <= `Op_sta;
     end
+    */
     8'h9a: begin
-        setup_addr_i();
-        do_opcode_txs();
+        active_op <= `Op_txs;
+        setup_addr_i(`Op_txs);
     end
+    /*
     8'h9c: begin
         setup_addr_abs();
         active_op <= `Op_stz;
