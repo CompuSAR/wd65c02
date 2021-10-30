@@ -136,6 +136,7 @@ initial begin
         4'h0: expect_opcode();
         4'h1: expect_opcode();
         4'h2: expect_opcode();
+        4'h3: expect_interrupt();
         default: begin
             $display("Expected result %d is of unknown type %x at time %t", results_index, current_command[OperationBitsHigh:OperationBitsLow], $time);
             $finish;
@@ -148,6 +149,18 @@ initial begin
     $display("Verified simulation run ended at %t after verifying %d events", $time, results_index);
     $finish();
 end
+
+task expect_interrupt();
+begin
+    @(posedge clock) ;
+    @(posedge clock) ;
+    @(posedge clock) ;
+    @(posedge clock) ;
+    @(posedge clock) ;
+    @(posedge clock) ;
+    @(posedge clock) ;
+end
+endtask
 
 task expect_opcode();
 begin

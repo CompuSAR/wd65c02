@@ -1,4 +1,15 @@
 /*
+Type: 3 - interrupt
+|
+*/
+3_0_00_0000_00_0000
+
+
+
+
+
+
+/*
 Type: 0 - opcode imm, 1 - opcode read, 2 - opcode write
 | Num cycles
 | | Opcode

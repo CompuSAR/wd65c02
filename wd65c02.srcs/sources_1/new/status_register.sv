@@ -44,9 +44,9 @@ begin
     data_out[`Flags__Unused] = 1'b1;
 end
 
-always_ff@(posedge clock, negedge RESET)
+always_ff@(posedge clock)
 begin
-    if( ! RESET ) begin
+    if( RESET ) begin
         status[`Flags_Decimal] <= 1'b0;
         status[`Flags_IrqDisable] <= 1'b1;
     end else begin

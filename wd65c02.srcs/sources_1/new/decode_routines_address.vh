@@ -191,16 +191,16 @@ task do_addr_abs_ind();
     end else if( timing_counter==2 ) begin
         address_bus_source <= `AddrBusSrc_Dl;
 
+        pc_low_src <= `PcLowIn_Mem;
+        pc_high_src <= `PcHighIn_Preserve;
+        control_signals[`CtlSig_Jump] <= 1;
+
         alu_carry_src <= `AluCarryIn_One;
         alu_a_src <= `AluASrc_DlLow;
         alu_b_src <= `AluBSrc_Zero;
         alu_op <= `AluOp_add;
         data_latch_ctl_low <= `DllSrc_AluRes;
     end else if( timing_counter==3 ) begin
-        pc_low_src <= `PcLowIn_Mem;
-        pc_high_src <= `PcHighIn_Preserve;
-        control_signals[`CtlSig_Jump] <= 1;
-
         if( ! PageBoundryWrongAccess ) begin
             alu_carry_src <= alu_carry;
             alu_a_src <= `AluASrc_DlHigh;
