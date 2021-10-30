@@ -134,6 +134,7 @@ begin
         `Op_sec: do_opcode_sec();
         `Op_sta: do_opcode_sta();
         `Op_stx: do_opcode_stx();
+        `Op_tsx: do_opcode_tsx();
         `Op_txs: do_opcode_txs();
 
         `Op_interrupt: do_opcode_interrupt();
@@ -360,6 +361,16 @@ begin
     if( timing_counter < OpCounterStart ) begin
         ext_rW <= 0;
         data_bus_source <= `DataBusSrc_RegX;
+    end else
+        next_instruction();
+end
+endtask
+
+task do_opcode_tsx();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        data_bus_source <= `DataBusSrc_RegS;
+        control_signals[`CtlSig_RegXWrite] <= 1;
     end else
         next_instruction();
 end

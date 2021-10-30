@@ -847,12 +847,10 @@ begin
         active_op <= `Op_lda;
         setup_addr_abs_y();
     end
-    /*
     8'hba: begin
-        setup_addr_i();
-        do_opcode_tsx();
+        active_op <= `Op_tsx;
+        setup_addr_i(`Op_tsx);
     end
-    */
     8'hbc: begin
         active_op <= `Op_ldy;
         setup_addr_abs_x();
