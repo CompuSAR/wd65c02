@@ -45,7 +45,7 @@ wire data_bus_rW;
 wire sync;
 
 reg clock;
-reg RESET;
+logic RESET, IRQ, NMI;
 reg [7:0]data_bus_in;
 
 wd65c02 cpu(
@@ -70,9 +70,8 @@ reg [7:0]memory[65535:0];
     0 - opcode - immediate
     1 - opcode - read
     2 - opcode - write
-    3 - expected bus
-    4 - set pin state
-    5 - wait
+    3 - schedule pin assert
+    4 - bus operation
 
     Bit layout for opcode type
 
@@ -83,11 +82,11 @@ reg [7:0]memory[65535:0];
     23:16       Data bus on last access (only read and write operations)
     15:0        Last address bus access
 
-    Bit layout for set pin type
-    0:0         reset value
-
-    Bit layout for wait type
-    39:0        Number of picoseconds to wait
+    Bit layout for pin assert type
+    55:52       Event type
+    51:48       Pin to assert: 0 - reset, 1 - IRQ, 2 - NMI
+    47:40       Cycles until pin is asserted
+    39:32       Cycles to assert for
  */
 localparam BitsInExpectedResult = 56;
 localparam OperationBitsHigh = 55;
@@ -123,9 +122,7 @@ integer results_index;
 integer opcode_cycle_count;
 reg [BitsInExpectedResult-1:0]current_command;
 initial begin
-    RESET = 0;
-
-    #321 RESET = 1;
+    RESET = 1;
 
     // Wait for the CPU to start after reset
     @(negedge clock)
@@ -136,7 +133,9 @@ initial begin
         4'h0: expect_opcode();
         4'h1: expect_opcode();
         4'h2: expect_opcode();
-        4'h3: expect_interrupt();
+        4'h3: begin
+            pin_assert(current_command[51:48], current_command[47:40], current_command[39:32]);
+        end
         default: begin
             $display("Expected result %d is of unknown type %x at time %t", results_index, current_command[OperationBitsHigh:OperationBitsLow], $time);
             $finish;
@@ -149,18 +148,6 @@ initial begin
     $display("Verified simulation run successful at %t after verifying %d events", $time, results_index);
     $finish();
 end
-
-task expect_interrupt();
-begin
-    @(posedge clock) ;
-    @(posedge clock) ;
-    @(posedge clock) ;
-    @(posedge clock) ;
-    @(posedge clock) ;
-    @(posedge clock) ;
-    @(posedge clock) ;
-end
-endtask
 
 task expect_opcode();
 begin
@@ -190,6 +177,49 @@ begin
         sim_assert( ~data_bus_rW, "Data bus in read when it should be in write mode" );
         sim_assert( current_command[23:16] == data_bus_out, "Last access data incorrect" );
     end
+    endcase
+end
+endtask
+
+task pin_assert(integer pin, integer cyclesUntilAssert, integer cyclesToAssert);
+    fork
+        actual_pin_assert(pin, cyclesUntilAssert, cyclesToAssert);
+    join_none
+endtask
+
+task actual_pin_assert(integer pin, integer cyclesUntilAssert, integer cyclesToAssert);
+begin
+    #(tPWL/2)
+
+    while( cyclesUntilAssert>0 ) begin
+        #tPWH ;
+        cyclesUntilAssert -= 1;
+
+        if( cyclesUntilAssert>0 ) begin
+            #tPWL ;
+
+            cyclesUntilAssert -= 1;
+        end
+    end
+
+    case(pin)
+        4'd0: begin RESET = 0; $display("RESET low %t", $time); end
+        4'd1: begin IRQ = 0; $display("IRQ low %t", $time); end
+        4'd2: begin NMI = 0; $display("NMI low %t", $time); end
+    endcase
+
+    while( cyclesToAssert>0 ) begin
+        #tPWH cyclesToAssert = cyclesToAssert - 1;
+
+        if( cyclesToAssert>0 ) begin
+            #tPWL cyclesToAssert = cyclesToAssert - 1;
+        end
+    end
+
+    case(pin)
+        4'd0: begin RESET = 1; $display("RESET high %t", $time); end
+        4'd1: begin IRQ = 1; $display("IRQ high %t", $time); end
+        4'd2: begin NMI = 1; $display("NMI high %t", $time); end
     endcase
 end
 endtask

@@ -208,9 +208,11 @@ latch#(.NBits(8)) alu_latch(.in(alu_result), .out(alu_latch_value), .clock(~phi2
 instruction_decode decoder(
     .data_in(data_in),
     .clock(phi2),
-    .RESET(resetPending),
     .status_register(status_value),
     .alu_carry(alu_status[`Flags_Carry]),
+    .RESET(resetPending),
+    .IRQ(irqPending),
+    .nmi(nmiPending),
     .control_signals(control_signals),
     .data_latch_ctl_low(data_latch_low_source),
     .data_latch_ctl_high(data_latch_high_source),

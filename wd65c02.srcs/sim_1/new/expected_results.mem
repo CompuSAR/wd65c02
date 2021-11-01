@@ -1,12 +1,11 @@
 /*
-Type: 3 - interrupt
-|
+Type: 3 - assert input
+| Pin to assert: 0 - reset, 1 - IRQ, 2 - NMI
+| | Cycles until pin is asserted
+| | |  Cycles to hold pin.
+| | |  |
 */
-3_0_00_0000_00_0000
-
-
-
-
+3_0_00_10_0000_0000
 
 
 /*

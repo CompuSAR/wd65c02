@@ -44,9 +44,11 @@ module instruction_decode#(PageBoundryWrongAccess = 0, UnknownOpcodesNop = 1)
 (
         input [7:0]data_in,
         input clock,
-        input RESET,
         input [7:0]status_register,
         input alu_carry,
+        input RESET,
+        input IRQ,
+        input nmi,
         output reg [`CtlSig__NumSignals-1:0]control_signals,
         output reg [`DlhSrc__NBits-1:0]data_latch_ctl_high,
         output reg [`DllSrc__NBits-1:0]data_latch_ctl_low,
@@ -92,6 +94,12 @@ enum { IntrBrk = 0, IntrIrq = 1, IntrNmi = 2, IntrReset = 3 } active_int = IntrB
 always_ff@(negedge clock, negedge RESET) begin
     clear_signals();
     timing_counter <= timing_counter+1;
+
+    if( active_int!=IntrReset && nmi )
+        active_int <= IntrNmi;
+    else if( active_int==IntrBrk && !IRQ && !status_register[`Flags_IrqDisable] )
+        active_int <= IntrIrq;
+
     if( ! RESET ) begin
         do_reset();
     end else if( timing_counter==0 )
