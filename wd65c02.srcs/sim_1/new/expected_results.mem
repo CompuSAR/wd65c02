@@ -6,8 +6,21 @@ Type: 3 - assert input
 | | |  |
 */
 3_0_00_10_0000_0000
-
-
+/*
+Type: 5 - wait
+| Cycles to wait
+| |
+*/
+5_000f_0_0000_0000
+/*
+Type: 4 - bus operation
+| Bus op: 1 - read, 0 - write
+| | Address
+| | |    Data
+| | |    |
+*/
+4_1_fffc_80_00_0000
+4_1_fffd_9b_00_0000
 /*
 Type: 0 - opcode imm, 1 - opcode read, 2 - opcode write
 | Num cycles

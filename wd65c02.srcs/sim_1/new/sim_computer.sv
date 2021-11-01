@@ -72,6 +72,7 @@ reg [7:0]memory[65535:0];
     2 - opcode - write
     3 - schedule pin assert
     4 - bus operation
+    5 - wait
 
     Bit layout for opcode type
 
@@ -87,6 +88,16 @@ reg [7:0]memory[65535:0];
     51:48       Pin to assert: 0 - reset, 1 - IRQ, 2 - NMI
     47:40       Cycles until pin is asserted
     39:32       Cycles to assert for
+
+    Bit layout for bus
+    55:52       Event type
+    51:48       Access: 1 - read, 0 - write
+    47:32       Address
+    31:24       Data
+
+    Bit layout for wait
+    55:52       Event type
+    51:36       Number of cycles to wait
  */
 localparam BitsInExpectedResult = 56;
 localparam OperationBitsHigh = 55;
@@ -133,9 +144,9 @@ initial begin
         4'h0: expect_opcode();
         4'h1: expect_opcode();
         4'h2: expect_opcode();
-        4'h3: begin
-            pin_assert(current_command[51:48], current_command[47:40], current_command[39:32]);
-        end
+        4'h3: pin_assert(current_command[51:48], current_command[47:40], current_command[39:32]);
+        4'h4: bus_access(current_command[51:48], current_command[47:32], current_command[31:24]);
+        4'h5: delay(current_command[51:36]);
         default: begin
             $display("Expected result %d is of unknown type %x at time %t", results_index, current_command[OperationBitsHigh:OperationBitsLow], $time);
             $finish;
@@ -221,6 +232,27 @@ begin
         4'd1: begin IRQ = 1; $display("IRQ high %t", $time); end
         4'd2: begin NMI = 1; $display("NMI high %t", $time); end
     endcase
+end
+endtask
+
+task bus_access(integer rw, logic[15:0] address, logic[7:0]data);
+    @(negedge clock) ;
+    sim_assert(data_bus_rW == rw, "bus operation read/write mismatch");
+    sim_assert(address_bus == address, "bus operation access to wrong address");
+    if( rw )
+        sim_assert(data_bus_in == data, "bus operation read incorrect data");
+    else
+        sim_assert(data_bus_out == data, "bus operation wrote incorrect data");
+endtask
+
+task delay(integer numCycles);
+begin
+    $display("Delaying for %d cycles at %t", numCycles, $time);
+    while(numCycles>0) begin
+        numCycles -= 1;
+        @(posedge clock);
+    end
+    $display("Resuming %t", $time);
 end
 endtask
 
