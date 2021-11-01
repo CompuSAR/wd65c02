@@ -494,7 +494,6 @@ begin
     if( timing_counter < OpCounterStart ) begin
         timing_counter <= OpCounterStart;
         control_signals[`CtlSig_PcAdvance] <= 1;
-        run_status <= Running;
     end else if( timing_counter == OpCounterStart ) begin
         // Push return address to stack
         data_bus_source <= `DataBusSrc_PCH;
@@ -572,6 +571,7 @@ begin
         pc_high_src <= `PcHighIn_Mem;
         control_signals[`CtlSig_Jump] <= 1;
     end else if( timing_counter == OpCounterStart+5 ) begin
+        active_int <= IntrBrk;
         next_instruction();
     end
 end

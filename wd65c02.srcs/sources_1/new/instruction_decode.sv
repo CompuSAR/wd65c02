@@ -81,8 +81,6 @@ localparam [TimingCounterBits-1:0]OpCounterStart = {1'b1, {TimingCounterBits-1{1
 
 assign sync = timing_counter==0;
 
-enum { Halted, Reset, Irq, Nmi, Running } run_status;
-
 // Collectively, these serve as the instruction register
 reg [`Addr__NBits-1:0]active_address_resolution;
 reg [`Op__NBits-1:0]active_op;
@@ -96,9 +94,7 @@ always_ff@(negedge clock, negedge RESET) begin
     timing_counter <= timing_counter+1;
     if( ! RESET ) begin
         do_reset();
-    end else if( run_status==Halted )
-        ;
-    else if( timing_counter==0 )
+    end else if( timing_counter==0 )
         do_opcode_decode();
     else if( timing_counter<OpCounterStart )
         fetch_operand();
@@ -111,7 +107,7 @@ begin
     active_address_resolution <= `Addr_invalid;
     active_op <= `Op__invalid;
     ext_waitP <= 1'b0;
-    run_status <= Reset;
+    active_int <= IntrReset;
     timing_counter <= 0;
 end
 endtask
@@ -169,9 +165,8 @@ endtask
 
 task do_opcode_decode();
 begin
-    if( run_status==Reset ) begin
+    if( active_int!=IntrBrk ) begin
         active_op <= `Op_interrupt;
-        active_int <= IntrReset;
         do_opcode_interrupt();
         return;
     end
