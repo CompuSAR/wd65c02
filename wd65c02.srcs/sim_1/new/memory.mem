@@ -97,7 +97,13 @@ ea              // 0827: NOP
 96 02           // 082a: STX $02,y
 
 80 d0           // 082c: BRA $07fe
-ea              // 082e: NOP
+
+ea              // 082e: NOP    // IRQ test
+ea              // 082f: NOP
+58              // 0830: CLI
+ea              // 0831: NOP
+
+
 
 @35b3
 ea              // 35b3: NOP
@@ -125,8 +131,13 @@ ba              // 9b85: TSX
 8e ee 25        // 9b86: STX $25ee
 4c 00 00        // 9b89: JMP $0000
 
+@a21e // IRQ vector
+ea              // a21e: NOP
+40              // a21f: RTI
+
 @b3fe 01 08 04  // Commands at 040c and 03c7 indirect through here
 @be71 1f        // Written to by command at 0027
 @ffb1 ff        // Command at 18 should NOT load this value
 
 @fffc 80 9b     // Reset vector
+@fffe 1e a2     // IRQ vector

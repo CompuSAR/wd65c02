@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="896.500 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,246.001 ns"></ZoomEndTime>
-      <Cursor1Time time="1,131.000 ns"></Cursor1Time>
+      <ZoomStartTime time="30,429.583 ns"></ZoomStartTime>
+      <ZoomEndTime time="30,539.584 ns"></ZoomEndTime>
+      <Cursor1Time time="30,485.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="215"></NameColumnWidth>
+      <NameColumnWidth column_width="211"></NameColumnWidth>
       <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="26" />
+   <WVObjectSize size="28" />
    <wvobject type="logic" fp_name="/sim_computer/clock">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -98,12 +98,6 @@
       <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
       <obj_property name="label">Data Latch</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/sim_computer/RESET">
-      <obj_property name="ElementShortName">RESET</obj_property>
-      <obj_property name="ObjectShortName">RESET</obj_property>
-      <obj_property name="CustomSignalColor">#A52A2A</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/sim_computer/cpu/alu/a">
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">a[7:0]</obj_property>
@@ -145,5 +139,19 @@
    <wvobject type="array" fp_name="/sim_computer/cpu/decoder/active_int">
       <obj_property name="ElementShortName">active_int[31:0]</obj_property>
       <obj_property name="ObjectShortName">active_int[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/sim_computer/RESET">
+      <obj_property name="ElementShortName">RESET</obj_property>
+      <obj_property name="ObjectShortName">RESET</obj_property>
+      <obj_property name="CustomSignalColor">#A52A2A</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/sim_computer/cpu/IRQ">
+      <obj_property name="ElementShortName">IRQ</obj_property>
+      <obj_property name="ObjectShortName">IRQ</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/sim_computer/cpu/NMI">
+      <obj_property name="ElementShortName">NMI</obj_property>
+      <obj_property name="ObjectShortName">NMI</obj_property>
    </wvobject>
 </wave_config>

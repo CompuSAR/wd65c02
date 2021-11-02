@@ -125,6 +125,7 @@ begin
     case(op)
         `Op_asl: do_opcode_asl();
         `Op_clc: do_opcode_clc();
+        `Op_cli: do_opcode_cli();
         `Op_jmp: do_opcode_jmp();
         `Op_jsr: do_opcode_jsr();
         `Op_lda: do_opcode_lda();
@@ -244,6 +245,18 @@ begin
     if( timing_counter == OpCounterStart ) begin
         data_bus_source <= `DataBusSrc_Zero;
         control_signals[`CtlSig_StatUpdateC] <= 1;
+        status_src <= `StatusSrc_Data;
+
+        next_instruction();
+    end
+end
+endtask
+
+task do_opcode_cli();
+begin
+    if( timing_counter == OpCounterStart ) begin
+        data_bus_source <= `DataBusSrc_Zero;
+        control_signals[`CtlSig_StatUpdateI] <= 1;
         status_src <= `StatusSrc_Data;
 
         next_instruction();

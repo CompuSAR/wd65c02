@@ -52,8 +52,8 @@ wd65c02 cpu(
     .address(address_bus),
     .data_out(data_bus_out),
     .data_in(data_bus_in),
-    .IRQ(1'b1),
-    .NMI(1'b1),
+    .IRQ(IRQ),
+    .NMI(NMI),
     .phi2(clock),
     .rW(data_bus_rW),
     .rdy(1'b1),
@@ -134,6 +134,8 @@ integer opcode_cycle_count;
 reg [BitsInExpectedResult-1:0]current_command;
 initial begin
     RESET = 1;
+    IRQ = 1;
+    NMI = 1;
 
     // Wait for the CPU to start after reset
     @(negedge clock)

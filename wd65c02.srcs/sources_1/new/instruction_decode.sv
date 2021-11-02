@@ -497,10 +497,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_rmb5;
     end
+    */
     8'h58: begin
-        setup_addr_i();
-        do_opcode_cli();
+        active_op <= `Op_cli;
+        setup_addr_i(`Op_cli);
     end
+    /*
     8'h59: begin
         setup_addr_abs_y();
         active_op <= `Op_eor;
