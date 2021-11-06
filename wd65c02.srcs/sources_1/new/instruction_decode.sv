@@ -112,11 +112,11 @@ end
 
 task do_reset();
 begin
-    active_address_resolution <= `Addr_invalid;
-    active_op <= `Op__invalid;
+    active_op <= `Op_interrupt;
     ext_waitP <= 1'b0;
     active_int <= IntrReset;
-    timing_counter <= 0;
+    control_signals[`CtlSig_PcAdvance] <= 0;
+    timing_counter <= OpCounterStart;
 end
 endtask
 
@@ -173,12 +173,6 @@ endtask
 
 task do_opcode_decode();
 begin
-    if( active_int!=IntrBrk ) begin
-        active_op <= `Op_interrupt;
-        do_opcode_interrupt();
-        return;
-    end
-
     case( data_in )
     /*
     8'h00: begin

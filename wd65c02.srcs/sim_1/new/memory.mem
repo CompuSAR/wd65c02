@@ -102,6 +102,8 @@ ea              // 082e: NOP    // IRQ test
 ea              // 082f: NOP
 58              // 0830: CLI
 ea              // 0831: NOP
+ea              // 0832: NOP
+ea              // 0833: NOP
 
 
 

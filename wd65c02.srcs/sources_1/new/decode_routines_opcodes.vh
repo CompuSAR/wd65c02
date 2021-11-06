@@ -148,9 +148,17 @@ endtask
 
 task next_instruction();
 begin
-    timing_counter <= 0;
+    if( active_int == IntrBrk ) begin
+        timing_counter <= 0;
 
-    control_signals[`CtlSig_PcAdvance] <= 1;
+        control_signals[`CtlSig_PcAdvance] <= 1;
+    end else begin
+        timing_counter <= OpCounterStart;
+
+        control_signals[`CtlSig_PcAdvance] <= 0;
+        active_op <= `Op_interrupt;
+    end
+
     control_signals[`CtlSig_Jump] <= 0;
 
     ext_sync <= 1;
@@ -433,13 +441,6 @@ begin
         pc_low_src <= `PcLowIn_Dl;
         pc_high_src <= `PcHighIn_Mem;
         control_signals[`CtlSig_Jump] <= 1;
-
-        alu_op <= `AluOp_add;
-        alu_a_src <= `AluASrc_RegS;
-        alu_b_src <= `AluBSrc_Zero;
-        alu_carry_src <= `AluCarryIn_One;
-
-        stack_pointer_src_register <= `StackIn_AluRes;
     end else if( timing_counter == OpCounterStart+3 ) begin
         address_bus_source <= `AddrBusSrc_Pc;
 
@@ -504,10 +505,9 @@ endtask
 
 task do_opcode_interrupt();
 begin
-    if( timing_counter < OpCounterStart ) begin
-        timing_counter <= OpCounterStart;
-        control_signals[`CtlSig_PcAdvance] <= 1;
-    end else if( timing_counter == OpCounterStart ) begin
+    if( timing_counter == OpCounterStart ) begin
+        control_signals[`CtlSig_PcAdvance] <= active_int==IntrBrk;
+    end else if( timing_counter == OpCounterStart+1 ) begin
         // Push return address to stack
         data_bus_source <= `DataBusSrc_PCH;
         address_bus_source <= `AddrBusSrc_Sp;
@@ -521,7 +521,7 @@ begin
         alu_op <= `AluOp_add;
         
         stack_pointer_src_register <= `StackIn_AluRes;
-    end else if( timing_counter == OpCounterStart+1 ) begin
+    end else if( timing_counter == OpCounterStart+2 ) begin
         // Push return address to stack
         data_bus_source <= `DataBusSrc_PCL;
         address_bus_source <= `AddrBusSrc_Sp;
@@ -535,7 +535,7 @@ begin
         alu_op <= `AluOp_add;
 
         stack_pointer_src_register <= `StackIn_AluRes;
-    end else if( timing_counter == OpCounterStart+2 ) begin
+    end else if( timing_counter == OpCounterStart+3 ) begin
         // Push status flags to stack
         data_bus_source <= `DataBusSrc_Status;
         address_bus_source <= `AddrBusSrc_Sp;
@@ -563,7 +563,7 @@ begin
             IntrReset:
                 data_latch_ctl_low <= `DllSrc_Reset;
         endcase
-    end else if( timing_counter == OpCounterStart+3 ) begin
+    end else if( timing_counter == OpCounterStart+4 ) begin
         // Load the vector
         address_bus_source <= `AddrBusSrc_Dl;
         ext_VP <= 1'b0;
@@ -576,15 +576,16 @@ begin
 
         pc_low_src <= `PcLowIn_Mem;
         control_signals[`CtlSig_Jump] <= 1;
-    end else if( timing_counter == OpCounterStart+4 ) begin
+    end else if( timing_counter == OpCounterStart+5 ) begin
         address_bus_source <= `AddrBusSrc_Dl;
         ext_VP <= 1'b0;
 
         pc_low_src <= `PcLowIn_Preserve;
         pc_high_src <= `PcHighIn_Mem;
         control_signals[`CtlSig_Jump] <= 1;
-    end else if( timing_counter == OpCounterStart+5 ) begin
+
         active_int <= IntrBrk;
+    end else if( timing_counter == OpCounterStart+6 ) begin
         next_instruction();
     end
 end
