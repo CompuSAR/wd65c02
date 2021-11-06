@@ -202,10 +202,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_rmb0;
     end
+    */
     8'h08: begin
-        setup_addr_s();
         active_op <= `Op_php;
+        setup_addr_i(`Op_php);
     end
+    /*
     8'h09: begin
         setup_addr_imm();
         active_op <= `Op_ora;
