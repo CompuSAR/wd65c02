@@ -410,10 +410,12 @@ begin
         setup_addr_r();
         active_op <= `Op_bbr3;
     end
+    */
     8'h40: begin
-        setup_addr_s();
         active_op <= `Op_rti;
+        setup_addr_i(`Op_rti);
     end
+    /*
     8'h41: begin
         setup_addr_zpxi();
         active_op <= `Op_eor;

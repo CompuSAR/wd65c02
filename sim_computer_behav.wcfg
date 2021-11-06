@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="30,429.583 ns"></ZoomStartTime>
-      <ZoomEndTime time="30,539.584 ns"></ZoomEndTime>
-      <Cursor1Time time="30,485.000 ns"></Cursor1Time>
+      <ZoomStartTime time="31,297.500 ns"></ZoomStartTime>
+      <ZoomEndTime time="31,402.001 ns"></ZoomEndTime>
+      <Cursor1Time time="31,500.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="211"></NameColumnWidth>
+      <NameColumnWidth column_width="207"></NameColumnWidth>
       <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="28" />
+   <WVObjectSize size="29" />
    <wvobject type="logic" fp_name="/sim_computer/clock">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -39,6 +39,10 @@
    <wvobject type="array" fp_name="/sim_computer/cpu/data_in">
       <obj_property name="ElementShortName">data_in[7:0]</obj_property>
       <obj_property name="ObjectShortName">data_in[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/sim_computer/cpu/data_bus">
+      <obj_property name="ElementShortName">data_bus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_bus[7:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/sim_computer/cpu/data_out">
       <obj_property name="ElementShortName">data_out[7:0]</obj_property>
