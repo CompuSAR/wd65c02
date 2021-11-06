@@ -135,6 +135,7 @@ begin
         `Op_lsr: do_opcode_lsr();
         `Op_nop: do_opcode_nop();
         `Op_php: do_opcode_php();
+        `Op_pla: do_opcode_pla();
         `Op_rti: do_opcode_rti();
         `Op_rts: do_opcode_rts();
         `Op_sec: do_opcode_sec();
@@ -442,8 +443,34 @@ begin
         stack_pointer_src_register <= `StackIn_AluRes;
 
         data_bus_source <= `DataBusSrc_Status;
+        control_signals[`CtlSig_StatOutputB] <= 1;
         ext_rW <= 0;
     end else if( timing_counter == OpCounterStart+1 ) begin
+        next_instruction();
+    end
+end
+endtask
+
+task do_opcode_pla();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        // XXX DUMMY_CYCLE.
+        address_bus_source <= `AddrBusSrc_Pc;
+    end else if( timing_counter == OpCounterStart ) begin
+        address_bus_source <= `AddrBusSrc_Sp;
+
+        alu_op <= `AluOp_add;
+        alu_a_src <= `AluASrc_RegS;
+        alu_b_src <= `AluBSrc_Zero;
+        alu_carry_src <= `AluCarryIn_One;
+
+        stack_pointer_src_register <= `StackIn_AluRes;
+    end else if( timing_counter == OpCounterStart+1 ) begin
+        address_bus_source <= `AddrBusSrc_Sp;
+    end else if( timing_counter == OpCounterStart+2 ) begin
+        data_bus_source <= `DataBusSrc_Mem;
+        control_signals[`CtlSig_RegAccWrite] <= 1;
+
         next_instruction();
     end
 end

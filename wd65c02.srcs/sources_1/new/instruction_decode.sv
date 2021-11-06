@@ -549,10 +549,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_rmb6;
     end
+    */
     8'h68: begin
-        setup_addr_s();
         active_op <= `Op_pla;
+        setup_addr_i(`Op_pla);
     end
+    /*
     8'h69: begin
         setup_addr_imm();
         active_op <= `Op_adc;
