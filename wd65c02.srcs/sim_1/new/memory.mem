@@ -103,7 +103,10 @@ ea              // 082f: NOP
 58              // 0830: CLI
 ea              // 0831: NOP
 ea              // 0832: NOP
-ea              // 0833: NOP
+d8              // 0833: CLD
+08              // 0834: PHP
+68              // 0835: PLA
+ea              // 0836: NOP
 
 
 
@@ -135,7 +138,9 @@ ba              // 9b85: TSX
 
 @a21e // IRQ vector
 ea              // a21e: NOP
-40              // a21f: RTI
+a9 cf           // a21f: LDA #$cf
+8d fd 01        // a221: STA $01fd
+40              // a224: RTI
 
 @b3fe 01 08 04  // Commands at 040c and 03c7 indirect through here
 @be71 1f        // Written to by command at 0027

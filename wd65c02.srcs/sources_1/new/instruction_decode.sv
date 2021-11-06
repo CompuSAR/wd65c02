@@ -957,10 +957,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_smb5;
     end
+    */
     8'hd8: begin
-        setup_addr_i();
-        do_opcode_cld();
+        active_op <= `Op_cld;
+        setup_addr_i(`Op_cld);
     end
+    /*
     8'hd9: begin
         setup_addr_abs_y();
         active_op <= `Op_cmp;
