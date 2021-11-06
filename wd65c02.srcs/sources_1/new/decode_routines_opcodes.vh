@@ -470,6 +470,9 @@ begin
     end else if( timing_counter == OpCounterStart+2 ) begin
         data_bus_source <= `DataBusSrc_Mem;
         control_signals[`CtlSig_RegAccWrite] <= 1;
+        status_src <= `StatusSrc_Data;
+        status_zero_ctl <= `StatusZeroCtl_Calculate;
+        control_signals[`CtlSig_StatUpdateN] <= 1;
 
         next_instruction();
     end
