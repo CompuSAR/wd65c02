@@ -86,8 +86,9 @@
 
 `define AluCarryIn_Zero         0
 `define AluCarryIn_One          1
+`define AluCarryIn_Carry        2
 
-`define AluCarryIn__NumOptions  2
+`define AluCarryIn__NumOptions  3
 `define AluCarryIn__NBits $clog2( `AluCarryIn__NumOptions )
 
 

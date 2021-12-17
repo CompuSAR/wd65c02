@@ -194,6 +194,7 @@ wire alu_carry_inputs[`AluCarryIn__NumOptions-1:0];
 wire [`AluCarryIn__NBits-1:0]alu_carry_source;
 wire [`AluOp__NBits-1:0]alu_control;
 wire [7:0]alu_status;
+reg flags_carry_latched;
 alu alu(
     .a(alu_a_bus),
     .b(control_signals[`CtlSig_AluInverse] ? ~alu_b_bus : alu_b_bus),
@@ -242,6 +243,7 @@ always_ff@(negedge phi2) begin
     data_in_latched <= data_in;
     resetPending <= RES;
     irqPending <= IRQ;
+    flags_carry_latched <= status_value[`Flags_Carry];
 end
 
 assign data_bus_inputs[`DataBusSrc_Zero] = 8'b0;
@@ -289,6 +291,7 @@ assign status_inputs[`StatusSrc_ALU] = alu_status;
 
 assign alu_carry_inputs[`AluCarryIn_Zero] = 1'b0;
 assign alu_carry_inputs[`AluCarryIn_One] = 1'b1;
+assign alu_carry_inputs[`AluCarryIn_Carry] = flags_carry_latched;
 
 assign pc_low_in_inputs[`PcLowIn_Preserve] = pc_value[7:0];
 assign pc_low_in_inputs[`PcLowIn_Dl] = data_latch_value[7:0];

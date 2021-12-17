@@ -344,10 +344,12 @@ begin
         setup_addr_abs();
         active_op <= `Op_and;
     end
+    */
     8'h2e: begin
-        setup_addr_abs();
         active_op <= `Op_rol;
+        setup_addr_abs();
     end
+    /*
     8'h2f: begin
         setup_addr_r();
         active_op <= `Op_bbr2;

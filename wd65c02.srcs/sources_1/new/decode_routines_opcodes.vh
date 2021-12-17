@@ -136,6 +136,7 @@ begin
         `Op_nop: do_opcode_nop();
         `Op_php: do_opcode_php();
         `Op_pla: do_opcode_pla();
+        `Op_rol: do_opcode_rol();
         `Op_rti: do_opcode_rti();
         `Op_rts: do_opcode_rts();
         `Op_sec: do_opcode_sec();
@@ -474,6 +475,40 @@ begin
         status_zero_ctl <= `StatusZeroCtl_Calculate;
         control_signals[`CtlSig_StatUpdateN] <= 1;
 
+        next_instruction();
+    end
+end
+endtask
+
+task do_opcode_rol();
+begin
+    if( timing_counter < OpCounterStart ) begin
+        address_bus_source <= `AddrBusSrc_Dl;
+        
+        ext_ML <= 0;
+    end else if( timing_counter == OpCounterStart ) begin
+        data_bus_source <= `DataBusSrc_Mem;
+        alu_op <= `AluOp_shift_left;
+        alu_carry_src <= `AluCarryIn_Carry;
+        alu_b_src <= `AluBSrc_DataBus;
+
+        address_bus_source <= `AddrBusSrc_Dl;
+        
+        control_signals[`CtlSig_StatUpdateC] <= 1;
+        status_src <= `StatusSrc_ALU;
+        
+        ext_ML <= 0;
+    end else if( timing_counter == OpCounterStart+1 ) begin
+        data_bus_source <= `DataBusSrc_ALU;
+        address_bus_source <= `AddrBusSrc_Dl;
+        ext_rW <= 0;
+
+        control_signals[`CtlSig_StatUpdateN] <= 1;
+        status_zero_ctl <= `StatusZeroCtl_Calculate;
+        status_src <= `StatusSrc_Data;
+        
+        ext_ML <= 0;
+    end else if( timing_counter == OpCounterStart+2 ) begin
         next_instruction();
     end
 end
