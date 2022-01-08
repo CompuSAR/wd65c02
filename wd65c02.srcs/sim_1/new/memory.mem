@@ -35,6 +35,7 @@ ea              // 003c: NOP
 @0042 22        // Command at 22 loads this value
 @0043 48        // Command at 24 indirects through here (and the previous one)
 @0044 37 95     // Commands at 2e, 30 and 32 indirects through here
+@005d 40        // Commands at 0845 rotate this value
 @007d b9        // Commands at 080a shift this value
 @0080 25        // Command at 081b loads this value
 @0081 ff        // Command at 22 should NOT load this value
@@ -112,7 +113,15 @@ ea              // 0838: NOP
 2e f4 c7        // 083a: ROL $c7f4
 b0 01           // 083d: BCS 
 00              // 083f: BRK
-ea              // 0840: NOP
+3e cf c7        // 0840: ROL $c7cf,x
+30 fa           // 0843: BMI $083f
+26 5d           // 0845: ROL $5d
+10 f6           // 0847: BPL $083f
+36 38           // 0849: ROL $38,x
+d0 f2           // 084b: BNE $083f
+2a              // 084d: ROL
+8d f4 c7        // 084e: STA $c7f4
+ea              // 0851: NOP
 
 @35b3
 ea              // 35b3: NOP

@@ -316,10 +316,12 @@ begin
         setup_addr_zp();
         active_op <= `Op_and;
     end
+    */
     8'h26: begin
-        setup_addr_zp();
         active_op <= `Op_rol;
+        setup_addr_zp();
     end
+    /*
     8'h27: begin
         setup_addr_zp();
         active_op <= `Op_rmb2;
@@ -332,10 +334,12 @@ begin
         setup_addr_imm();
         active_op <= `Op_and;
     end
+    */
     8'h2a: begin
-        setup_addr_acc();
-        active_op <= `Op_rol;
+        active_op <= `Op_rol_i;
+        setup_addr_i(`Op_rol_i);
     end
+    /*
     8'h2c: begin
         setup_addr_abs();
         active_op <= `Op_bit;
@@ -376,10 +380,12 @@ begin
         setup_addr_zpx();
         active_op <= `Op_ora;
     end
+    */
     8'h36: begin
-        setup_addr_zpx();
         active_op <= `Op_rol;
+        setup_addr_zp_x();
     end
+    /*
     8'h37: begin
         setup_addr_zp();
         active_op <= `Op_rmb3;
@@ -406,10 +412,12 @@ begin
         setup_addr_abs_x();
         active_op <= `Op_and;
     end
+    */
     8'h3e: begin
-        setup_addr_abs_x();
         active_op <= `Op_rol;
+        setup_addr_abs_x();
     end
+    /*
     8'h3f: begin
         setup_addr_r();
         active_op <= `Op_bbr3;
