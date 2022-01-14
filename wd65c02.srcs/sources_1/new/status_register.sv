@@ -73,7 +73,7 @@ begin
         case(update_z)
             `StatusZeroCtl_Preserve:        ;
             `StatusZeroCtl_Data:            status[`Flags_Zero] <= data_in[`Flags_Zero];
-            `StatusZeroCtl_Calculate:       status[`Flags_Zero] <= data_in == 7'b0;
+            `StatusZeroCtl_Calculate:       status[`Flags_Zero] <= data_in == 8'b0;
             default:                        status[`Flags_Zero] <= 1'bX;
         endcase
         if( update_i )
